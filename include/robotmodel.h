@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QIcon>
 
-#include <rs/enum.hpp>
+#include <rs/Enum>
 
 namespace rsModel {
 

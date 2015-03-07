@@ -6,7 +6,7 @@
 
 #include <osgQt/GraphicsWindowQt>
 
-#include <rsScene/scene.hpp>
+#include <rsScene/Scene>
 
 #include "robotmodel.h"
 

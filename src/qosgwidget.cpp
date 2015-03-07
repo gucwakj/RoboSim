@@ -36,7 +36,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// create viewer
 	_scene->setupViewer(dynamic_cast<osgViewer::Viewer*>(this));
 	_scene->setupCamera(gw, traits->width, traits->height);
-	_scene->setupScene(traits->width, traits->height);
+	_scene->setupScene(traits->width, traits->height, false);
 
 	// set highlighting of click
 	_scene->setHighlight(true);
@@ -73,24 +73,25 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 						 _model->data(_model->index(i, rsModel::P_Y)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Z)).toDouble() + 0.04445};
 		double quat[4] = {0, 0, 0, 1};
+		double led[4] = {0, 0, 0, 1};
 
 		switch (form) {
 			case rs::LINKBOTI: {
 				rsRobots::LinkbotI *robot = new rsRobots::LinkbotI();
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, form, pos, quat, 1);
-				_scene->drawConnector(robot, sceneRobot, rs::SIMPLE, rsRobots::LinkbotI::FACE1, 0, 1, -1);
-				_scene->drawConnector(robot, sceneRobot, rs::SIMPLE, rsRobots::LinkbotI::FACE1, 0, 2, rs::SMALLWHEEL);
-				_scene->drawConnector(robot, sceneRobot, rs::SIMPLE, rsRobots::LinkbotI::FACE2, 0, 1, -1);
-				_scene->drawConnector(robot, sceneRobot, rs::SIMPLE, rsRobots::LinkbotI::FACE2, 0, 2, rs::CASTER);
-				_scene->drawConnector(robot, sceneRobot, rs::SIMPLE, rsRobots::LinkbotI::FACE3, 0, 1, -1);
-				_scene->drawConnector(robot, sceneRobot, rs::SIMPLE, rsRobots::LinkbotI::FACE3, 0, 2, rs::SMALLWHEEL);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
+				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
+				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
+				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 1, -1);
+				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 2, rsLinkbot::CASTER);
+				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 1, -1);
+				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 2, rsLinkbot::SMALLWHEEL);
 				break;
 			}
 			case rs::LINKBOTL:
-				_scene->drawRobot(new rsRobots::LinkbotL(), form, pos, quat, 1);
+				_scene->drawRobot(new rsRobots::LinkbotL(), pos, quat, led, 0);
 				break;
 			case rs::LINKBOTT:
-				_scene->drawRobot(new rsRobots::LinkbotT(), form, pos, quat, 1);
+				_scene->drawRobot(new rsRobots::LinkbotT(), pos, quat, led, 0);
 				break;
 			default:
 				break;

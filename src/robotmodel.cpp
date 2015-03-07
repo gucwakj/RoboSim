@@ -118,10 +118,10 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 						default:							return QString("Robot %1").arg(id + 1); break;
 					}
 				}
-				case rs::MOBOT:
+				case rs::MINDSTORMS:
 					return QString("Robot %1").arg(_list[index.row()][index.column()].toInt() + 1);
 					break;
-				case rs::NXT:
+				case rs::MOBOT:
 					return QString("Robot %1").arg(_list[index.row()][index.column()].toInt() + 1);
 					break;
 				default:
@@ -159,10 +159,10 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 			case rs::LINKBOTT:
 				image.load("linkbotL.jpg");
 				break;
-			case rs::MOBOT:
+			case rs::MINDSTORMS:
 				image.load("mobot.jpg");
 				break;
-			case rs::NXT:
+			case rs::MOBOT:
 				image.load("mobot.jpg");
 				break;
 			default:

@@ -1,4 +1,4 @@
-#include <rs/enum.hpp>
+#include <rs/Enum>
 
 #include "robotview.h"
 

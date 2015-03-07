@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QFile file(fileName);
 	if (!file.open(QFile::ReadOnly | QFile::Text)) {
 		QMessageBox::warning(this, tr("RoboSim"), tr("Cannot read file %1:\n%2.").arg(fileName));
-		return;
+		//return;
 	}
 	xmlDom xml(fileName);
 
