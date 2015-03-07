@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	QFile file(fileName);
 	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		QMessageBox::warning(this, tr("RoboSim"), tr("Cannot read file %1:\n%2.").arg(fileName));
+		//QMessageBox::warning(this, tr("RoboSim"), tr("Cannot read file %1.").arg(fileName));
 		//return;
 	}
 	xmlDom xml(fileName);
@@ -61,10 +61,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	robotEditor *editor = new robotEditor(model);
 	ui->layout_robots->addWidget(editor);
 
-	// connect robot pieces together
+	// connect designer elements to slots
 	QWidget::connect(ui->pushButton, SIGNAL(clicked()), model, SLOT(addRobot()));
 	QWidget::connect(ui->pushButton_2, SIGNAL(clicked()), model, SLOT(addPreconfig()));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), model, SLOT(setUnits(bool)));
 
+	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));

@@ -16,6 +16,9 @@ robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	_l_preconfig[rsLinkbot::SNAKE] = 5;
 	_l_preconfig[rsLinkbot::STAND] = 2;
 
+	// set SI units
+	_units = true;
+
 	// create initial robot for model
 	this->addRobot();
 }
@@ -57,6 +60,10 @@ bool robotModel::addPreconfig(int type, int role) {
 	return false;
 }
 
+bool robotModel::setUnits(bool si) {
+	_units = si;
+}
+
 void robotModel::printModel(void) {
 	std::cerr << "data: " << std::endl;
 	for (int i = 0; i < _list.size(); i++) {
@@ -67,29 +74,14 @@ void robotModel::printModel(void) {
 	}
 }
 
-/*!
-	Returns the number of items in the row list as the number of rows
-	in the model.
-*/
 int robotModel::columnCount(const QModelIndex&) const {
 	return NUM_COLUMNS;
 }
 
-/*!
-	Returns the number of items in the row list as the number of rows
-	in the model.
-*/
 int robotModel::rowCount(const QModelIndex&) const {
 	return _list.size();
 }
 
-/*!
-	Returns an appropriate value for the requested data.
-	If the view requests an invalid index, an invalid variant is returned.
-	Any valid index that corresponds to a string in the list causes that
-	string to be returned for the display role; otherwise an invalid variant
-	is returned.
-*/
 QVariant robotModel::data(const QModelIndex &index, int role) const {
 	//qDebug() << QString("row %1, col %2, role %3").arg(index.row()).arg(index.column()).arg(role);
 
@@ -132,8 +124,12 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		else
 			return _list[index.row()][index.column()];
 	}
-	else if (role == Qt::EditRole)
+	else if (role == Qt::EditRole) {
+		if (index.column() == P_X || index.column() == P_Y || index.column() == P_Z) {
+			return this->convert(_list[index.row()][index.column()].toDouble(), false);
+		}
 		return _list[index.row()][index.column()];
+	}
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
 		switch (_list[index.row()][rsModel::FORM].toInt()) {
@@ -175,11 +171,6 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		return QVariant();
 }
 
-/*!
-	Returns the appropriate header string depending on the orientation of
-	the header and the section. If anything other than the display role is
-	requested, we return an invalid variant.
-*/
 QVariant robotModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if (role != Qt::DisplayRole)
@@ -191,10 +182,6 @@ QVariant robotModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QString("Row %1").arg(section);
 }
 
-/*!
-	Returns an appropriate value for the item's flags. Valid items are
-	enabled, selectable, and editable.
-*/
 Qt::ItemFlags robotModel::flags(const QModelIndex &index) const {
 	if (!index.isValid())
 		return Qt::ItemIsEnabled;
@@ -206,27 +193,21 @@ Qt::DropActions robotModel::supportedDropActions(void) const {
 	return Qt::CopyAction;
 }
 
-/*!
-	Changes an item in the model, but only if the following conditions
-	are met:
-
-	* The index supplied is valid.
-	* The role associated with editing text is specified.
-
-	The dataChanged() signal is emitted if the item is changed.
-*/
 bool robotModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (index.isValid() && role == Qt::EditRole) {
-		_list[index.row()][index.column()] = value.toString();
+		if (index.column() == P_X || index.column() == P_Y || index.column() == P_Z) {
+			QVariant newValue = this->convert(value.toDouble(), true);
+			_list[index.row()][index.column()] = newValue.toString();
+		}
+		else {
+			_list[index.row()][index.column()] = value.toString();
+		}
 		emit dataChanged(index, index);
 		return true;
 	}
 	return false;
 }
 
-/*!
-	Inserts a number of rows into the model at the specified position.
-*/
 bool robotModel::insertRows(int row, int count, const QModelIndex &parent) {
 	// signal that rows are being added
 	beginInsertRows(parent, row, row + count - 1);
@@ -246,9 +227,6 @@ bool robotModel::insertRows(int row, int count, const QModelIndex &parent) {
 	return true;
 }
 
-/*!
-	Removes a number of rows from the model at the specified position.
-*/
 bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 	// signal that rows are being deleted
 	beginRemoveRows(parent, row, row + count - 1);
@@ -263,3 +241,16 @@ bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 	// success
 	return true;
 }
+
+QVariant robotModel::convert(double value, bool store) const {
+	QVariant tmp;
+
+	if (store)
+		tmp = ((_units) ? value/39.370 : value/100);
+	else
+		tmp = ((_units) ? value*39.370 : value*100);
+
+	return tmp;
+}
+
+

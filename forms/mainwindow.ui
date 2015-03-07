@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>912</width>
-    <height>736</height>
+    <height>781</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="layout_lhs">
         <item>
          <widget class="QGroupBox" name="group_platform">
@@ -40,16 +40,7 @@
            <property name="spacing">
             <number>6</number>
            </property>
-           <property name="leftMargin">
-            <number>4</number>
-           </property>
-           <property name="topMargin">
-            <number>4</number>
-           </property>
-           <property name="rightMargin">
-            <number>4</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>4</number>
            </property>
            <item>
@@ -93,6 +84,14 @@
            <property name="enabled">
             <bool>true</bool>
            </property>
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>240</width>
+             <height>520</height>
+            </rect>
+           </property>
            <attribute name="label">
             <string>Robots</string>
            </attribute>
@@ -100,16 +99,7 @@
             <property name="spacing">
              <number>10</number>
             </property>
-            <property name="leftMargin">
-             <number>4</number>
-            </property>
-            <property name="topMargin">
-             <number>4</number>
-            </property>
-            <property name="rightMargin">
-             <number>4</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>4</number>
             </property>
             <item>
@@ -121,16 +111,7 @@
                <property name="spacing">
                 <number>4</number>
                </property>
-               <property name="leftMargin">
-                <number>4</number>
-               </property>
-               <property name="topMargin">
-                <number>4</number>
-               </property>
-               <property name="rightMargin">
-                <number>4</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>4</number>
                </property>
                <item>
@@ -154,7 +135,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="dragDropMode">
-                  <enum>QAbstractItemView::InternalMove</enum>
+                  <enum>QAbstractItemView::DropOnly</enum>
                  </property>
                  <property name="defaultDropAction">
                   <enum>Qt::MoveAction</enum>
@@ -221,16 +202,7 @@
                <property name="spacing">
                 <number>4</number>
                </property>
-               <property name="leftMargin">
-                <number>4</number>
-               </property>
-               <property name="topMargin">
-                <number>4</number>
-               </property>
-               <property name="rightMargin">
-                <number>4</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>4</number>
                </property>
                <item>
@@ -294,6 +266,14 @@
            </layout>
           </widget>
           <widget class="QWidget" name="extras">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>240</width>
+             <height>520</height>
+            </rect>
+           </property>
            <attribute name="label">
             <string>Extras</string>
            </attribute>
@@ -301,16 +281,7 @@
             <property name="spacing">
              <number>10</number>
             </property>
-            <property name="leftMargin">
-             <number>4</number>
-            </property>
-            <property name="topMargin">
-             <number>4</number>
-            </property>
-            <property name="rightMargin">
-             <number>4</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>4</number>
             </property>
             <item>
@@ -322,16 +293,7 @@
                <property name="spacing">
                 <number>10</number>
                </property>
-               <property name="leftMargin">
-                <number>4</number>
-               </property>
-               <property name="topMargin">
-                <number>4</number>
-               </property>
-               <property name="rightMargin">
-                <number>4</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>4</number>
                </property>
                <item>
@@ -413,16 +375,7 @@
                <property name="spacing">
                 <number>10</number>
                </property>
-               <property name="leftMargin">
-                <number>4</number>
-               </property>
-               <property name="topMargin">
-                <number>4</number>
-               </property>
-               <property name="rightMargin">
-                <number>4</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>4</number>
                </property>
                <item>
@@ -498,6 +451,14 @@
            </layout>
           </widget>
           <widget class="QWidget" name="scenes">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>240</width>
+             <height>520</height>
+            </rect>
+           </property>
            <attribute name="label">
             <string>Scenes</string>
            </attribute>
@@ -505,16 +466,7 @@
             <property name="spacing">
              <number>10</number>
             </property>
-            <property name="leftMargin">
-             <number>4</number>
-            </property>
-            <property name="topMargin">
-             <number>4</number>
-            </property>
-            <property name="rightMargin">
-             <number>4</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>4</number>
             </property>
             <item>
@@ -629,16 +581,7 @@
           <property name="spacing">
            <number>10</number>
           </property>
-          <property name="leftMargin">
-           <number>4</number>
-          </property>
-          <property name="topMargin">
-           <number>4</number>
-          </property>
-          <property name="rightMargin">
-           <number>4</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>4</number>
           </property>
           <item>
@@ -654,22 +597,16 @@
                  <property name="spacing">
                   <number>6</number>
                  </property>
-                 <property name="leftMargin">
-                  <number>4</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>4</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>4</number>
-                 </property>
-                 <property name="bottomMargin">
+                 <property name="margin">
                   <number>4</number>
                  </property>
                  <item>
                   <widget class="QRadioButton" name="si">
                    <property name="text">
                     <string>Metric</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -692,16 +629,7 @@
                  <property name="spacing">
                   <number>6</number>
                  </property>
-                 <property name="leftMargin">
-                  <number>4</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>4</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>4</number>
-                 </property>
-                 <property name="bottomMargin">
+                 <property name="margin">
                   <number>4</number>
                  </property>
                  <item>
@@ -728,16 +656,7 @@
                <property name="spacing">
                 <number>6</number>
                </property>
-               <property name="leftMargin">
-                <number>4</number>
-               </property>
-               <property name="topMargin">
-                <number>4</number>
-               </property>
-               <property name="rightMargin">
-                <number>4</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>4</number>
                </property>
                <item>
@@ -882,16 +801,7 @@
           <property name="spacing">
            <number>10</number>
           </property>
-          <property name="leftMargin">
-           <number>4</number>
-          </property>
-          <property name="topMargin">
-           <number>4</number>
-          </property>
-          <property name="rightMargin">
-           <number>4</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>4</number>
           </property>
           <item>
@@ -935,7 +845,7 @@
      <x>0</x>
      <y>0</y>
      <width>912</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

@@ -7,7 +7,6 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	// set size properties
 	this->setMaximumWidth(256);
 	this->setMinimumWidth(256);
-	//this->setMinimumHeight(300);
 
 	// set up mapper
 	_mapper = new QDataWidgetMapper(this);
@@ -32,7 +31,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
 	//pXBox->setMinimum(-180);
 	//pXBox->setMinimum(180);
-	//pXBox->setSingleStep(0.5);
+	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	_mapper->addMapping(pXBox, rsModel::P_X);
 
