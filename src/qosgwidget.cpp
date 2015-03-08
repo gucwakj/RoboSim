@@ -69,7 +69,7 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new robots
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		int form = _model->data(_model->index(i, rsModel::FORM)).toInt();
-		int id = _model->data(_model->index(i, rsModel::ID)).toInt();
+		int id = _model->data(_model->index(i, rsModel::ID), Qt::EditRole).toInt();
 		double pos[3] = {_model->data(_model->index(i, rsModel::P_X)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Y)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Z)).toDouble() + 0.04445};
@@ -80,6 +80,7 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 			case rs::LINKBOTI: {
 				_scene->deleteChild(id);
 				rsRobots::LinkbotI *robot = new rsRobots::LinkbotI();
+				robot->setID(id);
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
@@ -100,18 +101,19 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		}
 		_scene->addChild();
 	}
-
 	// set current robot
-	_current = bottomRight.row();
-	_scene->addHighlight(_model->data(_model->index(bottomRight.row(), rsModel::ID)).toInt());
+	this->setCurrentIndex(bottomRight);
 }
 
 void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
+	// get new robot ID
+	int newRobot = _model->data(_model->index(index.row(), rsModel::ID), Qt::EditRole).toInt();
+
 	// do nothing when indices are the same
-	if (_current == index.row()) return;
+	if (_current == newRobot) return;
 
 	// set new current robot
-	_current = _model->data(index, rsModel::ID).toInt();
+	_current = newRobot;
 
 	// update view
 	_scene->addHighlight(_current);
