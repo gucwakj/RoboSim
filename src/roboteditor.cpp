@@ -12,6 +12,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_mapper = new QDataWidgetMapper(this);
 	_mapper->setModel(_model);
 	_mapper->setItemDelegate(new robotEditorDelegate(this));
+	_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
 	// robot ID label
 	//_mapper->addMapping(_title, rsModel::ID, "text");
@@ -34,6 +35,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	_mapper->addMapping(pXBox, rsModel::P_X);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -43,6 +45,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	//pXBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	_mapper->addMapping(pYBox, rsModel::P_Y);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// rotation phi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
@@ -52,6 +55,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	//pXBox->setSingleStep(0.5);
 	pYLabel->setBuddy(rZBox);
 	_mapper->addMapping(rZBox, rsModel::R_PSI);
+	QWidget::connect(rZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// wheels list
 	QLabel *wheelLabel = new QLabel(tr("Wheels:"));

@@ -195,6 +195,9 @@ Qt::DropActions robotModel::supportedDropActions(void) const {
 
 bool robotModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (index.isValid() && role == Qt::EditRole) {
+		// store old value
+		QString oldValue = _list[index.row()][index.column()];
+		// if numerical values convert to meters
 		if (index.column() == P_X || index.column() == P_Y || index.column() == P_Z) {
 			QVariant newValue = this->convert(value.toDouble(), true);
 			_list[index.row()][index.column()] = newValue.toString();
@@ -202,7 +205,10 @@ bool robotModel::setData(const QModelIndex &index, const QVariant &value, int ro
 		else {
 			_list[index.row()][index.column()] = value.toString();
 		}
-		emit dataChanged(index, index);
+		// only emit signal if data has actually changed
+		if (oldValue != _list[index.row()][index.column()]) {
+			emit dataChanged(index, index);
+		}
 		return true;
 	}
 	return false;
@@ -252,5 +258,4 @@ QVariant robotModel::convert(double value, bool store) const {
 
 	return tmp;
 }
-
 
