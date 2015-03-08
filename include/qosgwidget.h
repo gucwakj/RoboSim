@@ -28,7 +28,6 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 	private:
 		rsScene::Scene *_scene;
 		robotModel *_model;
-		std::vector<int> _robots;
 		int _current;
 };
 
