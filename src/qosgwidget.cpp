@@ -109,9 +109,6 @@ void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
 	// get new robot ID
 	int newRobot = _model->data(_model->index(index.row(), rsModel::ID), Qt::EditRole).toInt();
 
-	// do nothing when indices are the same
-	if (_current == newRobot) return;
-
 	// set new current robot
 	_current = newRobot;
 
