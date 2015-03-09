@@ -73,14 +73,25 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		double pos[3] = {_model->data(_model->index(i, rsModel::P_X)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Y)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Z)).toDouble() + 0.04445};
-		double quat[4] = {0, 0, 0, 1};
+		double r[3] = {DEG2RAD(_model->data(_model->index(i, rsModel::R_PHI)).toDouble()),
+					   DEG2RAD(_model->data(_model->index(i, rsModel::R_THETA)).toDouble()),
+					   DEG2RAD(_model->data(_model->index(i, rsModel::R_PSI)).toDouble())};
+		double quat[4] = {0, 0, 0, 1}, o1[4];
+		double q1[4] = {sin(0.5*r[0]), 0, 0, cos(0.5*r[0])};
+		double q2[4] = {0, sin(0.5*r[1]), 0, cos(0.5*r[1])};
+		double q3[4] = {0, 0, sin(0.5*r[2]), cos(0.5*r[2])};
 		double led[4] = {0, 0, 0, 1};
 
+		// delete old robot
+		_scene->deleteChild(id);
+
+		// draw new robot
 		switch (form) {
 			case rs::LINKBOTI: {
-				_scene->deleteChild(id);
 				rsRobots::LinkbotI *robot = new rsRobots::LinkbotI();
 				robot->setID(id);
+				robot->multiplyQbyQ(q2, q1, o1);
+				robot->multiplyQbyQ(q3, o1, quat);
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
@@ -99,6 +110,7 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 			default:
 				break;
 		}
+		// add new robot
 		_scene->addChild();
 	}
 	// set current robot
