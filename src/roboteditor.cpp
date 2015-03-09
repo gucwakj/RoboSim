@@ -63,6 +63,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_wheelBox = new QComboBox();
 	wheelLabel->setBuddy(_wheelBox);
 	_mapper->addMapping(_wheelBox, rsModel::WHEEL);
+	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(customWheel(int)));
 
 	// set up buttons
 	_nextButton = new QPushButton(tr("Next"));
@@ -80,32 +81,41 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	this->setUnits(true);
 
 	// lay out grid
-	QVBoxLayout *vbox = new QVBoxLayout(this);
-	vbox->setAlignment(Qt::AlignTop);
+	QVBoxLayout *vbox = new QVBoxLayout();
 	QGroupBox *group = new QGroupBox(tr("Robot Editor"));
 	QVBoxLayout *layout = new QVBoxLayout(group);
-	QGridLayout *grid = new QGridLayout();
-	grid->setColumnStretch(1, 1);
-	grid->addWidget(formLabel, 0, 0, Qt::AlignRight);
-	grid->addWidget(formBox, 0, 1, 1, 3);
-	grid->addWidget(pXLabel, 1, 0, Qt::AlignRight);
-	grid->addWidget(pXBox, 1, 1, 1, 2);
-	grid->addWidget(_pXUnits, 1, 3);
-	grid->addWidget(pYLabel, 2, 0, Qt::AlignRight);
-	grid->addWidget(pYBox, 2, 1, 1, 2);
-	grid->addWidget(_pYUnits, 2, 3);
-	grid->addWidget(rZLabel, 3, 0, Qt::AlignRight);
-	grid->addWidget(_rZBox, 3, 1, 1, 2);
-	grid->addWidget(rZUnits, 3, 3, Qt::AlignHCenter);
-	grid->addWidget(wheelLabel, 4, 0, Qt::AlignRight);
-	grid->addWidget(_wheelBox, 4, 1, 1, 2);
-	grid->addWidget(_wheelUnits, 4, 3);
-	layout->addLayout(grid);
+	_layout = layout;
 	layout->addStretch(1);
-	QHBoxLayout *buttons = new QHBoxLayout();
-	buttons->addWidget(_previousButton, 0, Qt::AlignHCenter);
-	buttons->addWidget(_nextButton, 0, Qt::AlignHCenter);
-	layout->addLayout(buttons);
+	QHBoxLayout *hbox1 = new QHBoxLayout();
+	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
+	hbox1->addWidget(formBox, 5);
+	hbox1->addStretch(1);
+	layout->addLayout(hbox1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(_rZBox, 5);
+	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(wheelLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(_wheelBox, 5);
+	hbox5->addWidget(_wheelUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox5);
+	layout->addStretch(1);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_previousButton, 0, Qt::AlignCenter);
+	hbox6->addWidget(_nextButton, 0, Qt::AlignCenter);
+	layout->addLayout(hbox6);
 	group->setLayout(layout);
 	vbox->addWidget(group);
 	this->setLayout(vbox);
@@ -130,6 +140,35 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 void robotEditor::buttonPressed(void) {
 	// signal other views that index has changed
 	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), 0));
+}
+
+/*!	\brief Slot to keep rotations between
+ *		   -360 and 360 degrees.
+ *
+ *	\param		value Current value of the spinbox.
+ */
+void robotEditor::customWheel(int index) {
+	/*if (index == 4) {
+		QLabel *label = new QLabel(tr("Radius:"));
+		QLineEdit *line = new QLineEdit;
+		label->setBuddy(line);
+		QLabel *units = new QLabel(tr("cm"));
+		_mapper->addMapping(line, rsModel::RADIUS);
+		QHBoxLayout *hbox = new QHBoxLayout();
+		hbox->addWidget(label, 2, Qt::AlignRight);
+		hbox->addWidget(line, 5);
+		hbox->addWidget(units, 1, Qt::AlignLeft);
+		_layout->addLayout(hbox);
+		QWidget::connect(line, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
+	}
+	else {
+		//QLayoutItem *child = _layout->takeAt(5);
+		//if (child) {
+			//std::cerr << child->widget()->metaObject()->className() << std::endl;
+			//delete child;
+		//}
+	}*/
+	_mapper->submit();
 }
 
 /*!	\brief Slot to keep rotations between
