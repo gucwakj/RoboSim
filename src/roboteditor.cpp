@@ -14,13 +14,10 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_mapper->setItemDelegate(new robotEditorDelegate(this));
 	_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
-	// robot ID label
-	//_mapper->addMapping(_title, rsModel::ID, "text");
-
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
 	QStringList formItems;
-	formItems << tr("Cubus") << tr("Linkbot I") << tr("Linkbot L") << tr("Linkbot T") << tr("Mobot") << tr("NXT");
+	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms") << tr("Mobot");
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setModel(formModel);
@@ -29,6 +26,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
 	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
 	pXBox->setMinimum(-1000000);
 	pXBox->setMaximum(1000000);
@@ -39,6 +37,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
 	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
 	pYBox->setMinimum(-1000000);
 	pYBox->setMaximum(1000000);
@@ -49,6 +48,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
 	_rZBox = new QDoubleSpinBox();
 	_rZBox->setMinimum(-360);
 	_rZBox->setMaximum(360);
@@ -59,13 +59,10 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// wheels list
 	QLabel *wheelLabel = new QLabel(tr("Wheels:"));
-	QStringList wheelItems;
-	wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
-	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
-	QComboBox *wheelBox = new QComboBox();
-	wheelBox->setModel(wheelModel);
-	wheelLabel->setBuddy(wheelBox);
-	_mapper->addMapping(wheelBox, rsModel::WHEEL);
+	_wheelUnits = new QLabel(tr("cm"));
+	_wheelBox = new QComboBox();
+	wheelLabel->setBuddy(_wheelBox);
+	_mapper->addMapping(_wheelBox, rsModel::WHEEL);
 
 	// set up buttons
 	_nextButton = new QPushButton(tr("Next"));
@@ -79,6 +76,9 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_nextButton, SIGNAL(clicked()), _mapper, SLOT(toNext()));
 	QWidget::connect(_nextButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
 
+	// set up units for item labels
+	this->setUnits(true);
+
 	// lay out grid
 	QVBoxLayout *vbox = new QVBoxLayout();
 	QGroupBox *group = new QGroupBox(tr("Robot Editor"));
@@ -90,19 +90,23 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	layout->addLayout(hbox1);
 	QHBoxLayout *hbox2 = new QHBoxLayout();
 	hbox2->addWidget(pXLabel, 0, Qt::AlignRight);
-	hbox2->addWidget(pXBox);
+	hbox2->addWidget(pXBox, 1, Qt::AlignRight);
+	hbox2->addWidget(_pXUnits, 0, Qt::AlignLeft);
 	layout->addLayout(hbox2);
 	QHBoxLayout *hbox3 = new QHBoxLayout();
 	hbox3->addWidget(pYLabel, 0, Qt::AlignRight);
-	hbox3->addWidget(pYBox);
+	hbox3->addWidget(pYBox, 1, Qt::AlignRight);
+	hbox3->addWidget(_pYUnits, 0, Qt::AlignLeft);
 	layout->addLayout(hbox3);
 	QHBoxLayout *hbox4 = new QHBoxLayout();
 	hbox4->addWidget(rZLabel, 0, Qt::AlignRight);
-	hbox4->addWidget(_rZBox);
+	hbox4->addWidget(_rZBox, 1, Qt::AlignRight);
+	hbox4->addWidget(rZUnits, 0, Qt::AlignLeft);
 	layout->addLayout(hbox4);
 	QHBoxLayout *hbox5 = new QHBoxLayout();
 	hbox5->addWidget(wheelLabel, 0, Qt::AlignRight);
-	hbox5->addWidget(wheelBox);
+	hbox5->addWidget(_wheelBox, 1, Qt::AlignRight);
+	hbox5->addWidget(_wheelUnits, 0, Qt::AlignLeft);
 	layout->addLayout(hbox5);
 	layout->addStretch(1);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
@@ -143,6 +147,30 @@ void robotEditor::buttonPressed(void) {
 void robotEditor::rotate(double value) {
 	_rZBox->setValue(value - static_cast<int>(value/360)*360);
 	_mapper->submit();
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void robotEditor::setUnits(bool si) {
+	QString text;
+	if (si)
+		text = tr("cm");
+	else
+		text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_wheelUnits->setText(text);
+
+	// set wheel list to new values
+	QStringList wheelItems;
+	if (si)
+		wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
+	else
+		wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
+	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
+	_wheelBox->setModel(wheelModel);
 }
 
 robotEditorDelegate::robotEditorDelegate(QObject *parent) : QItemDelegate(parent) {

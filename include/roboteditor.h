@@ -33,6 +33,7 @@ class robotEditor : public QWidget {
 	protected slots:
 		void buttonPressed(void);
 		void rotate(double);
+		void setUnits(bool);
 
 	private:
 		robotModel *_model;
@@ -40,6 +41,10 @@ class robotEditor : public QWidget {
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
 		QDoubleSpinBox *_rZBox;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_wheelUnits;
+		QComboBox *_wheelBox;
 };
 
 class robotEditorDelegate : public QItemDelegate {
