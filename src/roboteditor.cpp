@@ -30,8 +30,8 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
 	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
-	//pXBox->setMinimum(-180);
-	//pXBox->setMinimum(180);
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	_mapper->addMapping(pXBox, rsModel::P_X);
@@ -40,22 +40,22 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
 	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
-	//pXBox->setMinimum(-180);
-	//pXBox->setMinimum(180);
-	//pXBox->setSingleStep(0.5);
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	_mapper->addMapping(pYBox, rsModel::P_Y);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
-	// rotation phi
+	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
-	QDoubleSpinBox *rZBox = new QDoubleSpinBox();
-	//pXBox->setMinimum(-180);
-	//pXBox->setMinimum(180);
-	//pXBox->setSingleStep(0.5);
-	pYLabel->setBuddy(rZBox);
-	_mapper->addMapping(rZBox, rsModel::R_PSI);
-	QWidget::connect(rZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	_mapper->addMapping(_rZBox, rsModel::R_PSI);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
 	// wheels list
 	QLabel *wheelLabel = new QLabel(tr("Wheels:"));
@@ -98,7 +98,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	layout->addLayout(hbox3);
 	QHBoxLayout *hbox4 = new QHBoxLayout();
 	hbox4->addWidget(rZLabel, 0, Qt::AlignRight);
-	hbox4->addWidget(rZBox);
+	hbox4->addWidget(_rZBox);
 	layout->addLayout(hbox4);
 	QHBoxLayout *hbox5 = new QHBoxLayout();
 	hbox5->addWidget(wheelLabel, 0, Qt::AlignRight);
@@ -133,6 +133,16 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 void robotEditor::buttonPressed(void) {
 	// signal other views that index has changed
 	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), 0));
+}
+
+/*!	\brief Slot to keep rotations between
+ *		   -360 and 360 degrees.
+ *
+ *	\param		value Current value of the spinbox.
+ */
+void robotEditor::rotate(double value) {
+	_rZBox->setValue(value - static_cast<int>(value/360)*360);
+	_mapper->submit();
 }
 
 robotEditorDelegate::robotEditorDelegate(QObject *parent) : QItemDelegate(parent) {

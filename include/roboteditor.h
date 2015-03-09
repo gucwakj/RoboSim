@@ -32,12 +32,14 @@ class robotEditor : public QWidget {
 
 	protected slots:
 		void buttonPressed(void);
+		void rotate(double);
 
 	private:
 		robotModel *_model;
 		QDataWidgetMapper *_mapper;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
+		QDoubleSpinBox *_rZBox;
 };
 
 class robotEditorDelegate : public QItemDelegate {
