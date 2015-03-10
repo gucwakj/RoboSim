@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QDoubleSpinBox>
 #include <QWidget>
+#include <QColorDialog>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QItemDelegate>
@@ -17,6 +18,30 @@
 #include <QMetaProperty>
 
 #include "robotmodel.h"
+
+class ColorEditor : public QWidget {
+		Q_OBJECT
+		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
+	public:
+		explicit ColorEditor(QWidget *parent = 0);
+		virtual ~ColorEditor(void) {};
+
+		QColor color() const;
+
+	signals:
+		void colorChanged(const QColor &color);
+
+	public slots:
+		void setColor(const QColor &color);
+
+	private slots:
+		void onButtonClicked();
+
+	private:
+		QColor _color;
+		QPushButton *_button;
+};
 
 class robotEditor : public QWidget {
 		Q_OBJECT
@@ -28,7 +53,7 @@ class robotEditor : public QWidget {
 
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
-		void setCurrentIndex(const QModelIndex &);
+		void setCurrentIndex(const QModelIndex&);
 
 	protected slots:
 		void buttonPressed(void);
@@ -46,7 +71,7 @@ class robotEditor : public QWidget {
 		QLabel *_pYUnits;
 		QLabel *_wheelUnits;
 		QComboBox *_wheelBox;
-		QVBoxLayout *_layout;
+		ColorEditor *_colorEditor;
 };
 
 class robotEditorDelegate : public QItemDelegate {

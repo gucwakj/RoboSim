@@ -65,6 +65,11 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_mapper->addMapping(_wheelBox, rsModel::WHEEL);
 	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(customWheel(int)));
 
+	// color
+	_colorEditor = new ColorEditor();
+	_mapper->addMapping(_colorEditor, rsModel::COLOR, "color");
+	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+
 	// set up buttons
 	_nextButton = new QPushButton(tr("Next"));
 	_nextButton->setEnabled(false);
@@ -84,7 +89,6 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	QVBoxLayout *vbox = new QVBoxLayout();
 	QGroupBox *group = new QGroupBox(tr("Robot Editor"));
 	QVBoxLayout *layout = new QVBoxLayout(group);
-	_layout = layout;
 	layout->addStretch(1);
 	QHBoxLayout *hbox1 = new QHBoxLayout();
 	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
@@ -111,11 +115,14 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	hbox5->addWidget(_wheelBox, 5);
 	hbox5->addWidget(_wheelUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
-	layout->addStretch(1);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
-	hbox6->addWidget(_previousButton, 0, Qt::AlignCenter);
-	hbox6->addWidget(_nextButton, 0, Qt::AlignCenter);
+	hbox6->addWidget(_colorEditor);
 	layout->addLayout(hbox6);
+	layout->addStretch(1);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(_previousButton, 0, Qt::AlignCenter);
+	hbox7->addWidget(_nextButton, 0, Qt::AlignCenter);
+	layout->addLayout(hbox7);
 	group->setLayout(layout);
 	vbox->addWidget(group);
 	this->setLayout(vbox);
@@ -205,6 +212,46 @@ void robotEditor::setUnits(bool si) {
 	_wheelBox->setModel(wheelModel);
 }
 
+
+ColorEditor::ColorEditor(QWidget *parent) : QWidget(parent) {
+	QHBoxLayout *hbox = new QHBoxLayout(this);
+
+	QLabel *label = new QLabel(tr("LED Color:"));
+	hbox->addWidget(label, 2, Qt::AlignRight);
+
+	_color = QColor(0, 255, 0);
+
+	_button = new QPushButton(this);
+	_button->setPalette(QPalette(_color));
+	hbox->addWidget(_button, 5);
+	hbox->addStretch(1);
+
+	label->setBuddy(_button);
+	QWidget::connect(_button, SIGNAL(clicked()), this, SLOT(onButtonClicked()));
+}
+
+QColor ColorEditor::color(void) const {
+    return _color;
+}
+
+void ColorEditor::setColor(const QColor &color) {
+	if (color == _color)
+		return;
+
+	_color = color;
+	_button->setPalette(QPalette(_color));
+
+	emit colorChanged(color);
+}
+
+void ColorEditor::onButtonClicked(void) {
+	const QColor color = QColorDialog::getColor(_color, this);
+	if (!color.isValid())
+		return;
+
+	setColor(color);
+}
+
 robotEditorDelegate::robotEditorDelegate(QObject *parent) : QItemDelegate(parent) {
 }
 
@@ -226,3 +273,4 @@ void robotEditorDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
 	}
 	QItemDelegate::setModelData(editor, model, index);
 }
+

@@ -23,6 +23,7 @@ namespace rsModel {
 		R_PHI,
 		R_THETA,
 		R_PSI,
+		COLOR,
 		RADIUS,
 		WHEEL,
 		PRECONFIG,

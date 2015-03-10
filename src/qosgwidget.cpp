@@ -68,19 +68,28 @@ void QOsgWidget::setModel(robotModel *model) {
 void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new robots
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
+		// get form and id
 		int form = _model->data(_model->index(i, rsModel::FORM)).toInt();
 		int id = _model->data(_model->index(i, rsModel::ID), Qt::EditRole).toInt();
+
+		// get position
 		double pos[3] = {_model->data(_model->index(i, rsModel::P_X)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Y)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Z)).toDouble() + 0.04445};
+		// get euler angles
 		double r[3] = {DEG2RAD(_model->data(_model->index(i, rsModel::R_PHI)).toDouble()),
 					   DEG2RAD(_model->data(_model->index(i, rsModel::R_THETA)).toDouble()),
 					   DEG2RAD(_model->data(_model->index(i, rsModel::R_PSI)).toDouble())};
+
+		// get led color
+		QColor color(_model->data(_model->index(i, rsModel::COLOR)).toString());
+		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
+
+		// calculate quaternion
 		double quat[4] = {0, 0, 0, 1}, o1[4];
 		double q1[4] = {sin(0.5*r[0]), 0, 0, cos(0.5*r[0])};
 		double q2[4] = {0, sin(0.5*r[1]), 0, cos(0.5*r[1])};
 		double q3[4] = {0, 0, sin(0.5*r[2]), cos(0.5*r[2])};
-		double led[4] = {0, 0, 0, 1};
 
 		// delete old robot
 		_scene->deleteChild(id);
