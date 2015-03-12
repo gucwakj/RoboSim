@@ -14,29 +14,30 @@
 #include <QItemDelegate>
 #include <QComboBox>
 #include <QStringListModel>
+#include <QStackedWidget>
 #include <QPushButton>
 #include <QMetaProperty>
 
 #include "robotmodel.h"
 
-class ColorEditor : public QWidget {
+class colorEditor : public QWidget {
 		Q_OBJECT
 		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 	public:
-		explicit ColorEditor(QWidget *parent = 0);
-		virtual ~ColorEditor(void) {};
+		explicit colorEditor(QWidget* = 0);
+		virtual ~colorEditor(void) {};
 
-		QColor color() const;
+		QColor color(void) const;
 
 	signals:
-		void colorChanged(const QColor &color);
+		void colorChanged(const QColor&);
 
 	public slots:
-		void setColor(const QColor &color);
+		void setColor(const QColor&);
 
 	private slots:
-		void onButtonClicked();
+		void onButtonClicked(void);
 
 	private:
 		QColor _color;
@@ -57,21 +58,70 @@ class robotEditor : public QWidget {
 
 	protected slots:
 		void buttonPressed(void);
-		void customWheel(int);
-		void rotate(double);
 		void setUnits(bool);
 
 	private:
 		robotModel *_model;
 		QDataWidgetMapper *_mapper;
+		QStackedWidget *_pages;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
+};
+
+class individualEditor : public QWidget {
+		Q_OBJECT
+	public:
+		individualEditor(QDataWidgetMapper*, QWidget* = 0);
+		void setUnits(bool);
+
+	protected slots:
+		void rotate(double);
+
+	private:
+		QDataWidgetMapper *_mapper;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_wheelUnits;
 		QComboBox *_wheelBox;
-		ColorEditor *_colorEditor;
+		colorEditor *_colorEditor;
+};
+
+class customEditor : public QWidget {
+		Q_OBJECT
+	public:
+		customEditor(QDataWidgetMapper*, QWidget* = 0);
+		void setUnits(bool);
+
+	protected slots:
+		void rotate(double);
+
+	private:
+		QDataWidgetMapper *_mapper;
+		QDoubleSpinBox *_rZBox;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_wheelUnits;
+		QComboBox *_wheelBox;
+		QLabel *_radiusUnits;
+		colorEditor *_colorEditor;
+};
+
+class preconfigEditor : public QWidget {
+		Q_OBJECT
+	public:
+		preconfigEditor(QDataWidgetMapper*, QWidget* = 0);
+		void setUnits(bool);
+
+	protected slots:
+		void rotate(double);
+
+	private:
+		QDataWidgetMapper *_mapper;
+		QDoubleSpinBox *_rZBox;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		colorEditor *_colorEditor;
 };
 
 class robotEditorDelegate : public QItemDelegate {

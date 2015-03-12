@@ -53,6 +53,7 @@ bool robotModel::addPreconfig(int type, int role) {
 			_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		}
 		_list[row][FORM] = QVariant(rs::LINKBOTI).toString();
+		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		_list[row][PRECONFIG] = QVariant(type).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
@@ -98,17 +99,17 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 					int id = _list[index.row()][rsModel::ID].toInt();
 					QString name = _list[index.row()][rsModel::NAME];
 					switch (_list[index.row()][rsModel::PRECONFIG].toInt()) {
-						case rsLinkbot::BOW:				return QString("Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW] + 1); break;
-						case rsLinkbot::EXPLORER:			return QString("Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER] + 1); break;
-						case rsLinkbot::FOURBOTDRIVE:		return QString("Four Bot Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURBOTDRIVE] + 1); break;
-						case rsLinkbot::FOURWHEELDRIVE:		return QString("Four Wheel Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELDRIVE] + 1); break;
-						case rsLinkbot::FOURWHEELEXPLORER:	return QString("Four Wheel Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELEXPLORER] + 1); break;
-						case rsLinkbot::GROUPBOW:			return QString("Group Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::GROUPBOW] + 1); break;
-						case rsLinkbot::INCHWORM:			return QString("Inchworm\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::INCHWORM] + 1); break;
-						case rsLinkbot::LIFT:				return QString("Lift\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::LIFT] + 1); break;
-						case rsLinkbot::OMNIDRIVE:			return QString("Omnidrive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::OMNIDRIVE] + 1); break;
-						case rsLinkbot::SNAKE:				return QString("Snake\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::SNAKE] + 1); break;
-						case rsLinkbot::STAND:				return QString("StandRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::STAND] + 1); break;
+						case rsLinkbot::BOW:				return QString("Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW]); break;
+						case rsLinkbot::EXPLORER:			return QString("Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER]); break;
+						case rsLinkbot::FOURBOTDRIVE:		return QString("Four Bot Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURBOTDRIVE]); break;
+						case rsLinkbot::FOURWHEELDRIVE:		return QString("Four Wheel Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELDRIVE]); break;
+						case rsLinkbot::FOURWHEELEXPLORER:	return QString("Four Wheel Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELEXPLORER]); break;
+						case rsLinkbot::GROUPBOW:			return QString("Group Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::GROUPBOW]); break;
+						case rsLinkbot::INCHWORM:			return QString("Inchworm\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::INCHWORM]); break;
+						case rsLinkbot::LIFT:				return QString("Lift\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::LIFT]); break;
+						case rsLinkbot::OMNIDRIVE:			return QString("Omnidrive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::OMNIDRIVE]); break;
+						case rsLinkbot::SNAKE:				return QString("Snake\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::SNAKE]); break;
+						case rsLinkbot::STAND:				return QString("StandRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::STAND]); break;
 						default:							return QString("%1\nRobot %2").arg(name).arg(id + 1); break;
 					}
 				}
