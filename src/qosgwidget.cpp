@@ -55,7 +55,8 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 }
 
 QOsgWidget::~QOsgWidget(void) {
-    this->unref();
+	//this->unref();
+	delete _scene;
 }
 
 void QOsgWidget::setModel(robotModel *model) {
