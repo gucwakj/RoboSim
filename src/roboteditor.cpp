@@ -24,6 +24,13 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	formLabel->setBuddy(formBox);
 	_mapper->addMapping(formBox, rsModel::FORM);
 
+	// name
+	QLabel *nameLabel = new QLabel(tr("Name:"));
+	QLineEdit *nameEdit = new QLineEdit;
+	nameLabel->setBuddy(nameEdit);
+	_mapper->addMapping(nameEdit, rsModel::NAME);
+	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
+
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
 	_pXUnits = new QLabel();
@@ -95,6 +102,11 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	hbox1->addWidget(formBox, 5);
 	hbox1->addStretch(1);
 	layout->addLayout(hbox1);
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->addWidget(nameLabel, 2, Qt::AlignRight);
+	hbox->addWidget(nameEdit, 5);
+	hbox->addStretch(1);
+	layout->addLayout(hbox);
 	QHBoxLayout *hbox2 = new QHBoxLayout();
 	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
 	hbox2->addWidget(pXBox, 5);

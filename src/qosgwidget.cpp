@@ -40,7 +40,6 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 
 	// set highlighting of click
 	_scene->setHighlight(true);
-	_scene->setLabel(false);
 	_scene->setHUD(false);
 
 	// draw viewer
@@ -73,25 +72,27 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		// get form and id
 		int form = _model->data(_model->index(i, rsModel::FORM)).toInt();
 		int id = _model->data(_model->index(i, rsModel::ID), Qt::EditRole).toInt();
+		std::string name = _model->data(_model->index(i, rsModel::NAME)).toString().toStdString();
 
 		// get position
 		double pos[3] = {_model->data(_model->index(i, rsModel::P_X)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Y)).toDouble(),
 						 _model->data(_model->index(i, rsModel::P_Z)).toDouble() + 0.04445};
+
 		// get euler angles
 		double r[3] = {DEG2RAD(_model->data(_model->index(i, rsModel::R_PHI)).toDouble()),
 					   DEG2RAD(_model->data(_model->index(i, rsModel::R_THETA)).toDouble()),
 					   DEG2RAD(_model->data(_model->index(i, rsModel::R_PSI)).toDouble())};
-
-		// get led color
-		QColor color(_model->data(_model->index(i, rsModel::COLOR)).toString());
-		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
 
 		// calculate quaternion
 		double quat[4] = {0, 0, 0, 1}, o1[4];
 		double q1[4] = {sin(0.5*r[0]), 0, 0, cos(0.5*r[0])};
 		double q2[4] = {0, sin(0.5*r[1]), 0, cos(0.5*r[1])};
 		double q3[4] = {0, 0, sin(0.5*r[2]), cos(0.5*r[2])};
+
+		// get led color
+		QColor color(_model->data(_model->index(i, rsModel::COLOR)).toString());
+		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
 
 		// delete old robot
 		_scene->deleteChild(id);
@@ -101,6 +102,7 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 			case rs::LINKBOTI: {
 				rsRobots::LinkbotI *robot = new rsRobots::LinkbotI();
 				robot->setID(id);
+				robot->setName(name);
 				robot->multiplyQbyQ(q2, q1, o1);
 				robot->multiplyQbyQ(q3, o1, quat);
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);

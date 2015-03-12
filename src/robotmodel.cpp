@@ -33,6 +33,7 @@ bool robotModel::addRobot(int role) {
 	if (role == Qt::EditRole) {
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		_list[row][FORM] = QVariant(rs::LINKBOTI).toString();
+		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -95,6 +96,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 			switch (_list[index.row()][rsModel::FORM].toInt()) {
 				case rs::LINKBOTI: case rs::LINKBOTL: case rs::LINKBOTT: {
 					int id = _list[index.row()][rsModel::ID].toInt();
+					QString name = _list[index.row()][rsModel::NAME];
 					switch (_list[index.row()][rsModel::PRECONFIG].toInt()) {
 						case rsLinkbot::BOW:				return QString("Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW] + 1); break;
 						case rsLinkbot::EXPLORER:			return QString("Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER] + 1); break;
@@ -107,7 +109,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 						case rsLinkbot::OMNIDRIVE:			return QString("Omnidrive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::OMNIDRIVE] + 1); break;
 						case rsLinkbot::SNAKE:				return QString("Snake\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::SNAKE] + 1); break;
 						case rsLinkbot::STAND:				return QString("StandRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::STAND] + 1); break;
-						default:							return QString("Robot %1").arg(id + 1); break;
+						default:							return QString("%1\nRobot %2").arg(name).arg(id + 1); break;
 					}
 				}
 				case rs::MINDSTORMS:

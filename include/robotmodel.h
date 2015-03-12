@@ -17,6 +17,7 @@ namespace rsModel {
 	enum robot_item_list {
 		ID,
 		FORM,
+		NAME,
 		P_X,
 		P_Y,
 		P_Z,
