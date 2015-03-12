@@ -41,6 +41,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// set highlighting of click
 	_scene->setHighlight(true);
 	_scene->setLabel(false);
+	_scene->setHUD(false);
 
 	// draw viewer
 	osgQt::setViewer(this);
