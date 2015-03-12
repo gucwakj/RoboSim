@@ -7,8 +7,6 @@
 #include <QListView>
 #include <QListWidget>
 
-#include "xmldom.h"
-
 namespace Ui {
 	class MainWindow;
 }
@@ -28,7 +26,6 @@ class MainWindow : public QMainWindow {
 
 	private:
 		Ui::MainWindow *ui;
-		int _version;
 };
 
 #endif // MAINWINDOW_H

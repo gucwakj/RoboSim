@@ -52,57 +52,50 @@ add_definitions (${QT_DEFINITIONS})
 set (EXTRA_LIBS ${EXTRA_LIBS} QtCore)
 set (EXTRA_LIBS ${EXTRA_LIBS} QtGui)
 set (EXTRA_LIBS ${EXTRA_LIBS} QtOpenGL)
-set (EXTRA_LIBS ${EXTRA_LIBS} QtXml)
 
 # add OpenSceneGraph library
 include_directories ("/home/kgucwa/projects/librs/deps/osg/build/include")
 include_directories ("/home/kgucwa/projects/librs/deps/osg/include")
 link_directories ("/home/kgucwa/projects/librs/deps/osg/build/lib")
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized OpenThreads debug OpenThreadsd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized osg debug osgd)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgDB debug osgDBd)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgFX debug osgFXd)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgGA debug osgGAd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgQt debug osgQtd)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgShadow debug osgShadowd)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgText debug osgTextd)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgUtil debug osgUtild)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgViewer debug osgViewerd)
 
-# add openGL library
-find_package (OpenGL REQUIRED)
-if (OPENGL_FOUND)
-	include_directories (${OPENGL_INCLUDE_DIR})
-	set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARIES})
-endif (OPENGL_FOUND)
+# add tinyxml2 library
+include_directories ("/home/kgucwa/projects/librs/deps/tinyxml2")
+if (MSVC)
+	link_directories ("/home/kgucwa/projects/librs/deps/tinyxml2/build/Release")
+else (MSVC)
+	link_directories ("/home/kgucwa/projects/librs/deps/tinyxml2/build")
+endif (MSVC)
+set (EXTRA_LIBS ${EXTRA_LIBS} optimized tinyxml2 debug tinyxml2d)
 
 # add librs modules
 include_directories ("/home/kgucwa/projects/librs/include")
 link_directories ("/home/kgucwa/projects/librs/build/lib")
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsRobots debug rsRobotsd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsScene debug rsScened)
+set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsXML debug rsXMLd)
 
 # add source files
 set (SRCS ${SRCS}
 	src/main.cpp
 	src/mainwindow.cpp
-	src/xmlreader.cpp
-	src/xmldom.cpp
+	src/roboteditor.cpp
 	src/robotmodel.cpp
 	src/robotview.cpp
 	src/qosgwidget.cpp
-	src/roboteditor.cpp
+	src/xmlparser.cpp
 )
 
 # add headers
 set (HEADERS
 	include/mainwindow.h
-	include/xmlreader.h
-	include/xmldom.h
+	include/roboteditor.h
 	include/robotmodel.h
 	include/robotview.h
 	include/qosgwidget.h
-	include/roboteditor.h
+	include/xmlparser.h
 )
 qt4_wrap_cpp (HEADERS_MOC ${HEADERS})
 

@@ -2,23 +2,16 @@
 #include "roboteditor.h"
 #include "robotmodel.h"
 #include "robotview.h"
+#include "xmlparser.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+	// set up UI from forms file
 	ui = new Ui::MainWindow;
 	ui->setupUi(this);
 
-	// get file
-    QString fileName = "/home/kgucwa/projects/playground/RS/RoboSim/robosimrc";
-	if (fileName.isEmpty())
-		return;
-
-	QFile file(fileName);
-	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		//QMessageBox::warning(this, tr("RoboSim"), tr("Cannot read file %1.").arg(fileName));
-		//return;
-	}
-	xmlDom xml(fileName);
+	// parse xml
+	//xmlParser *xml = new xmlParser("/home/kgucwa/.robosimrc");
 
 	// build robot selector
 	QStringList names, icons;
@@ -77,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged(QModelIndex, QModelIndex)));
 
 	// parsing of xml complete
-	ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
+	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
 }
 
 MainWindow::~MainWindow(void) {
