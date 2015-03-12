@@ -21,6 +21,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
 		void setCurrentIndex(const QModelIndex&);
+		void changeLevel(void);
 
 	protected:
 		~QOsgWidget();
@@ -29,6 +30,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		rsScene::Scene *_scene;
 		robotModel *_model;
 		int _current;
+		int _level;
 };
 
 #endif // QOSGWIDGET_H

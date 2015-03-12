@@ -78,7 +78,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="robots">
            <property name="enabled">
@@ -571,7 +571,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab_config">
          <attribute name="title">
@@ -825,6 +825,13 @@
            <widget class="QPushButton" name="pushButton_2">
             <property name="text">
              <string>Add Preconfig</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>change scene</string>
             </property>
            </widget>
           </item>

@@ -40,6 +40,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	icons << "line.jpg" << "point.jpg" << "text.jpg";
 	this->build_selector(ui->list_drawings, names, icons);
 
+	// build scenes selector
+	names.clear();
+	icons.clear();
+	names << "Outdoors" <<  "Board";
+	icons << "line.jpg" << "point.jpg";
+	this->build_selector(ui->list_scenes, names, icons);
+
 	// set up robot model
 	robotModel *model = new robotModel(this);
 
@@ -57,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// connect designer elements to slots
 	QWidget::connect(ui->pushButton, SIGNAL(clicked()), model, SLOT(addRobot()));
 	QWidget::connect(ui->pushButton_2, SIGNAL(clicked()), model, SLOT(addPreconfig()));
+	QWidget::connect(ui->pushButton_3, SIGNAL(clicked()), ui->osgWidget, SLOT(changeLevel()));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), model, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), editor, SLOT(setUnits(bool)));
 

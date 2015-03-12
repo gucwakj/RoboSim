@@ -40,7 +40,11 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 
 	// set highlighting of click
 	_scene->setHighlight(true);
+	// set global hud
 	_scene->setHUD(false);
+	// set level to display
+	_level = 0;
+	_scene->setLevel(_level);
 
 	// draw viewer
 	osgQt::setViewer(this);
@@ -140,3 +144,9 @@ void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
 	// update view
 	_scene->addHighlight(_current);
 }
+
+void QOsgWidget::changeLevel(void) {
+	_level = (_level) ? 0 : 1;
+	_scene->setLevel(_level);
+}
+
