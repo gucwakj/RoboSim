@@ -12,8 +12,7 @@ namespace Ui {
 }
 
 class MainWindow : public QMainWindow {
-	Q_OBJECT
-
+		Q_OBJECT
 	public:
 		explicit MainWindow(QWidget* = 0);
 		~MainWindow();

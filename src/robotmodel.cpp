@@ -20,19 +20,19 @@ robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	_units = true;
 
 	// create initial robot for model
-	this->addRobot();
+	this->addRobot(rs::LINKBOTI);
 }
 
 robotModel::~robotModel(void) {
 }
 
-bool robotModel::addRobot(int role) {
+bool robotModel::addRobot(int form, int role) {
 	int row = _list.size();
 	this->insertRows(row, 1);
 
 	if (role == Qt::EditRole) {
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
-		_list[row][FORM] = QVariant(rs::LINKBOTI).toString();
+		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
@@ -67,7 +67,7 @@ bool robotModel::setUnits(bool si) {
 }
 
 void robotModel::printModel(void) {
-	std::cerr << "data: " << std::endl;
+	qDebug() << "model:";
 	for (int i = 0; i < _list.size(); i++) {
 		for (int j = 0; j < NUM_COLUMNS; j++) {
 			std::cerr << (_list[i][j]).toStdString() << " ";
@@ -187,13 +187,57 @@ QVariant robotModel::headerData(int section, Qt::Orientation orientation, int ro
 
 Qt::ItemFlags robotModel::flags(const QModelIndex &index) const {
 	if (!index.isValid())
-		return Qt::ItemIsEnabled;
+		return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
-	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 }
 
 Qt::DropActions robotModel::supportedDropActions(void) const {
 	return Qt::CopyAction;
+}
+
+bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
+	if (action == Qt::IgnoreAction)
+		return true;
+
+	QByteArray encoded = data->data("application/x-qabstractitemmodeldatalist");
+	QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+	int r, c;
+	QMap<int,  QVariant> map;
+	stream >> r >> c >> map;
+	if (!map[0].toString().compare("Linkbot I"))
+		this->addRobot(rs::LINKBOTI);
+	else if (!map[0].toString().compare("Linkbot L"))
+		this->addRobot(rs::LINKBOTL);
+	else if (!map[0].toString().compare("Mindstorms"))
+		this->addRobot(rs::MINDSTORMS);
+	else if (!map[0].toString().compare("Mobot"))
+		this->addRobot(rs::MOBOT);
+	else if (!map[0].toString().compare("Bow"))
+		this->addPreconfig(rsLinkbot::BOW);
+	else if (!map[0].toString().compare("Explorer"))
+		this->addPreconfig(rsLinkbot::EXPLORER);
+	else if (!map[0].toString().compare("Four Bot Drive"))
+		this->addPreconfig(rsLinkbot::FOURBOTDRIVE);
+	else if (!map[0].toString().compare("Four Wheel Drive"))
+		this->addPreconfig(rsLinkbot::FOURWHEELDRIVE);
+	else if (!map[0].toString().compare("Four Wheel Explorer"))
+		this->addPreconfig(rsLinkbot::FOURWHEELEXPLORER);
+	else if (!map[0].toString().compare("Group Bow"))
+		this->addPreconfig(rsLinkbot::GROUPBOW);
+	else if (!map[0].toString().compare("Inchworm"))
+		this->addPreconfig(rsLinkbot::INCHWORM);
+	else if (!map[0].toString().compare("Lift"))
+		this->addPreconfig(rsLinkbot::LIFT);
+	else if (!map[0].toString().compare("Omnidrive"))
+		this->addPreconfig(rsLinkbot::OMNIDRIVE);
+	else if (!map[0].toString().compare("Snake"))
+		this->addPreconfig(rsLinkbot::SNAKE);
+	else if (!map[0].toString().compare("Stand"))
+		this->addPreconfig(rsLinkbot::STAND);
+
+	return true;
 }
 
 bool robotModel::setData(const QModelIndex &index, const QVariant &value, int role) {

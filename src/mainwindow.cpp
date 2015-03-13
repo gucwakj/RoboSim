@@ -15,16 +15,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	// build robot selector
 	QStringList names, icons;
-	names << "Linkbot I" <<  "Linkbot L" << "Mobot" << "NXT";
-	icons << "linkbotI.jpg" << "linkbotL.jpg" << "mobot.jpg" << "mobot.jpg";
+	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms NXT" << "Mindstorms EV3" << "Mobot";
+	icons << "linkbotI.jpg" << "linkbotL.jpg" << "mobot.jpg" << "mobot.jpg" << "mobot.jpg";
 	this->build_selector(ui->list_robots, names, icons);
+	ui->list_robots->setDragEnabled(true);
 
 	// build preconfig selector
 	names.clear();
 	icons.clear();
-	names << "Bow" <<  "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
+	names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
 	icons << "bow.jpg" <<  "explorer.jpg" << "fourbotdrive.jpg" << "fourwheeldrive.jpg" << "fourwheelexplorer.jpg" << "groupbow.jpg" << "inchworm.jpg" << "lift.jpg" << "omnidrive.jpg" << "snake.jpg" << "stand.jpg";
 	this->build_selector(ui->list_preconfig, names, icons);
+	ui->list_preconfig->setDragEnabled(true);
 
 	// build obstacles selector
 	names.clear();
@@ -32,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	names << "Box" <<  "Cylinder" << "Sphere";
 	icons << "box.jpg" << "cylinder.jpg" << "sphere.jpg";
 	this->build_selector(ui->list_obstacles, names, icons);
+	ui->list_obstacles->setDragEnabled(true);
 
 	// build drawings selector
 	names.clear();
@@ -39,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	names << "Line" <<  "Point" << "Text";
 	icons << "line.jpg" << "point.jpg" << "text.jpg";
 	this->build_selector(ui->list_drawings, names, icons);
+	ui->list_drawings->setDragEnabled(true);
 
 	// build scenes selector
 	names.clear();
@@ -96,6 +100,7 @@ void MainWindow::build_selector(QListWidget *widget, QStringList &names, QString
 		button->setIcon(QIcon(icons[i]));
 		button->setText(names[i]);
 		button->setTextAlignment(Qt::AlignCenter);
-		button->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled);
+		button->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
 	}
 }
+

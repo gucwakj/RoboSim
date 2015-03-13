@@ -9,6 +9,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QIcon>
+#include <QMimeData>
 
 #include <rs/Enum>
 
@@ -55,14 +56,13 @@ class robotModel : public QAbstractTableModel {
 
 		// for drag and drop
 		Qt::DropActions supportedDropActions(void) const;
+		bool dropMimeData(const QMimeData*, Qt::DropAction, int, int, const QModelIndex&);
 
 		// utility
 		void printModel(void);
 
-	signals:
-
 	public slots:
-		bool addRobot(int = Qt::EditRole);
+		bool addRobot(int = 0, int = Qt::EditRole);
 		bool addPreconfig(int = 1, int = Qt::EditRole);
 		bool setUnits(bool);
 

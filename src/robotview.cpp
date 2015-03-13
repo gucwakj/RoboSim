@@ -17,8 +17,8 @@ robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 	this->setModelColumn(rsModel::ID);
 
 	// drag-drop
-	this->setAcceptDrops(true);
-	this->setDragEnabled(false);
+	this->viewport()->setAcceptDrops(true);
+	this->setDragEnabled(true);
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->setDropIndicatorShown(true);
 	this->setDragDropMode(QAbstractItemView::DropOnly);
