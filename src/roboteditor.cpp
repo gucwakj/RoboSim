@@ -573,8 +573,6 @@ colorEditor::colorEditor(QWidget *parent) : QWidget(parent) {
 	QLabel *label = new QLabel(tr("LED Color:"));
 	hbox->addWidget(label, 2, Qt::AlignRight);
 
-	_color = QColor(0, 255, 0);
-
 	_button = new QPushButton(this);
 	_button->setPalette(QPalette(_color));
 	hbox->addWidget(_button, 5);

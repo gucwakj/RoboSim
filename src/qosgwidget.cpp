@@ -118,14 +118,24 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 2, rsLinkbot::SMALLWHEEL);
 				break;
 			}
-			case rs::LINKBOTL:
-				_scene->drawRobot(new rsRobots::LinkbotL(), pos, quat, led, 0);
+			case rs::LINKBOTL: {
+				rsRobots::LinkbotL *robot = new rsRobots::LinkbotL();
+				robot->setID(id);
+				robot->setName(name);
+				robot->multiplyQbyQ(q2, q1, o1);
+				robot->multiplyQbyQ(q3, o1, quat);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
 				break;
-			case rs::LINKBOTT:
-				_scene->drawRobot(new rsRobots::LinkbotT(), pos, quat, led, 0);
+			}
+			case rs::MINDSTORMS: {
+				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms();
+				robot->setID(id);
+				robot->setName(name);
+				robot->multiplyQbyQ(q2, q1, o1);
+				robot->multiplyQbyQ(q3, o1, quat);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
 				break;
-			default:
-				break;
+			}
 		}
 		// add new robot
 		_scene->addChild();

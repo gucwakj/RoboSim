@@ -35,6 +35,7 @@ bool robotModel::addRobot(int form, int role) {
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		_list[row][COLOR] = QString("#00ff00");
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -55,6 +56,7 @@ bool robotModel::addPreconfig(int type, int role) {
 		_list[row][FORM] = QVariant(rs::LINKBOTI).toString();
 		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		_list[row][COLOR] = QString("#00ff00");
 		_list[row][PRECONFIG] = QVariant(type).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -210,7 +212,9 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 		this->addRobot(rs::LINKBOTI);
 	else if (!map[0].toString().compare("Linkbot L"))
 		this->addRobot(rs::LINKBOTL);
-	else if (!map[0].toString().compare("Mindstorms"))
+	else if (!map[0].toString().compare("Mindstorms EV3"))
+		this->addRobot(rs::MINDSTORMS);
+	else if (!map[0].toString().compare("Mindstorms NXT"))
 		this->addRobot(rs::MINDSTORMS);
 	else if (!map[0].toString().compare("Mobot"))
 		this->addRobot(rs::MOBOT);

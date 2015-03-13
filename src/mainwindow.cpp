@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	// build robot selector
 	QStringList names, icons;
-	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms NXT" << "Mindstorms EV3" << "Mobot";
+	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT" << "Mobot";
 	icons << "linkbotI.jpg" << "linkbotL.jpg" << "mobot.jpg" << "mobot.jpg" << "mobot.jpg";
 	this->build_selector(ui->list_robots, names, icons);
 	ui->list_robots->setDragEnabled(true);
@@ -77,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
+	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
 
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged(QModelIndex, QModelIndex)));

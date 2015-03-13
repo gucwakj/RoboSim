@@ -18,6 +18,9 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 
 		void setModel(robotModel*);
 
+	signals:
+		void indexChanged(const QModelIndex&);
+
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
 		void setCurrentIndex(const QModelIndex&);
