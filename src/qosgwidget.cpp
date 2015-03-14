@@ -37,6 +37,9 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_scene->setupViewer(dynamic_cast<osgViewer::Viewer*>(this));
 	_scene->setupCamera(gw, traits->width, traits->height);
 	_scene->setupScene(traits->width, traits->height, false);
+	QMouseHandler *mh = new QMouseHandler(_scene);
+	_scene->setMouseHandler(mh);
+	QWidget::connect(mh, SIGNAL(clickedIndex(int)), this, SLOT(clickedIndex(int)));
 
 	// set highlighting of click
 	_scene->setHighlight(true);
@@ -45,6 +48,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// set level to display
 	_level = 0;
 	_scene->setLevel(_level);
+	_scene->setLabel(false);
 
 	// draw viewer
 	osgQt::setViewer(this);
@@ -158,5 +162,35 @@ void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
 void QOsgWidget::changeLevel(void) {
 	_level = (_level) ? 0 : 1;
 	_scene->setLevel(_level);
+}
+
+void QOsgWidget::clickedIndex(int id) {
+	QModelIndex index;
+	for (int i = 0; i < _model->rowCount(); i++) {
+		index = _model->index(i, rsModel::ID);
+		if (_model->data(index, Qt::EditRole).toInt() == id) {
+			// highlight new item
+			if (id != _current) {
+				_current = id;
+				_scene->addHighlight(_current);
+				emit indexChanged(index);
+			}
+			// deselect current item
+			else {
+				_current = -1;
+				emit nullIndex();
+			}
+			return;
+		}
+	}
+}
+
+QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scene) {
+}
+
+int QMouseHandler::pick(const osgGA::GUIEventAdapter &ea, osgViewer::Viewer *viewer) {
+	int id = rsScene::MouseHandler::pick(ea, viewer);
+	if (id != -1)
+		emit clickedIndex(id);
 }
 

@@ -55,6 +55,7 @@ class robotEditor : public QWidget {
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
 		void setCurrentIndex(const QModelIndex&);
+		void nullIndex(void);
 
 	protected slots:
 		void buttonPressed(void);
@@ -72,6 +73,7 @@ class individualEditor : public QWidget {
 		Q_OBJECT
 	public:
 		individualEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
 		void setUnits(bool);
 
 	protected slots:
@@ -91,6 +93,7 @@ class customEditor : public QWidget {
 		Q_OBJECT
 	public:
 		customEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
 		void setUnits(bool);
 
 	protected slots:
@@ -111,6 +114,7 @@ class preconfigEditor : public QWidget {
 		Q_OBJECT
 	public:
 		preconfigEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
 		void setUnits(bool);
 
 	protected slots:

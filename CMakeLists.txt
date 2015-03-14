@@ -58,6 +58,7 @@ include_directories ("/home/kgucwa/projects/librs/deps/osg/build/include")
 include_directories ("/home/kgucwa/projects/librs/deps/osg/include")
 link_directories ("/home/kgucwa/projects/librs/deps/osg/build/lib")
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized osg debug osgd)
+set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgGA debug osgGAd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgQt debug osgQtd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgViewer debug osgViewerd)
 
