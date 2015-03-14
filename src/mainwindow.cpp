@@ -66,9 +66,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->layout_robots->addWidget(editor);
 
 	// connect designer elements to slots
-	QWidget::connect(ui->pushButton, SIGNAL(clicked()), model, SLOT(addRobot()));
-	QWidget::connect(ui->pushButton_2, SIGNAL(clicked()), model, SLOT(addPreconfig()));
-	QWidget::connect(ui->pushButton_3, SIGNAL(clicked()), ui->osgWidget, SLOT(changeLevel()));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), model, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), editor, SLOT(setUnits(bool)));
 
@@ -89,11 +86,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow(void) {
 	delete ui;
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-	std::cerr << "pushbutton clicked" << std::endl;
 }
 
 void MainWindow::build_selector(QListWidget *widget, QStringList &names, QStringList &icons) {

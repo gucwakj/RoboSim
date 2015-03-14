@@ -78,7 +78,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="robots">
            <property name="enabled">
@@ -592,7 +592,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_config">
          <attribute name="title">
@@ -835,27 +835,6 @@
           <string>Extras</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_14">
-          <item>
-           <widget class="QPushButton" name="pushButton">
-            <property name="text">
-             <string>Add Robot</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="text">
-             <string>Add Preconfig</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="text">
-             <string>change scene</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <layout class="QHBoxLayout" name="layout_extras"/>
           </item>

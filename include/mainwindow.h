@@ -15,10 +15,7 @@ class MainWindow : public QMainWindow {
 		Q_OBJECT
 	public:
 		explicit MainWindow(QWidget* = 0);
-		~MainWindow();
-
-	private slots:
-		void on_pushButton_clicked();
+		~MainWindow(void);
 
 	private:
 		void build_selector(QListWidget*, QStringList&, QStringList&);
