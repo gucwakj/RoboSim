@@ -269,7 +269,13 @@ void individualEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
 	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
-	(this->findChild<colorEditor *>("color"))->setDisabled(nullify);
+	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
+	if (nullify)
+		color.setAlpha(50);
+	else
+		color.setAlpha(255);
+	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -469,7 +475,13 @@ void customEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
 	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
 	(this->findChild<QLineEdit *>("radius"))->setDisabled(nullify);
-	(this->findChild<colorEditor *>("color"))->setDisabled(nullify);
+	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
+	if (nullify)
+		color.setAlpha(50);
+	else
+		color.setAlpha(255);
+	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -622,7 +634,13 @@ void preconfigEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<colorEditor *>("color"))->setDisabled(nullify);
+	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
+	if (nullify)
+		color.setAlpha(50);
+	else
+		color.setAlpha(255);
+	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -653,7 +671,10 @@ colorEditor::colorEditor(QWidget *parent) : QWidget(parent) {
 	QLabel *label = new QLabel(tr("LED Color:"));
 	hbox->addWidget(label, 2, Qt::AlignRight);
 
+	_color = QColor(0, 255, 0);
+
 	_button = new QPushButton(this);
+	_button->setObjectName("colorbutton");
 	_button->setPalette(QPalette(_color));
 	hbox->addWidget(_button, 5);
 	hbox->addStretch(1);
@@ -666,14 +687,12 @@ QColor colorEditor::color(void) const {
     return _color;
 }
 
-void colorEditor::setColor(const QColor &color) {
+void colorEditor::setColor(const QColor color) {
 	if (color == _color)
 		return;
 
 	_color = color;
 	_button->setPalette(QPalette(_color));
-
-	emit colorChanged(color);
 }
 
 void colorEditor::onButtonClicked(void) {
@@ -681,7 +700,8 @@ void colorEditor::onButtonClicked(void) {
 	if (!color.isValid())
 		return;
 
-	setColor(color);
+	this->setColor(color);
+	emit colorChanged(color);
 }
 
 /*!

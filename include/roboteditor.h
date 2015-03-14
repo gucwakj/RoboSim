@@ -31,10 +31,10 @@ class colorEditor : public QWidget {
 		QColor color(void) const;
 
 	signals:
-		void colorChanged(const QColor&);
+		void colorChanged(const QColor);
 
 	public slots:
-		void setColor(const QColor&);
+		void setColor(const QColor);
 
 	private slots:
 		void onButtonClicked(void);

@@ -257,7 +257,7 @@ bool robotModel::setData(const QModelIndex &index, const QVariant &value, int ro
 			_list[index.row()][index.column()] = value.toString();
 		}
 		// only emit signal if data has actually changed
-		if (oldValue != _list[index.row()][index.column()]) {
+		if (oldValue.compare(_list[index.row()][index.column()])) {
 			emit dataChanged(index, index);
 		}
 		return true;
