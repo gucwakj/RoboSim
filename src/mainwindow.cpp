@@ -51,6 +51,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	icons << "line.jpg" << "point.jpg";
 	this->build_selector(ui->list_scenes, names, icons);
 
+	// set robots as first view in toolbox
+	ui->toolBox_config->setCurrentIndex(0);
+
+	// set robots as first view in scene editor tabwidget
+	ui->tab_scene->setCurrentIndex(1);
+
 	// set up robot model
 	robotModel *model = new robotModel(this);
 
