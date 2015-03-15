@@ -185,6 +185,12 @@ void QOsgWidget::clickedIndex(int id) {
 	}
 }
 
+void QOsgWidget::deleteIndex(QModelIndex index, int first, int last) {
+	// delete child with id from index
+	int id = _model->data(_model->index(first, rsModel::ID), Qt::EditRole).toInt();
+	_scene->deleteChild(id);
+}
+
 QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scene) {
 }
 

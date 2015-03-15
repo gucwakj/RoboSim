@@ -26,6 +26,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void setCurrentIndex(const QModelIndex&);
 		void changeLevel(void);
 		void clickedIndex(int);
+		void deleteIndex(QModelIndex, int, int);
 
 	protected:
 		~QOsgWidget();

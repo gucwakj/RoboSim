@@ -29,31 +29,38 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_pages->addWidget(new preconfigEditor(_mapper));
 
 	// set up buttons
+	_deleteButton = new QPushButton(tr("Delete"));
+	_deleteButton->setEnabled(true);
 	_nextButton = new QPushButton(tr("Next"));
 	_nextButton->setEnabled(false);
 	_previousButton = new QPushButton(tr("Previous"));
 	_previousButton->setEnabled(false);
 
 	// create signal connections
-	QWidget::connect(_previousButton, SIGNAL(clicked()), _mapper, SLOT(toPrevious()));
-	QWidget::connect(_previousButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
+	QWidget::connect(_deleteButton, SIGNAL(clicked()), this, SLOT(deleteCurrentIndex()));
 	QWidget::connect(_nextButton, SIGNAL(clicked()), _mapper, SLOT(toNext()));
 	QWidget::connect(_nextButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
+	QWidget::connect(_previousButton, SIGNAL(clicked()), _mapper, SLOT(toPrevious()));
+	QWidget::connect(_previousButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
 
 	// set up units for item labels
 	this->setUnits(true);
+
+	// nullify inputs
+	this->nullIndex();
 
 	// lay out grid
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(_pages);
 	QHBoxLayout *hbox7 = new QHBoxLayout();
 	hbox7->addWidget(_previousButton, 0, Qt::AlignCenter);
+	hbox7->addWidget(_deleteButton, 1, Qt::AlignCenter);
 	hbox7->addWidget(_nextButton, 0, Qt::AlignCenter);
 	vbox->addLayout(hbox7);
 	this->setLayout(vbox);
 
 	// go to first item
-	_mapper->toFirst();
+	this->setCurrentIndex(_mapper->model()->index(0,0));
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
@@ -81,13 +88,35 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	_mapper->setCurrentIndex(index.row());
 
 	// update editor view
-	_previousButton->setEnabled(index.row() > 0);
+	_deleteButton->setEnabled(true);
 	_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
+	_previousButton->setEnabled(index.row() > 0);
+}
+
+void robotEditor::deleteCurrentIndex(void) {
+	// remove current robot from model
+	_mapper->model()->removeRows(_mapper->currentIndex(), 1);
+
+	// work backwards through model until we find a valid index
+	for (int i = _mapper->model()->rowCount()-1; i >=0; i--) {
+		_mapper->setCurrentIndex(i);
+		if (_mapper->currentIndex() != -1) {
+			this->setCurrentIndex(_mapper->model()->index(_mapper->currentIndex(), 0));
+			emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), 0));
+			return;
+		}
+	}
+	this->nullIndex();
 }
 
 void robotEditor::buttonPressed(void) {
+	// enable appropriate buttons
+	QModelIndex index = _mapper->model()->index(_mapper->currentIndex(), 0);
+	_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
+	_previousButton->setEnabled(index.row() > 0);
+
 	// signal other views that index has changed
-	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), 0));
+	emit indexChanged(index);
 }
 
 void robotEditor::nullIndex(void) {
@@ -98,8 +127,9 @@ void robotEditor::nullIndex(void) {
 	else if (dynamic_cast<customEditor*>(_pages->currentWidget()))
 		dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(true);
 
-	_previousButton->setDisabled(true);
+	_deleteButton->setDisabled(true);
 	_nextButton->setDisabled(true);
+	_previousButton->setDisabled(true);
 }
 
 void robotEditor::setUnits(bool si) {

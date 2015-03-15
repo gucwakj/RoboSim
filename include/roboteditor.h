@@ -58,6 +58,7 @@ class robotEditor : public QWidget {
 		void nullIndex(void);
 
 	protected slots:
+		void deleteCurrentIndex(void);
 		void buttonPressed(void);
 		void setUnits(bool);
 
@@ -65,6 +66,7 @@ class robotEditor : public QWidget {
 		robotModel *_model;
 		QDataWidgetMapper *_mapper;
 		QStackedWidget *_pages;
+		QPushButton *_deleteButton;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
 };

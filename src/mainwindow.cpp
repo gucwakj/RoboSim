@@ -87,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteIndex(QModelIndex, int, int)));
 
 	// parsing of xml complete
 	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
