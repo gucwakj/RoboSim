@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <QListView>
+#include <QProxyStyle>
 
 #include "robotmodel.h"
 
@@ -14,6 +15,11 @@ class robotView : public QListView {
 
 	public slots:
 		void dataChanged(const QModelIndex&, const QModelIndex&);
+};
+
+class robotViewStyle : public QProxyStyle {
+	public:
+		void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
 };
 
 #endif // ROBOTVIEW_H_
