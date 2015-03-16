@@ -177,6 +177,7 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
 	mapper->addMapping(formBox, rsModel::FORM);
+	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// name
 	QLabel *nameLabel = new QLabel(tr("Name:"));
@@ -368,6 +369,7 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
 	mapper->addMapping(formBox, rsModel::FORM);
+	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// name
 	QLabel *nameLabel = new QLabel(tr("Name:"));
