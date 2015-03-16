@@ -11,6 +11,9 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// privide reference count
 	this->ref();
 
+	// handle event inputs
+	this->installEventFilter(this);
+
 	// set grid
 	std::vector<double> grid;
 	grid.push_back(1/39.37);
@@ -189,6 +192,41 @@ void QOsgWidget::deleteIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _model->data(_model->index(first, rsModel::ID), Qt::EditRole).toInt();
 	_scene->deleteChild(id);
+}
+
+bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
+	if (event->type() == QEvent::KeyPress) {
+		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+		switch (keyEvent->key()) {
+			case Qt::Key_Backspace:
+			case Qt::Key_Delete: {
+				// remove current robot from model
+				QModelIndex index = _model->index(_current, rsModel::ID);
+				_model->removeRows(index.row(), 1);
+
+				// new index is same row as last one
+				int row = _model->index(_current, rsModel::ID).row();
+
+				// if it is invalid, then set the last row in the model
+				if (row == -1) {
+					this->setCurrentIndex(_model->index(_model->rowCount()-1, rsModel::ID));
+					emit indexChanged(_model->index(_model->rowCount()-1, rsModel::ID));
+				}
+				else {
+					this->setCurrentIndex(_model->index(row, rsModel::ID));
+					emit indexChanged(_model->index(row, rsModel::ID));
+				}
+
+				break;
+			}
+			default:
+				return QObject::eventFilter(obj, event);
+				break;
+		}
+		return true;
+	}
+	else
+		return QObject::eventFilter(obj, event);
 }
 
 QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scene) {

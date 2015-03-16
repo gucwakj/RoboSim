@@ -119,19 +119,22 @@ void robotEditor::buttonPressed(void) {
 }
 
 void robotEditor::deleteCurrentIndex(void) {
+	// save current index
+	int index = _mapper->currentIndex();
+
 	// remove current robot from model
 	_mapper->model()->removeRows(_mapper->currentIndex(), 1);
 
-	// work backwards through model until we find a valid index
-	for (int i = _mapper->model()->rowCount()-1; i >=0; i--) {
-		_mapper->setCurrentIndex(i);
-		if (_mapper->currentIndex() != -1) {
-			this->setCurrentIndex(_mapper->model()->index(_mapper->currentIndex(), 0));
-			emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), 0));
-			return;
-		}
+	// new index is same row as last one
+	_mapper->setCurrentIndex(index);
+
+	// if it is invalid, then set the last row in the model
+	if (_mapper->currentIndex() == -1) {
+		this->setCurrentIndex(_mapper->model()->index(_mapper->model()->rowCount()-1, rsModel::ID));
 	}
-	this->setCurrentIndex(_mapper->model()->index(-1, -1));
+
+	// signal a change in current robot
+	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), rsModel::ID));
 }
 
 void robotEditor::setUnits(bool si) {

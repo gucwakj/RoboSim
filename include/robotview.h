@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include <QListView>
+#include <QEvent>
+#include <QKeyEvent>
 #include <QProxyStyle>
 
 #include "robotmodel.h"
@@ -13,9 +15,15 @@ class robotView : public QListView {
 	public:
 		robotView(robotModel*, QWidget* = 0);
 
+	signals:
+		void indexChanged(const QModelIndex&);
+
 	public slots:
 		void dataChanged(const QModelIndex&, const QModelIndex&);
 		void setCurrentIndex(const QModelIndex&);
+
+	protected:
+		bool eventFilter(QObject*, QEvent*);
 };
 
 class robotViewStyle : public QProxyStyle {

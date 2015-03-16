@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 
+#include <QEvent>
+#include <QKeyEvent>
+
 #include <osgQt/GraphicsWindowQt>
 
 #include <rsScene/Scene>
@@ -30,6 +33,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 
 	protected:
 		~QOsgWidget();
+		bool eventFilter(QObject*, QEvent*);
 
 	private:
 		rsScene::Scene *_scene;

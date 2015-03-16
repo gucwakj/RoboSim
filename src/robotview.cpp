@@ -28,6 +28,7 @@ robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 	this->setCurrentIndex(model->index(0, 0));
 	this->setModelColumn(rsModel::ID);
 	this->setUniformItemSizes(true);
+	this->installEventFilter(this);
 
 	// drag-drop
 	this->viewport()->setAcceptDrops(true);
@@ -47,6 +48,27 @@ void robotView::setCurrentIndex(const QModelIndex &index) {
 		QListView::setCurrentIndex(index);
 	else
 		QListView::clearSelection();
+}
+
+bool robotView::eventFilter(QObject *obj, QEvent *event) {
+	if (event->type() == QEvent::KeyPress) {
+		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+		switch (keyEvent->key()) {
+			case Qt::Key_Backspace:
+			case Qt::Key_Delete: {
+				QModelIndex index = this->currentIndex();
+				this->model()->removeRows(index.row(), 1);
+				emit indexChanged(this->currentIndex());
+				break;
+			}
+			default:
+				return QObject::eventFilter(obj, event);
+				break;
+		}
+		return true;
+	}
+	else
+		return QObject::eventFilter(obj, event);
 }
 
 /*!
