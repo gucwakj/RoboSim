@@ -13,8 +13,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_model = model;
 
 	// set size properties
-	this->setMaximumWidth(256);
-	this->setMinimumWidth(256);
+	this->setFixedWidth(256);
 
 	// set up mapper
 	_mapper = new QDataWidgetMapper(this);
@@ -31,10 +30,13 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	// set up buttons
 	_deleteButton = new QPushButton(tr("Delete"));
 	_deleteButton->setEnabled(true);
+	_deleteButton->setFixedWidth(75);
 	_nextButton = new QPushButton(tr("Next"));
 	_nextButton->setEnabled(false);
+	_nextButton->setFixedWidth(75);
 	_previousButton = new QPushButton(tr("Previous"));
 	_previousButton->setEnabled(false);
+	_previousButton->setFixedWidth(75);
 
 	// create signal connections
 	QWidget::connect(_deleteButton, SIGNAL(clicked()), this, SLOT(deleteCurrentIndex()));
