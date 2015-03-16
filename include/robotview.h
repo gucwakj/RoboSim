@@ -15,6 +15,7 @@ class robotView : public QListView {
 
 	public slots:
 		void dataChanged(const QModelIndex&, const QModelIndex&);
+		void setCurrentIndex(const QModelIndex&);
 };
 
 class robotViewStyle : public QProxyStyle {

@@ -173,13 +173,13 @@ void QOsgWidget::clickedIndex(int id) {
 			if (id != _current) {
 				_current = id;
 				_scene->addHighlight(_current);
-				emit indexChanged(index);
 			}
 			// deselect current item
 			else {
 				_current = -1;
-				emit nullIndex();
+				index = _model->index(-1, -1);
 			}
+			emit indexChanged(index);
 			return;
 		}
 	}

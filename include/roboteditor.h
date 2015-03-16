@@ -55,11 +55,10 @@ class robotEditor : public QWidget {
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
 		void setCurrentIndex(const QModelIndex&);
-		void nullIndex(void);
 
 	protected slots:
-		void deleteCurrentIndex(void);
 		void buttonPressed(void);
+		void deleteCurrentIndex(void);
 		void setUnits(bool);
 
 	private:

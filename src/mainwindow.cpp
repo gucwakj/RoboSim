@@ -82,8 +82,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(ui->osgWidget, SIGNAL(nullIndex()), view, SLOT(clearSelection()));
-	QWidget::connect(ui->osgWidget, SIGNAL(nullIndex()), editor, SLOT(nullIndex()));
 
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged(QModelIndex, QModelIndex)));

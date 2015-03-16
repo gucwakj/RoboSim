@@ -46,9 +46,6 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	// set up units for item labels
 	this->setUnits(true);
 
-	// nullify inputs
-	this->nullIndex();
-
 	// lay out grid
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(_pages);
@@ -68,29 +65,55 @@ void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
 }
 
 void robotEditor::setCurrentIndex(const QModelIndex &index) {
-	// load appropriate page
-	if (_model->data(_model->index(index.row(), rsModel::PRECONFIG), Qt::EditRole).toInt()) {
-		_pages->setCurrentIndex(2);	// preconfig
-		dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(false);
-	}
-	else {
-		if (_model->data(_model->index(index.row(), rsModel::WHEEL), Qt::EditRole).toInt() == 4) {
-			_pages->setCurrentIndex(1);	// custom
-			dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(false);
+	if (index.isValid()) {
+		// load appropriate page
+		if (_model->data(_model->index(index.row(), rsModel::PRECONFIG), Qt::EditRole).toInt()) {
+			_pages->setCurrentIndex(2);	// preconfig
+			dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(false);
 		}
 		else {
-			_pages->setCurrentIndex(0);	// individual
-			dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(false);
+			if (_model->data(_model->index(index.row(), rsModel::WHEEL), Qt::EditRole).toInt() == 4) {
+				_pages->setCurrentIndex(1);	// custom
+				dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(false);
+			}
+			else {
+				_pages->setCurrentIndex(0);	// individual
+				dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(false);
+			}
 		}
+
+		// set new index for mapper
+		_mapper->setCurrentIndex(index.row());
+
+		// update button states
+		_deleteButton->setEnabled(true);
+		_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
+		_previousButton->setEnabled(index.row() > 0);
 	}
+	else {
+		// disable current page
+		if (dynamic_cast<individualEditor*>(_pages->currentWidget()))
+			dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<preconfigEditor*>(_pages->currentWidget()))
+			dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<customEditor*>(_pages->currentWidget()))
+			dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(true);
 
-	// set new index for mapper
-	_mapper->setCurrentIndex(index.row());
+		// disable all buttons
+		_deleteButton->setDisabled(true);
+		_nextButton->setDisabled(true);
+		_previousButton->setDisabled(true);
+	}
+}
 
-	// update editor view
-	_deleteButton->setEnabled(true);
+void robotEditor::buttonPressed(void) {
+	// enable appropriate buttons
+	QModelIndex index = _mapper->model()->index(_mapper->currentIndex(), 0);
 	_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
 	_previousButton->setEnabled(index.row() > 0);
+
+	// signal other views that index has changed
+	emit indexChanged(index);
 }
 
 void robotEditor::deleteCurrentIndex(void) {
@@ -106,30 +129,7 @@ void robotEditor::deleteCurrentIndex(void) {
 			return;
 		}
 	}
-	this->nullIndex();
-}
-
-void robotEditor::buttonPressed(void) {
-	// enable appropriate buttons
-	QModelIndex index = _mapper->model()->index(_mapper->currentIndex(), 0);
-	_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
-	_previousButton->setEnabled(index.row() > 0);
-
-	// signal other views that index has changed
-	emit indexChanged(index);
-}
-
-void robotEditor::nullIndex(void) {
-	if (dynamic_cast<individualEditor*>(_pages->currentWidget()))
-		dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(true);
-	else if (dynamic_cast<preconfigEditor*>(_pages->currentWidget()))
-		dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(true);
-	else if (dynamic_cast<customEditor*>(_pages->currentWidget()))
-		dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(true);
-
-	_deleteButton->setDisabled(true);
-	_nextButton->setDisabled(true);
-	_previousButton->setDisabled(true);
+	this->setCurrentIndex(_mapper->model()->index(-1, -1));
 }
 
 void robotEditor::setUnits(bool si) {

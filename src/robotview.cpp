@@ -6,6 +6,14 @@
 
 #include "robotview.h"
 
+/*!
+ *
+ *
+ *	robotView
+ *
+ *
+ */
+
 robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 	// set model
 	this->setModel(model);
@@ -33,6 +41,28 @@ robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 void robotView::dataChanged(const QModelIndex &/*topLeft*/, const QModelIndex &bottomRight) {
 	this->setCurrentIndex(model()->index(bottomRight.row(), 0));
 }
+
+void robotView::setCurrentIndex(const QModelIndex &index) {
+	if (index.isValid())
+		QListView::setCurrentIndex(index);
+	else
+		QListView::clearSelection();
+}
+
+/*!
+ *
+ *
+ *	robotViewStyle
+ *
+ *
+ */
+
+/*!	\brief draw primitive element.
+ *
+ *	Draw the elements of this robot view.  A special dropIndicator is
+ *	used here.
+ *
+ */
 
 void robotViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const {
 	if (element == QStyle::PE_IndicatorItemViewItemDrop) {
