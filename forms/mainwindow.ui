@@ -607,7 +607,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_config">
          <attribute name="title">
@@ -642,7 +642,7 @@
                     <string>Metric</string>
                    </property>
                    <property name="checked">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -650,6 +650,9 @@
                   <widget class="QRadioButton" name="us">
                    <property name="text">
                     <string>US Customary</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -702,12 +705,18 @@
                    <property name="text">
                     <string>Grid On</string>
                    </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QRadioButton" name="grid_off">
                    <property name="text">
                     <string>Grid Off</string>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -726,7 +735,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spin_grid_x_min"/>
+                  <widget class="QDoubleSpinBox" name="spin_grid_x_min">
+                   <property name="minimum">
+                    <double>-1000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-48.000000000000000</double>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -743,7 +762,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spin_grid_x_max"/>
+                  <widget class="QDoubleSpinBox" name="spin_grid_x_max">
+                   <property name="minimum">
+                    <double>-1000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>48.000000000000000</double>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -760,7 +789,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spin_grid_y_min"/>
+                  <widget class="QDoubleSpinBox" name="spin_grid_y_min">
+                   <property name="minimum">
+                    <double>-1000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-48.000000000000000</double>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -777,7 +816,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spin_grid_y_max"/>
+                  <widget class="QDoubleSpinBox" name="spin_grid_y_max">
+                   <property name="minimum">
+                    <double>-1000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>48.000000000000000</double>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -794,7 +843,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spin_grid_hash"/>
+                  <widget class="QDoubleSpinBox" name="spin_grid_hash">
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>12.000000000000000</double>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -811,7 +867,17 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spin_grid_tics"/>
+                  <widget class="QDoubleSpinBox" name="spin_grid_tics">
+                   <property name="minimum">
+                    <double>0.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>1.000000000000000</double>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>

@@ -71,9 +71,33 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	robotEditor *editor = new robotEditor(model);
 	ui->layout_robots->addWidget(editor);
 
+	// set up default grid units
+	_us.push_back(1);
+	_us.push_back(12);
+	_us.push_back(-48);
+	_us.push_back(48);
+	_us.push_back(-48);
+	_us.push_back(48);
+	_si.push_back(5);
+	_si.push_back(50);
+	_si.push_back(-200);
+	_si.push_back(200);
+	_si.push_back(-200);
+	_si.push_back(200);
+
 	// connect designer elements to slots
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), model, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), editor, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), this, SLOT(set_units(bool)));
+	QWidget::connect(ui->spin_grid_tics, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridTics(double)));
+	QWidget::connect(ui->spin_grid_hash, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridHash(double)));
+	QWidget::connect(ui->spin_grid_x_min, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMinX(double)));
+	QWidget::connect(ui->spin_grid_x_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxX(double)));
+	QWidget::connect(ui->spin_grid_y_min, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMinY(double)));
+	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxY(double)));
+	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(gridEnabled(bool)));
+	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -103,6 +127,60 @@ void MainWindow::build_selector(QListWidget *widget, QStringList &names, QString
 		button->setText(names[i]);
 		button->setTextAlignment(Qt::AlignCenter);
 		button->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
+	}
+}
+
+void MainWindow::grid_defaults(void) {
+	// reset to proper units
+	if (ui->si->isDown()) {
+		ui->spin_grid_tics->setValue(5);
+		ui->spin_grid_hash->setValue(50);
+		ui->spin_grid_x_min->setValue(-200);
+		ui->spin_grid_x_max->setValue(200);
+		ui->spin_grid_y_min->setValue(-200);
+		ui->spin_grid_y_max->setValue(200);
+	}
+	else {
+		ui->spin_grid_tics->setValue(1);
+		ui->spin_grid_hash->setValue(12);
+		ui->spin_grid_x_min->setValue(-48);
+		ui->spin_grid_x_max->setValue(48);
+		ui->spin_grid_y_min->setValue(-48);
+		ui->spin_grid_y_max->setValue(48);
+	}
+
+	// change osg grid lines
+	ui->osgWidget->gridDefaults();
+}
+
+void MainWindow::set_units(bool si) {
+	if ( si &&
+		 static_cast<int>(ui->spin_grid_tics->value()) == _us[0] &&
+		 static_cast<int>(ui->spin_grid_hash->value()) == _us[1] &&
+		 static_cast<int>(ui->spin_grid_x_min->value()) == _us[2] &&
+		 static_cast<int>(ui->spin_grid_x_max->value()) == _us[3] &&
+		 static_cast<int>(ui->spin_grid_y_min->value()) == _us[4] &&
+		 static_cast<int>(ui->spin_grid_y_max->value()) == _us[5] ) {
+			ui->spin_grid_tics->setValue(_si[0]);
+			ui->spin_grid_hash->setValue(_si[1]);
+			ui->spin_grid_x_min->setValue(_si[2]);
+			ui->spin_grid_x_max->setValue(_si[3]);
+			ui->spin_grid_y_min->setValue(_si[4]);
+			ui->spin_grid_y_max->setValue(_si[5]);
+	}
+	else if ( !si &&
+		 static_cast<int>(ui->spin_grid_tics->value()) == _si[0] &&
+		 static_cast<int>(ui->spin_grid_hash->value()) == _si[1] &&
+		 static_cast<int>(ui->spin_grid_x_min->value()) == _si[2] &&
+		 static_cast<int>(ui->spin_grid_x_max->value()) == _si[3] &&
+		 static_cast<int>(ui->spin_grid_y_min->value()) == _si[4] &&
+		 static_cast<int>(ui->spin_grid_y_max->value()) == _si[5] ) {
+			ui->spin_grid_tics->setValue(_us[0]);
+			ui->spin_grid_hash->setValue(_us[1]);
+			ui->spin_grid_x_min->setValue(_us[2]);
+			ui->spin_grid_x_max->setValue(_us[3]);
+			ui->spin_grid_y_min->setValue(_us[4]);
+			ui->spin_grid_y_max->setValue(_us[5]);
 	}
 }
 

@@ -26,20 +26,32 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
+		void setUnits(bool);
 		void setCurrentIndex(const QModelIndex&);
 		void changeLevel(void);
 		void clickedIndex(int);
 		void deleteIndex(QModelIndex, int, int);
+		void gridDefaults(void);
+		void gridEnabled(bool);
+		void gridHash(double);
+		void gridMaxX(double);
+		void gridMaxY(double);
+		void gridMinX(double);
+		void gridMinY(double);
+		void gridTics(double);
 
 	protected:
 		~QOsgWidget();
 		bool eventFilter(QObject*, QEvent*);
+		double convert(double);
 
 	private:
 		rsScene::Scene *_scene;
 		robotModel *_model;
+		bool _units;
 		int _current;
 		int _level;
+		std::vector<double> _grid;
 };
 
 class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {

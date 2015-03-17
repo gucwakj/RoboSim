@@ -64,7 +64,7 @@ bool robotModel::addPreconfig(int type, int role) {
 	return false;
 }
 
-bool robotModel::setUnits(bool si) {
+void robotModel::setUnits(bool si) {
 	_units = si;
 }
 
@@ -303,9 +303,9 @@ QVariant robotModel::convert(double value, bool store) const {
 	QVariant tmp;
 
 	if (store)
-		tmp = ((_units) ? value/39.370 : value/100);
+		tmp = ((_units) ? value/100 : value/39.37);
 	else
-		tmp = ((_units) ? value*39.370 : value*100);
+		tmp = ((_units) ? value*100 : value*39.37);
 
 	return tmp;
 }

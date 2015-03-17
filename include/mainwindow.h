@@ -17,11 +17,17 @@ class MainWindow : public QMainWindow {
 		explicit MainWindow(QWidget* = 0);
 		~MainWindow(void);
 
+	protected slots:
+		void grid_defaults(void);
+		void set_units(bool);
+
 	private:
 		void build_selector(QListWidget*, QStringList&, QStringList&);
 
 	private:
 		Ui::MainWindow *ui;
+		std::vector<double> _us;
+		std::vector<double> _si;
 };
 
 #endif // MAINWINDOW_H

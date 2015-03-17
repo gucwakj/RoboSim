@@ -64,7 +64,7 @@ class robotModel : public QAbstractTableModel {
 	public slots:
 		bool addRobot(int = 0, int = Qt::EditRole);
 		bool addPreconfig(int = 1, int = Qt::EditRole);
-		bool setUnits(bool);
+		void setUnits(bool);
 
 	private:
 		QVariant convert(double, bool) const;

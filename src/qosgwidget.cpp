@@ -14,17 +14,6 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// handle event inputs
 	this->installEventFilter(this);
 
-	// set grid
-	std::vector<double> grid;
-	grid.push_back(1/39.37);
-	grid.push_back(12/39.37);
-	grid.push_back(-48/39.37);
-	grid.push_back(48/39.37);
-	grid.push_back(-48/39.37);
-	grid.push_back(48/39.37);
-	grid.push_back(1);
-	_scene->setGrid(0, grid);
-
 	// set display settings
 	osg::DisplaySettings *ds = osg::DisplaySettings::instance().get();
 	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
@@ -43,6 +32,17 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	QMouseHandler *mh = new QMouseHandler(_scene);
 	_scene->setMouseHandler(mh);
 	QWidget::connect(mh, SIGNAL(clickedIndex(int)), this, SLOT(clickedIndex(int)));
+
+	// set grid
+	_units = 0;
+	_grid.push_back(1/39.37);
+	_grid.push_back(12/39.37);
+	_grid.push_back(-48/39.37);
+	_grid.push_back(48/39.37);
+	_grid.push_back(-48/39.37);
+	_grid.push_back(48/39.37);
+	_grid.push_back(1);
+	_scene->setGrid(_units, _grid);
 
 	// set highlighting of click
 	_scene->setHighlight(true);
@@ -75,6 +75,10 @@ void QOsgWidget::setModel(robotModel *model) {
 
 	// update view with default model
 	this->dataChanged(_model->index(0, 0), _model->index(_model->rowCount()-1, 0));
+}
+
+void QOsgWidget::setUnits(bool si) {
+	_units = si;
 }
 
 void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
@@ -194,6 +198,66 @@ void QOsgWidget::deleteIndex(QModelIndex index, int first, int last) {
 	_scene->deleteChild(id);
 }
 
+void QOsgWidget::gridDefaults(void) {
+	// reset to defaults
+	if (_units) {
+		_grid[0] = 5/100;
+		_grid[1] = 50/100;
+		_grid[2] = -200/100;
+		_grid[3] = 200/100;
+		_grid[4] = -200/100;
+		_grid[5] = 200/100;
+		_grid[6] = 1;
+	}
+	else {
+		_grid[0] = 1/39.37;
+		_grid[1] = 12/39.37;
+		_grid[2] = -48/39.37;
+		_grid[3] = 48/39.37;
+		_grid[4] = -48/39.37;
+		_grid[5] = 48/39.37;
+		_grid[6] = 1;
+	}
+
+	// draw new grid
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridTics(double value) {
+	_grid[0] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridHash(double value) {
+	_grid[1] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMinX(double value) {
+	_grid[2] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMaxX(double value) {
+	_grid[3] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMinY(double value) {
+	_grid[4] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMaxY(double value) {
+	_grid[5] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridEnabled(bool enabled) {
+	_grid[6] = static_cast<double>(enabled);
+	_scene->setGrid(_units, _grid);
+}
+
 bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 	if (event->type() == QEvent::KeyPress) {
 		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
@@ -227,6 +291,10 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 	}
 	else
 		return QObject::eventFilter(obj, event);
+}
+
+double QOsgWidget::convert(double value) {
+	return ((_units) ? value/100 : value/39.37);
 }
 
 QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scene) {
