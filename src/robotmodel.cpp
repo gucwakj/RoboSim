@@ -115,10 +115,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 						default:							return QString("%1\nRobot %2").arg(name).arg(id + 1); break;
 					}
 				}
-				case rs::MINDSTORMS:
-					return QString("Robot %1").arg(_list[index.row()][index.column()].toInt() + 1);
-					break;
-				case rs::MOBOT:
+				case rs::EV3: case rs::NXT:
 					return QString("Robot %1").arg(_list[index.row()][index.column()].toInt() + 1);
 					break;
 				default:
@@ -160,10 +157,10 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 			case rs::LINKBOTT:
 				image.load("linkbotL.jpg");
 				break;
-			case rs::MINDSTORMS:
+			case rs::EV3:
 				image.load("mobot.jpg");
 				break;
-			case rs::MOBOT:
+			case rs::NXT:
 				image.load("mobot.jpg");
 				break;
 			default:
@@ -213,11 +210,9 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 	else if (!map[0].toString().compare("Linkbot L"))
 		this->addRobot(rs::LINKBOTL);
 	else if (!map[0].toString().compare("Mindstorms EV3"))
-		this->addRobot(rs::MINDSTORMS);
+		this->addRobot(rs::EV3);
 	else if (!map[0].toString().compare("Mindstorms NXT"))
-		this->addRobot(rs::MINDSTORMS);
-	else if (!map[0].toString().compare("Mobot"))
-		this->addRobot(rs::MOBOT);
+		this->addRobot(rs::NXT);
 	else if (!map[0].toString().compare("Bow"))
 		this->addPreconfig(rsLinkbot::BOW);
 	else if (!map[0].toString().compare("Explorer"))

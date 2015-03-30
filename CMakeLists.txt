@@ -74,6 +74,7 @@ set (EXTRA_LIBS ${EXTRA_LIBS} optimized tinyxml2 debug tinyxml2d)
 # add librs modules
 include_directories ("/home/kgucwa/projects/librs/include")
 link_directories ("/home/kgucwa/projects/librs/build/lib")
+set (EXTRA_LIBS ${EXTRA_LIBS} optimized rs debug rsd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsRobots debug rsRobotsd)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsScene debug rsScened)
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsXML debug rsXMLd)

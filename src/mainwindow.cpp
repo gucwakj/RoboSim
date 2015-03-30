@@ -18,8 +18,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	// build robot selector
 	QStringList names, icons;
-	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT" << "Mobot";
-	icons << "linkbotI.jpg" << "linkbotL.jpg" << "mobot.jpg" << "mobot.jpg" << "mobot.jpg";
+	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
+	icons << "linkbotI.jpg" << "linkbotL.jpg" << "mobot.jpg" << "mobot.jpg";
 	this->build_selector(ui->list_robots, names, icons);
 	ui->list_robots->setDragEnabled(true);
 

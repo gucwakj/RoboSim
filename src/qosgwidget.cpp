@@ -90,9 +90,9 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		std::string name = _r_model->data(_r_model->index(i, rsModel::NAME)).toString().toStdString();
 
 		// get position
-		double pos[3] = {_r_model->data(_r_model->index(i, rsModel::P_X)).toDouble(),
-						 _r_model->data(_r_model->index(i, rsModel::P_Y)).toDouble(),
-						 _r_model->data(_r_model->index(i, rsModel::P_Z)).toDouble() + 0.04445};
+		rs::Pos p(_r_model->data(_r_model->index(i, rsModel::P_X)).toDouble(),
+				  _r_model->data(_r_model->index(i, rsModel::P_Y)).toDouble(),
+				  _r_model->data(_r_model->index(i, rsModel::P_Z)).toDouble() + 0.04445);
 
 		// get euler angles
 		double r[3] = {DEG2RAD(_r_model->data(_r_model->index(i, rsModel::R_PHI)).toDouble()),
@@ -100,14 +100,13 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 					   DEG2RAD(_r_model->data(_r_model->index(i, rsModel::R_PSI)).toDouble())};
 
 		// calculate quaternion
-		double quat[4] = {0, 0, 0, 1}, o1[4];
-		double q1[4] = {sin(0.5*r[0]), 0, 0, cos(0.5*r[0])};
-		double q2[4] = {0, sin(0.5*r[1]), 0, cos(0.5*r[1])};
-		double q3[4] = {0, 0, sin(0.5*r[2]), cos(0.5*r[2])};
+		rs::Quat q(sin(0.5*r[0]), 0, 0, cos(0.5*r[0]));
+		q.multiply(0, sin(0.5*r[1]), 0, cos(0.5*r[1]));
+		q.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
 
 		// get led color
 		QColor color(_r_model->data(_r_model->index(i, rsModel::COLOR)).toString());
-		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
+		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// delete old robot
 		_scene->deleteChild(id);
@@ -115,12 +114,10 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		// draw new robot
 		switch (form) {
 			case rs::LINKBOTI: {
-				rsRobots::LinkbotI *robot = new rsRobots::LinkbotI();
+				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
 				robot->setID(id);
 				robot->setName(name);
-				robot->multiplyQbyQ(q2, q1, o1);
-				robot->multiplyQbyQ(q3, o1, quat);
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
 				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 1, -1);
@@ -130,21 +127,24 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				break;
 			}
 			case rs::LINKBOTL: {
-				rsRobots::LinkbotL *robot = new rsRobots::LinkbotL();
+				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTL);
 				robot->setID(id);
 				robot->setName(name);
-				robot->multiplyQbyQ(q2, q1, o1);
-				robot->multiplyQbyQ(q3, o1, quat);
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
 				break;
 			}
-			case rs::MINDSTORMS: {
-				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms();
+			case rs::EV3: {
+				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::EV3);
 				robot->setID(id);
 				robot->setName(name);
-				robot->multiplyQbyQ(q2, q1, o1);
-				robot->multiplyQbyQ(q3, o1, quat);
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, pos, quat, led, 0);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				break;
+			}
+			case rs::NXT: {
+				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::NXT);
+				robot->setID(id);
+				robot->setName(name);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				break;
 			}
 		}
