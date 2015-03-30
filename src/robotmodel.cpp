@@ -16,8 +16,8 @@ robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	_l_preconfig[rsLinkbot::SNAKE] = 5;
 	_l_preconfig[rsLinkbot::STAND] = 2;
 
-	// set SI units
-	_units = true;
+	// set US units
+	_units = false;
 
 	// create initial robot for model
 	this->addRobot(rs::LINKBOTI);
@@ -251,6 +251,7 @@ bool robotModel::setData(const QModelIndex &index, const QVariant &value, int ro
 		// if numerical values convert to meters
 		if (index.column() == P_X || index.column() == P_Y || index.column() == P_Z) {
 			QVariant newValue = this->convert(value.toDouble(), true);
+//qDebug() << index.column() << " " << newValue;
 			_list[index.row()][index.column()] = newValue.toString();
 		}
 		else {
@@ -258,6 +259,8 @@ bool robotModel::setData(const QModelIndex &index, const QVariant &value, int ro
 		}
 		// only emit signal if data has actually changed
 		if (oldValue.compare(_list[index.row()][index.column()])) {
+qDebug() << "dataChanged";
+this->printModel();
 			emit dataChanged(index, index);
 		}
 		return true;

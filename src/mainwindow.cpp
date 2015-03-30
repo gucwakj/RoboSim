@@ -1,4 +1,7 @@
 #include "mainwindow.h"
+#include "obstacleeditor.h"
+#include "obstaclemodel.h"
+#include "obstacleview.h"
 #include "roboteditor.h"
 #include "robotmodel.h"
 #include "robotview.h"
@@ -60,9 +63,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up robot model
 	robotModel *model = new robotModel(this);
 
-	// set up osg view
-	ui->osgWidget->setModel(model);
-
 	// set up robot view
 	robotView *view = new robotView(model);
 	ui->layout_robots->addWidget(view);
@@ -70,6 +70,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up robot editor
 	robotEditor *editor = new robotEditor(model);
 	ui->layout_robots->addWidget(editor);
+
+	// set up obstacle model
+	obstacleModel *o_model = new obstacleModel(this);
+
+	// set up robot view
+	obstacleView *o_view = new obstacleView(o_model);
+	ui->layout_obstacles->addWidget(o_view);
+
+	// set up obstacle editor
+	obstacleEditor *o_editor = new obstacleEditor(o_model);
+	ui->layout_obstacles->addWidget(o_editor);
+
+	// set up osg view
+	ui->osgWidget->setRobotModel(model);
+	ui->osgWidget->setObstacleModel(o_model);
 
 	// set up default grid units
 	_us.push_back(1);
@@ -111,6 +126,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteIndex(QModelIndex, int, int)));
+
+	// connect obstacle pieces together
+	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex2(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex2(const QModelIndex&)));
+	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
+	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentIndex2(const QModelIndex&)));
+	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
+	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged2(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteIndex2(QModelIndex, int, int)));
 
 	// parsing of xml complete
 	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);

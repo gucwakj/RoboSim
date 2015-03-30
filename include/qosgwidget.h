@@ -11,6 +11,7 @@
 
 #include <rsScene/Scene>
 
+#include "obstaclemodel.h"
 #include "robotmodel.h"
 
 class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
@@ -18,19 +19,20 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 	public:
 		explicit QOsgWidget(QWidget* = 0);
 
-		void setModel(robotModel*);
+		void setRobotModel(robotModel*);
+		void setObstacleModel(obstacleModel*);
 
 	signals:
 		void indexChanged(const QModelIndex&);
 		void nullIndex(void);
 
 	public slots:
-		void dataChanged(QModelIndex, QModelIndex);
-		void setUnits(bool);
-		void setCurrentIndex(const QModelIndex&);
 		void changeLevel(void);
 		void clickedIndex(int);
+		void dataChanged(QModelIndex, QModelIndex);
+		void dataChanged2(QModelIndex, QModelIndex);
 		void deleteIndex(QModelIndex, int, int);
+		void deleteIndex2(QModelIndex, int, int);
 		void gridDefaults(void);
 		void gridEnabled(bool);
 		void gridHash(double);
@@ -39,6 +41,9 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void gridMinX(double);
 		void gridMinY(double);
 		void gridTics(double);
+		void setCurrentIndex(const QModelIndex&);
+		void setCurrentIndex2(const QModelIndex&);
+		void setUnits(bool);
 
 	protected:
 		~QOsgWidget();
@@ -47,7 +52,8 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 
 	private:
 		rsScene::Scene *_scene;
-		robotModel *_model;
+		robotModel *_r_model;
+		obstacleModel *_o_model;
 		bool _units;
 		int _current;
 		int _level;

@@ -82,6 +82,9 @@ set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsXML debug rsXMLd)
 set (SRCS ${SRCS}
 	src/main.cpp
 	src/mainwindow.cpp
+	src/obstacleeditor.cpp
+	src/obstaclemodel.cpp
+	src/obstacleview.cpp
 	src/roboteditor.cpp
 	src/robotmodel.cpp
 	src/robotview.cpp
@@ -92,6 +95,9 @@ set (SRCS ${SRCS}
 # add headers
 set (HEADERS
 	include/mainwindow.h
+	include/obstacleeditor.h
+	include/obstaclemodel.h
+	include/obstacleview.h
 	include/roboteditor.h
 	include/robotmodel.h
 	include/robotview.h

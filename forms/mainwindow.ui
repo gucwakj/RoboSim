@@ -607,7 +607,10 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
+        </property>
+        <property name="movable">
+         <bool>true</bool>
         </property>
         <widget class="QWidget" name="tab_config">
          <attribute name="title">
@@ -899,6 +902,9 @@
          <attribute name="title">
           <string>Robots</string>
          </attribute>
+         <attribute name="toolTip">
+          <string>Add Robots into the Scene</string>
+         </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="spacing">
            <number>10</number>
@@ -911,13 +917,16 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_extras">
+        <widget class="QWidget" name="tab_obstacles">
          <attribute name="title">
-          <string>Extras</string>
+          <string>Obstacles</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_14">
+          <property name="spacing">
+           <number>10</number>
+          </property>
           <item>
-           <layout class="QHBoxLayout" name="layout_extras"/>
+           <layout class="QHBoxLayout" name="layout_obstacles"/>
           </item>
          </layout>
         </widget>

@@ -1,5 +1,5 @@
-#ifndef ROBOTEDITOR_H_
-#define ROBOTEDITOR_H_
+#ifndef OBSTACLEEDITOR_H_
+#define OBSTACLEEDITOR_H_
 
 #include <iostream>
 
@@ -18,9 +18,10 @@
 #include <QPushButton>
 #include <QMetaProperty>
 
-#include "robotmodel.h"
+#include "obstaclemodel.h"
+#include "roboteditor.h"
 
-class colorEditor : public QWidget {
+/*class colorEditor : public QWidget {
 		Q_OBJECT
 		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
@@ -42,12 +43,12 @@ class colorEditor : public QWidget {
 	private:
 		QColor _color;
 		QPushButton *_button;
-};
+};*/
 
-class robotEditor : public QWidget {
+class obstacleEditor : public QWidget {
 		Q_OBJECT
 	public:
-		robotEditor(robotModel*, QWidget* = 0);
+		obstacleEditor(obstacleModel*, QWidget* = 0);
 
 	signals:
 		void indexChanged(const QModelIndex&);
@@ -62,7 +63,7 @@ class robotEditor : public QWidget {
 		void setUnits(bool);
 
 	private:
-		robotModel *_model;
+		obstacleModel *_model;
 		QDataWidgetMapper *_mapper;
 		QStackedWidget *_pages;
 		QPushButton *_deleteButton;
@@ -70,27 +71,24 @@ class robotEditor : public QWidget {
 		QPushButton *_previousButton;
 };
 
-class individualEditor : public QWidget {
+class boxEditor : public QWidget {
 		Q_OBJECT
 	public:
-		individualEditor(QDataWidgetMapper*, robotModel*, QWidget* = 0);
+		boxEditor(QDataWidgetMapper*, QWidget* = 0);
 		void nullIndex(bool);
 		void setUnits(bool);
 
-	protected slots:
-		void rotate(double);
-
 	private:
 		QDataWidgetMapper *_mapper;
-		robotModel *_model;
-		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
-		QLabel *_wheelUnits;
-		QComboBox *_wheelBox;
+		QLabel *_pZUnits;
+		QLabel *_lXUnits;
+		QLabel *_lYUnits;
+		QLabel *_lZUnits;
 		colorEditor *_colorEditor;
 };
-
+/*
 class customEditor : public QWidget {
 		Q_OBJECT
 	public:
@@ -129,13 +127,13 @@ class preconfigEditor : public QWidget {
 		QLabel *_pYUnits;
 		colorEditor *_colorEditor;
 };
-
-class robotEditorDelegate : public QItemDelegate {
+*/
+class obstacleEditorDelegate : public QItemDelegate {
 		Q_OBJECT
 	public:
-		robotEditorDelegate(QObject* = 0);
+		obstacleEditorDelegate(QObject* = 0);
 		void setEditorData(QWidget*, const QModelIndex&) const;
 		void setModelData(QWidget*, QAbstractItemModel*, const QModelIndex&) const;
 };
 
-#endif // ROBOTEDITOR_H_
+#endif // OBSTACLEEDITOR_H_
