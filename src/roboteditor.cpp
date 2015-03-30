@@ -23,8 +23,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// set up editor pages
 	_pages = new QStackedWidget;
-	//_pages->addWidget(new individualEditor(_mapper));
-	_pages->addWidget(new individualEditor(_mapper, model));
+	_pages->addWidget(new individualEditor(_mapper));
 	_pages->addWidget(new customEditor(_mapper));
 	_pages->addWidget(new preconfigEditor(_mapper));
 
@@ -46,8 +45,8 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_previousButton, SIGNAL(clicked()), _mapper, SLOT(toPrevious()));
 	QWidget::connect(_previousButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
 
-	// set up units for item labels
-	this->setUnits(false);
+	// set default units
+	_units = false;	// us
 
 	// lay out grid
 	QVBoxLayout *vbox = new QVBoxLayout();
@@ -69,25 +68,30 @@ void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
 
 void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid()) {
-		// set new index for mapper
-qDebug() << "setting index";
-		_mapper->setCurrentIndex(index.row());
+		// disable current mappings
+		_mapper->clearMapping();
 
 		// load appropriate page
 		if (_model->data(_model->index(index.row(), rsModel::PRECONFIG), Qt::EditRole).toInt()) {
 			_pages->setCurrentIndex(2);	// preconfig
+			this->setUnits(_units);
 			dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(false);
 		}
 		else {
 			if (_model->data(_model->index(index.row(), rsModel::WHEEL), Qt::EditRole).toInt() == 4) {
 				_pages->setCurrentIndex(1);	// custom
+				this->setUnits(_units);
 				dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(false);
 			}
 			else {
 				_pages->setCurrentIndex(0);	// individual
+				this->setUnits(_units);
 				dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(false);
 			}
 		}
+
+		// set new index for mapper
+		_mapper->setCurrentIndex(index.row());
 
 		// update button states
 		_deleteButton->setEnabled(true);
@@ -95,7 +99,6 @@ qDebug() << "setting index";
 		_previousButton->setEnabled(index.row() > 0);
 	}
 	else {
-qDebug() << "null index";
 		// disable current page
 		if (dynamic_cast<individualEditor*>(_pages->currentWidget()))
 			dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(true);
@@ -122,7 +125,6 @@ void robotEditor::buttonPressed(void) {
 }
 
 void robotEditor::deleteCurrentIndex(void) {
-qDebug() << "delete";
 	// save current index
 	int index = _mapper->currentIndex();
 
@@ -142,6 +144,10 @@ qDebug() << "delete";
 }
 
 void robotEditor::setUnits(bool si) {
+	// save units
+	_units = si;
+
+	// set units labels for editors
 	if (dynamic_cast<individualEditor*>(_pages->currentWidget()))
 		dynamic_cast<individualEditor*>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<preconfigEditor*>(_pages->currentWidget()))
@@ -164,16 +170,9 @@ void robotEditor::setUnits(bool si) {
  *
  *	\param		mapper data mapper from robotEditor model.
  */
-individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model, QWidget *parent) : QWidget(parent) {
+individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
 	// save mapper
-	//_mapper = mapper;
-	_model = model;
-	// set up mapper
-	_mapper = new QDataWidgetMapper(this);
-	_mapper->setModel(model);
-	_mapper->setItemDelegate(new robotEditorDelegate(this));
-	_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-
+	_mapper = mapper;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
@@ -181,13 +180,12 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
 	QStringList formItems;
-	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms") << tr("Mobot");
+	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms EV3") << tr("Mindstorms NXT");
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
-	mapper->addMapping(formBox, rsModel::FORM);
 	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// name
@@ -195,7 +193,6 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
 	QLineEdit *nameEdit = new QLineEdit;
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
-	mapper->addMapping(nameEdit, rsModel::NAME);
 	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
 
 	// position x
@@ -207,7 +204,6 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	_mapper->addMapping(pXBox, rsModel::P_X);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position y
@@ -219,7 +215,6 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	mapper->addMapping(pYBox, rsModel::P_Y);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// rotation psi
@@ -231,7 +226,6 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
 	_rZBox->setMaximum(360);
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
-	_mapper->addMapping(_rZBox, rsModel::R_PSI);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
 	// wheels list
@@ -240,13 +234,11 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
 	_wheelBox = new QComboBox();
 	_wheelBox->setObjectName("wheels");
 	wheelLabel->setBuddy(_wheelBox);
-	mapper->addMapping(_wheelBox, rsModel::WHEEL);
 	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// color
 	_colorEditor = new colorEditor();
 	_colorEditor->setObjectName("color");
-	mapper->addMapping(_colorEditor, rsModel::COLOR, "color");
 	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -298,9 +290,8 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, robotModel *model,
  *	\param		value Current value of the spinbox.
  */
 void individualEditor::rotate(double value) {
-qDebug() << "rotation: " << value;
 	_rZBox->setValue(value - static_cast<int>(value/360)*360);
-	qDebug() << _mapper->submit();
+	_mapper->submit();
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -308,6 +299,7 @@ qDebug() << "rotation: " << value;
  *	\param		nullify To nullify inputs or not.
  */
 void individualEditor::nullIndex(bool nullify) {
+	// nullify (or not) input boxes
 	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
 	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
@@ -315,12 +307,23 @@ void individualEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
 	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
 	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify)
-		color.setAlpha(50);
-	else
-		color.setAlpha(255);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
 	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsModel::FORM);
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsModel::R_PSI);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsModel::WHEEL);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsModel::COLOR, "color");
+	}
 }
 
 /*!	\brief Slot to set units labels.
@@ -328,21 +331,18 @@ void individualEditor::nullIndex(bool nullify) {
  *	\param		si Units are SI (true) or US (false).
  */
 void individualEditor::setUnits(bool si) {
+	// update unit labels
 	QString text;
-	if (si)
-		text = tr("cm");
-	else
-		text = tr("in");
+	if (si) text = tr("cm");
+	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_wheelUnits->setText(text);
 
 	// set wheel list to new values
 	QStringList wheelItems;
-	if (si)
-		wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
-	else
-		wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
+	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
+	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
 	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
 	_wheelBox->setModel(wheelModel);
 }
@@ -371,13 +371,12 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
 	QStringList formItems;
-	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms") << tr("Mobot");
+	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms EV3") << tr("Mindstorms NXT");
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
-	mapper->addMapping(formBox, rsModel::FORM);
 	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// name
@@ -385,7 +384,6 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	QLineEdit *nameEdit = new QLineEdit;
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
-	mapper->addMapping(nameEdit, rsModel::NAME);
 	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
 
 	// position x
@@ -397,7 +395,6 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	//mapper->addMapping(pXBox, rsModel::P_X);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position y
@@ -409,7 +406,6 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	mapper->addMapping(pYBox, rsModel::P_Y);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// rotation psi
@@ -421,7 +417,6 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	_rZBox->setMaximum(360);
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
-	mapper->addMapping(_rZBox, rsModel::R_PSI);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
 	// wheels list
@@ -430,7 +425,6 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	_wheelBox = new QComboBox();
 	_wheelBox->setObjectName("wheels");
 	wheelLabel->setBuddy(_wheelBox);
-	mapper->addMapping(_wheelBox, rsModel::WHEEL);
 	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// radius of wheel
@@ -439,13 +433,11 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	QLineEdit *radiusEdit = new QLineEdit;
 	radiusEdit->setObjectName("radius");
 	radiusLabel->setBuddy(radiusEdit);
-	mapper->addMapping(radiusEdit, rsModel::RADIUS);
 	QWidget::connect(radiusEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
 
 	// color
 	_colorEditor = new colorEditor();
 	_colorEditor->setObjectName("color");
-	mapper->addMapping(_colorEditor, rsModel::COLOR, "color");
 	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -511,6 +503,7 @@ void customEditor::rotate(double value) {
  *	\param		nullify To nullify inputs or not.
  */
 void customEditor::nullIndex(bool nullify) {
+	// nullify (or not) input boxes
 	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
 	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
@@ -519,12 +512,24 @@ void customEditor::nullIndex(bool nullify) {
 	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
 	(this->findChild<QLineEdit *>("radius"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
 	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify)
-		color.setAlpha(50);
-	else
-		color.setAlpha(255);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
 	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsModel::FORM);
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsModel::R_PSI);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsModel::WHEEL);
+		_mapper->addMapping(this->findChild<QLineEdit *>("radius"), rsModel::RADIUS);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsModel::COLOR, "color");
+	}
 }
 
 /*!	\brief Slot to set units labels.
@@ -532,21 +537,19 @@ void customEditor::nullIndex(bool nullify) {
  *	\param		si Units are SI (true) or US (false).
  */
 void customEditor::setUnits(bool si) {
+	// update unit labels
 	QString text;
-	if (si)
-		text = tr("cm");
-	else
-		text = tr("in");
+	if (si) text = tr("cm");
+	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_wheelUnits->setText(text);
+	_radiusUnits->setText(text);
 
 	// set wheel list to new values
 	QStringList wheelItems;
-	if (si)
-		wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
-	else
-		wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
+	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
+	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
 	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
 	_wheelBox->setModel(wheelModel);
 }
@@ -577,7 +580,6 @@ preconfigEditor::preconfigEditor(QDataWidgetMapper *mapper, QWidget *parent) : Q
 	QLineEdit *nameEdit = new QLineEdit;
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
-	mapper->addMapping(nameEdit, rsModel::NAME);
 	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
 
 	// position x
@@ -589,7 +591,6 @@ preconfigEditor::preconfigEditor(QDataWidgetMapper *mapper, QWidget *parent) : Q
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	//mapper->addMapping(pXBox, rsModel::P_X);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position y
@@ -601,7 +602,6 @@ preconfigEditor::preconfigEditor(QDataWidgetMapper *mapper, QWidget *parent) : Q
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	mapper->addMapping(pYBox, rsModel::P_Y);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// rotation psi
@@ -613,13 +613,11 @@ preconfigEditor::preconfigEditor(QDataWidgetMapper *mapper, QWidget *parent) : Q
 	_rZBox->setMaximum(360);
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
-	mapper->addMapping(_rZBox, rsModel::R_PSI);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
 	// color
 	_colorEditor = new colorEditor();
 	_colorEditor->setObjectName("color");
-	mapper->addMapping(_colorEditor, rsModel::COLOR, "color");
 	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -670,17 +668,27 @@ void preconfigEditor::rotate(double value) {
  *	\param		nullify To nullify inputs or not.
  */
 void preconfigEditor::nullIndex(bool nullify) {
+	// nullify (or not) input boxes
 	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
 	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify)
-		color.setAlpha(50);
-	else
-		color.setAlpha(255);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
 	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsModel::R_PSI);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsModel::COLOR, "color");
+	}
 }
 
 /*!	\brief Slot to set units labels.
@@ -688,11 +696,10 @@ void preconfigEditor::nullIndex(bool nullify) {
  *	\param		si Units are SI (true) or US (false).
  */
 void preconfigEditor::setUnits(bool si) {
+	// update unit labels
 	QString text;
-	if (si)
-		text = tr("cm");
-	else
-		text = tr("in");
+	if (si) text = tr("cm");
+	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 }
@@ -760,7 +767,6 @@ void robotEditorDelegate::setEditorData(QWidget *editor, const QModelIndex &inde
 		editor->setProperty("currentIndex", index.data());
 		return;
 	}
-qDebug() << "ro: " << editor->property("value");
 	QItemDelegate::setEditorData(editor, index);
 }
 
@@ -772,8 +778,6 @@ void robotEditorDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
 			return;
 		}
 	}
-qDebug() << model->data(index);
-qDebug() << "here" << editor->property("value");
 	QItemDelegate::setModelData(editor, model, index);
 }
 

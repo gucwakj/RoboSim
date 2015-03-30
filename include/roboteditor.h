@@ -68,12 +68,13 @@ class robotEditor : public QWidget {
 		QPushButton *_deleteButton;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
+		bool _units;
 };
 
 class individualEditor : public QWidget {
 		Q_OBJECT
 	public:
-		individualEditor(QDataWidgetMapper*, robotModel*, QWidget* = 0);
+		individualEditor(QDataWidgetMapper*, QWidget* = 0);
 		void nullIndex(bool);
 		void setUnits(bool);
 
@@ -82,7 +83,6 @@ class individualEditor : public QWidget {
 
 	private:
 		QDataWidgetMapper *_mapper;
-		robotModel *_model;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
