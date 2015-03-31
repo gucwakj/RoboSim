@@ -66,7 +66,7 @@ void QOsgWidget::setRobotModel(robotModel *model) {
 	_r_model = model;
 
 	// update view with default model
-	this->dataChanged(_r_model->index(0, 0), _r_model->index(_r_model->rowCount()-1, 0));
+	this->robotDataChanged(_r_model->index(0, 0), _r_model->index(_r_model->rowCount()-1, 0));
 }
 
 void QOsgWidget::setObstacleModel(obstacleModel *model) {
@@ -74,14 +74,14 @@ void QOsgWidget::setObstacleModel(obstacleModel *model) {
 	_o_model = model;
 
 	// update view with default model
-	this->dataChanged(_o_model->index(0, 0), _o_model->index(_o_model->rowCount()-1, 0));
+	this->obstacleDataChanged(_o_model->index(0, 0), _o_model->index(_o_model->rowCount()-1, 0));
 }
 
 void QOsgWidget::setUnits(bool si) {
 	_units = si;
 }
 
-void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
+void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new robots
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		// get form and id
@@ -152,10 +152,10 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		_scene->addChild();
 	}
 	// set current robot
-	this->setCurrentIndex(bottomRight);
+	this->setCurrentRobotIndex(bottomRight);
 }
 
-void QOsgWidget::dataChanged2(QModelIndex topLeft, QModelIndex bottomRight) {
+void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new obstacles
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		// get form and id
@@ -206,10 +206,10 @@ void QOsgWidget::dataChanged2(QModelIndex topLeft, QModelIndex bottomRight) {
 		_scene->addChild();
 	}
 	// set current robot
-	this->setCurrentIndex2(bottomRight);
+	this->setCurrentObstacleIndex(bottomRight);
 }
 
-void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
+void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
 	// get new robot ID
 	int newRobot = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
 
@@ -220,7 +220,7 @@ void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
 	_scene->addHighlight(_current);
 }
 
-void QOsgWidget::setCurrentIndex2(const QModelIndex &index) {
+void QOsgWidget::setCurrentObstacleIndex(const QModelIndex &index) {
 	// get new obstacle ID
 	int new_obstacle = _o_model->data(_o_model->index(index.row(), rsObstacleModel::ID), Qt::EditRole).toInt();
 
@@ -251,19 +251,19 @@ void QOsgWidget::clickedIndex(int id) {
 				_current = -1;
 				index = _r_model->index(-1, -1);
 			}
-			emit indexChanged(index);
+			emit robotIndexChanged(index);
 			return;
 		}
 	}
 }
 
-void QOsgWidget::deleteIndex(QModelIndex index, int first, int last) {
+void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
 	_scene->deleteChild(id);
 }
 
-void QOsgWidget::deleteIndex2(QModelIndex index, int first, int last) {
+void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
 	_scene->deleteObstacle(id);
@@ -344,12 +344,12 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 
 				// if it is invalid, then set the last row in the model
 				if (row == -1) {
-					this->setCurrentIndex(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
-					emit indexChanged(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
+					this->setCurrentRobotIndex(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
+					emit robotIndexChanged(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
 				}
 				else {
-					this->setCurrentIndex(_r_model->index(row, rsRobotModel::ID));
-					emit indexChanged(_r_model->index(row, rsRobotModel::ID));
+					this->setCurrentRobotIndex(_r_model->index(row, rsRobotModel::ID));
+					emit robotIndexChanged(_r_model->index(row, rsRobotModel::ID));
 				}
 
 				break;

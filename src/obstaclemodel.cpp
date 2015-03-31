@@ -166,7 +166,6 @@ bool obstacleModel::setData(const QModelIndex &index, const QVariant &value, int
 		else {
 			_list[index.row()][index.column()] = value.toString();
 		}
-this->printModel();
 		// only emit signal if data has actually changed
 		if (oldValue.compare(_list[index.row()][index.column()])) {
 			emit dataChanged(index, index);

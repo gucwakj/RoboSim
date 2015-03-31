@@ -23,16 +23,15 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void setObstacleModel(obstacleModel*);
 
 	signals:
-		void indexChanged(const QModelIndex&);
+		void obstacleIndexChanged(const QModelIndex&);
+		void robotIndexChanged(const QModelIndex&);
 		void nullIndex(void);
 
 	public slots:
 		void changeLevel(void);
 		void clickedIndex(int);
-		void dataChanged(QModelIndex, QModelIndex);
-		void dataChanged2(QModelIndex, QModelIndex);
-		void deleteIndex(QModelIndex, int, int);
-		void deleteIndex2(QModelIndex, int, int);
+		void deleteObstacleIndex(QModelIndex, int, int);
+		void deleteRobotIndex(QModelIndex, int, int);
 		void gridDefaults(void);
 		void gridEnabled(bool);
 		void gridHash(double);
@@ -41,8 +40,10 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void gridMinX(double);
 		void gridMinY(double);
 		void gridTics(double);
-		void setCurrentIndex(const QModelIndex&);
-		void setCurrentIndex2(const QModelIndex&);
+		void obstacleDataChanged(QModelIndex, QModelIndex);
+		void robotDataChanged(QModelIndex, QModelIndex);
+		void setCurrentObstacleIndex(const QModelIndex&);
+		void setCurrentRobotIndex(const QModelIndex&);
 		void setUnits(bool);
 
 	protected:

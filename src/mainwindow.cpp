@@ -116,29 +116,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentRobotIndex(const QModelIndex&)));
 	QWidget::connect(view, SIGNAL(indexChanged(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentRobotIndex(const QModelIndex&)));
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
-	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
-	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentRobotIndex(const QModelIndex&)));
+	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
+	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteIndex(QModelIndex, int, int)));
+	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 
 	// connect obstacle pieces together
 	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex2(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
 	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentIndex2(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
 	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
-	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentIndex2(const QModelIndex&)));
-	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
-	QWidget::connect(ui->osgWidget, SIGNAL(indexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
+	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
+	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(dataChanged2(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteIndex2(QModelIndex, int, int)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
 
 	// parsing of xml complete
 	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
