@@ -72,13 +72,13 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		_mapper->clearMapping();
 
 		// load appropriate page
-		if (_model->data(_model->index(index.row(), rsModel::PRECONFIG), Qt::EditRole).toInt()) {
+		if (_model->data(_model->index(index.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt()) {
 			_pages->setCurrentIndex(2);	// preconfig
 			this->setUnits(_units);
 			dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(false);
 		}
 		else {
-			if (_model->data(_model->index(index.row(), rsModel::WHEEL), Qt::EditRole).toInt() == 4) {
+			if (_model->data(_model->index(index.row(), rsRobotModel::WHEEL), Qt::EditRole).toInt() == 4) {
 				_pages->setCurrentIndex(1);	// custom
 				this->setUnits(_units);
 				dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false);
@@ -136,11 +136,11 @@ void robotEditor::deleteCurrentIndex(void) {
 
 	// if it is invalid, then set the last row in the model
 	if (_mapper->currentIndex() == -1) {
-		this->setCurrentIndex(_mapper->model()->index(_mapper->model()->rowCount()-1, rsModel::ID));
+		this->setCurrentIndex(_mapper->model()->index(_mapper->model()->rowCount()-1, rsRobotModel::ID));
 	}
 
 	// signal a change in current robot
-	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), rsModel::ID));
+	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), rsRobotModel::ID));
 }
 
 void robotEditor::setUnits(bool si) {
@@ -316,13 +316,13 @@ void individualEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsModel::FORM);
-		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsModel::NAME);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsModel::R_PSI);
-		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsModel::WHEEL);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsRobotModel::FORM);
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsRobotModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEEL);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsRobotModel::COLOR, "color");
 	}
 }
 
@@ -521,14 +521,14 @@ void customEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsModel::FORM);
-		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsModel::NAME);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsModel::R_PSI);
-		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsModel::WHEEL);
-		_mapper->addMapping(this->findChild<QLineEdit *>("radius"), rsModel::RADIUS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsRobotModel::FORM);
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsRobotModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEEL);
+		_mapper->addMapping(this->findChild<QLineEdit *>("radius"), rsRobotModel::RADIUS);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsRobotModel::COLOR, "color");
 	}
 }
 
@@ -683,11 +683,11 @@ void preconfigEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsModel::NAME);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsModel::R_PSI);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsRobotModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsRobotModel::COLOR, "color");
 	}
 }
 

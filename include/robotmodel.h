@@ -13,7 +13,7 @@
 
 #include <rs/Enum>
 
-namespace rsModel {
+namespace rsRobotModel {
 
 	enum robot_item_list {
 		ID,

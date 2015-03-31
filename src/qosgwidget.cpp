@@ -85,19 +85,19 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new robots
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		// get form and id
-		int form = _r_model->data(_r_model->index(i, rsModel::FORM)).toInt();
-		int id = _r_model->data(_r_model->index(i, rsModel::ID), Qt::EditRole).toInt();
-		std::string name = _r_model->data(_r_model->index(i, rsModel::NAME)).toString().toStdString();
+		int form = _r_model->data(_r_model->index(i, rsRobotModel::FORM)).toInt();
+		int id = _r_model->data(_r_model->index(i, rsRobotModel::ID), Qt::EditRole).toInt();
+		std::string name = _r_model->data(_r_model->index(i, rsRobotModel::NAME)).toString().toStdString();
 
 		// get position
-		rs::Pos p(_r_model->data(_r_model->index(i, rsModel::P_X)).toDouble(),
-				  _r_model->data(_r_model->index(i, rsModel::P_Y)).toDouble(),
-				  _r_model->data(_r_model->index(i, rsModel::P_Z)).toDouble() + 0.04445);
+		rs::Pos p(_r_model->data(_r_model->index(i, rsRobotModel::P_X)).toDouble(),
+				  _r_model->data(_r_model->index(i, rsRobotModel::P_Y)).toDouble(),
+				  _r_model->data(_r_model->index(i, rsRobotModel::P_Z)).toDouble() + 0.04445);
 
 		// get euler angles
-		double r[3] = {DEG2RAD(_r_model->data(_r_model->index(i, rsModel::R_PHI)).toDouble()),
-					   DEG2RAD(_r_model->data(_r_model->index(i, rsModel::R_THETA)).toDouble()),
-					   DEG2RAD(_r_model->data(_r_model->index(i, rsModel::R_PSI)).toDouble())};
+		double r[3] = {DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_PHI)).toDouble()),
+					   DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_THETA)).toDouble()),
+					   DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_PSI)).toDouble())};
 
 		// calculate quaternion
 		rs::Quat q(sin(0.5*r[0]), 0, 0, cos(0.5*r[0]));
@@ -105,7 +105,7 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		q.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
 
 		// get led color
-		QColor color(_r_model->data(_r_model->index(i, rsModel::COLOR)).toString());
+		QColor color(_r_model->data(_r_model->index(i, rsRobotModel::COLOR)).toString());
 		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// delete old robot
@@ -200,7 +200,7 @@ void QOsgWidget::dataChanged2(QModelIndex topLeft, QModelIndex bottomRight) {
 
 void QOsgWidget::setCurrentIndex(const QModelIndex &index) {
 	// get new robot ID
-	int newRobot = _r_model->data(_r_model->index(index.row(), rsModel::ID), Qt::EditRole).toInt();
+	int newRobot = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
 
 	// set new current robot
 	_current = newRobot;
@@ -228,7 +228,7 @@ void QOsgWidget::changeLevel(void) {
 void QOsgWidget::clickedIndex(int id) {
 	QModelIndex index;
 	for (int i = 0; i < _r_model->rowCount(); i++) {
-		index = _r_model->index(i, rsModel::ID);
+		index = _r_model->index(i, rsRobotModel::ID);
 		if (_r_model->data(index, Qt::EditRole).toInt() == id) {
 			// highlight new item
 			if (id != _current) {
@@ -248,7 +248,7 @@ void QOsgWidget::clickedIndex(int id) {
 
 void QOsgWidget::deleteIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
-	int id = _r_model->data(_r_model->index(first, rsModel::ID), Qt::EditRole).toInt();
+	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
 	_scene->deleteChild(id);
 }
 
@@ -325,20 +325,20 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 			case Qt::Key_Backspace:
 			case Qt::Key_Delete: {
 				// remove current robot from model
-				QModelIndex index = _r_model->index(_current, rsModel::ID);
+				QModelIndex index = _r_model->index(_current, rsRobotModel::ID);
 				_r_model->removeRows(index.row(), 1);
 
 				// new index is same row as last one
-				int row = _r_model->index(_current, rsModel::ID).row();
+				int row = _r_model->index(_current, rsRobotModel::ID).row();
 
 				// if it is invalid, then set the last row in the model
 				if (row == -1) {
-					this->setCurrentIndex(_r_model->index(_r_model->rowCount()-1, rsModel::ID));
-					emit indexChanged(_r_model->index(_r_model->rowCount()-1, rsModel::ID));
+					this->setCurrentIndex(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
+					emit indexChanged(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
 				}
 				else {
-					this->setCurrentIndex(_r_model->index(row, rsModel::ID));
-					emit indexChanged(_r_model->index(row, rsModel::ID));
+					this->setCurrentIndex(_r_model->index(row, rsRobotModel::ID));
+					emit indexChanged(_r_model->index(row, rsRobotModel::ID));
 				}
 
 				break;

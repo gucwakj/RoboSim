@@ -1,6 +1,6 @@
 #include "robotmodel.h"
 
-using namespace rsModel;
+using namespace rsRobotModel;
 
 robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	// set up preconfig
@@ -95,12 +95,12 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 
 	// return data
 	if (role == Qt::DisplayRole) {
-		if (index.column() == rsModel::ID) {
-			switch (_list[index.row()][rsModel::FORM].toInt()) {
+		if (index.column() == rsRobotModel::ID) {
+			switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
 				case rs::LINKBOTI: case rs::LINKBOTL: case rs::LINKBOTT: {
-					int id = _list[index.row()][rsModel::ID].toInt();
-					QString name = _list[index.row()][rsModel::NAME];
-					switch (_list[index.row()][rsModel::PRECONFIG].toInt()) {
+					int id = _list[index.row()][rsRobotModel::ID].toInt();
+					QString name = _list[index.row()][rsRobotModel::NAME];
+					switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
 						case rsLinkbot::BOW:				return QString("Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW]); break;
 						case rsLinkbot::EXPLORER:			return QString("Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER]); break;
 						case rsLinkbot::FOURBOTDRIVE:		return QString("Four Bot Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURBOTDRIVE]); break;
@@ -134,9 +134,9 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 	}
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
-		switch (_list[index.row()][rsModel::FORM].toInt()) {
+		switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
 			case rs::LINKBOTI: {
-				switch (_list[index.row()][rsModel::PRECONFIG].toInt()) {
+				switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
 					case rsLinkbot::BOW:				image.load("monkey_off_32x32.png"); break;
 					case rsLinkbot::EXPLORER:			image.load("monkey_on_32x32.png"); break;
 					case rsLinkbot::FOURBOTDRIVE:		image.load("monkey_on_32x32.png"); break;

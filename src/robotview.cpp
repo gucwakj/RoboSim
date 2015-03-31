@@ -26,7 +26,7 @@ robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 	this->setMinimumWidth(64);
 	this->setSpacing(12);
 	this->setCurrentIndex(model->index(0, 0));
-	this->setModelColumn(rsModel::ID);
+	this->setModelColumn(rsRobotModel::ID);
 	this->setUniformItemSizes(true);
 	this->installEventFilter(this);
 
