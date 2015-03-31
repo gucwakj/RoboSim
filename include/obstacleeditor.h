@@ -159,6 +159,21 @@ class sphereEditor : public QWidget {
 		bodyColorPicker *_colorPicker;
 };
 
+class textEditor : public QWidget {
+		Q_OBJECT
+	public:
+		textEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
+		void setUnits(bool);
+
+	private:
+		QDataWidgetMapper *_mapper;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_pZUnits;
+		bodyColorPicker *_colorPicker;
+};
+
 class obstacleEditorDelegate : public QItemDelegate {
 		Q_OBJECT
 	public:

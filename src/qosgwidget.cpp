@@ -277,10 +277,13 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new obstacles
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
-		// get form and id
+		// get form, id, and mass
 		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
 		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
 		int mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS), Qt::EditRole).toInt();
+
+		// get name
+		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
 
 		// get position
 		double pos[3] = {_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
@@ -322,7 +325,8 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 				break;
 			case rs::DOT:
 			case rs::LINE:
-				_scene->drawMarker(id, form, pos, dims, led, mass, std::string(""));
+			case rs::TEXT:
+				_scene->drawMarker(id, form, pos, dims, led, mass, name);
 				break;
 		}
 

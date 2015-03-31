@@ -27,6 +27,7 @@ namespace rsObstacleModel {
 		COLOR,
 		MASS,
 		AXIS,
+		TEXT,
 		NUM_COLUMNS
 	};
 
