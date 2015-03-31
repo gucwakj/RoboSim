@@ -280,6 +280,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		// get form and id
 		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
 		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
+		int mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS), Qt::EditRole).toInt();
 
 		// get position
 		double pos[3] = {_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
@@ -318,6 +319,9 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 			case rs::CYLINDER:
 			case rs::SPHERE:
 				_scene->drawGround(id, form, pos, led, dims, quat);
+				break;
+			case rs::LINE:
+				_scene->drawMarker(id, form, pos, dims, led, mass, std::string(""));
 				break;
 		}
 

@@ -108,6 +108,25 @@ class cylinderEditor : public QWidget {
 		bodyColorPicker *_colorPicker;
 };
 
+class lineEditor : public QWidget {
+		Q_OBJECT
+	public:
+		lineEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
+		void setUnits(bool);
+
+	private:
+		QDataWidgetMapper *_mapper;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_pZUnits;
+		QLabel *_lXUnits;
+		QLabel *_lYUnits;
+		QLabel *_lZUnits;
+		QLabel *_widthUnits;
+		bodyColorPicker *_colorPicker;
+};
+
 class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:
