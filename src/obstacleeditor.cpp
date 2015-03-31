@@ -25,6 +25,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	_pages = new QStackedWidget;
 	_pages->addWidget(new boxEditor(_mapper));
 	_pages->addWidget(new cylinderEditor(_mapper));
+	_pages->addWidget(new dotEditor(_mapper));
 	_pages->addWidget(new lineEditor(_mapper));
 	_pages->addWidget(new sphereEditor(_mapper));
 
@@ -85,13 +86,18 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 				this->setUnits(_units);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
-			case rs::LINE:
+			case rs::DOT:
 				_pages->setCurrentIndex(2);
+				this->setUnits(_units);
+				dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(false);
+				break;
+			case rs::LINE:
+				_pages->setCurrentIndex(3);
 				this->setUnits(_units);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 			case rs::SPHERE:
-				_pages->setCurrentIndex(3);
+				_pages->setCurrentIndex(4);
 				this->setUnits(_units);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
@@ -111,6 +117,8 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 			dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
 			dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<dotEditor *>(_pages->currentWidget()))
+			dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<lineEditor *>(_pages->currentWidget()))
 			dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<sphereEditor*>(_pages->currentWidget()))
@@ -157,6 +165,8 @@ void obstacleEditor::setUnits(bool si) {
 		dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
 		dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(si);
+	else if (dynamic_cast<dotEditor *>(_pages->currentWidget()))
+		dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<lineEditor *>(_pages->currentWidget()))
 		dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<sphereEditor *>(_pages->currentWidget()))
@@ -560,6 +570,147 @@ void cylinderEditor::setUnits(bool si) {
 	_pZUnits->setText(text);
 	_lXUnits->setText(text);
 	_lYUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Dot Editor
+ *
+ *
+ */
+
+/*!	\brief Dot Drawing Editor.
+ *
+ *	Build individual dot editor with relevant pieces of information.
+ *
+ *	\param		mapper data mapper from obstacleEditor model.
+ */
+dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
+	// save mapper
+	_mapper = mapper;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Line Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Start X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Start Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Start Z:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("pz");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// size
+	QLabel *sizeLabel = new QLabel(tr("Size:"));
+	QDoubleSpinBox *sizeBox = new QDoubleSpinBox();
+	sizeBox->setObjectName("size");
+	sizeBox->setMinimum(0);
+	sizeBox->setMaximum(100);
+	sizeBox->setSingleStep(1);
+	sizeLabel->setBuddy(sizeBox);
+	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("colorbutton");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(sizeLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(sizeBox, 5);
+	layout->addLayout(hbox5);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void dotEditor::nullIndex(bool nullify) {
+	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("size"))->setDisabled(nullify);
+	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
+	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
+	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("size"), rsObstacleModel::MASS);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+	}
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void dotEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
 }
 
 /*!

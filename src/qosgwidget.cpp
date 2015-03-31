@@ -320,6 +320,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 			case rs::SPHERE:
 				_scene->drawGround(id, form, pos, led, dims, quat);
 				break;
+			case rs::DOT:
 			case rs::LINE:
 				_scene->drawMarker(id, form, pos, dims, led, mass, std::string(""));
 				break;

@@ -141,7 +141,7 @@ bool obstacleModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 		this->addObstacle(rs::BOX);
 	else if (!map[0].toString().compare("Cylinder"))
 		this->addObstacle(rs::CYLINDER);
-	else if (!map[0].toString().compare("Dot"))
+	else if (!map[0].toString().compare("Point"))
 		this->addObstacle(rs::DOT);
 	else if (!map[0].toString().compare("Line"))
 		this->addObstacle(rs::LINE);
