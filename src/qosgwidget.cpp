@@ -3,6 +3,14 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/ViewerEventHandlers>
 
+/*!
+ *
+ *
+ *	OSG Widget
+ *
+ *
+ */
+
 QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// create new scene
 	_scene = new rsScene::Scene();
@@ -30,7 +38,8 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_scene->setupScene(traits->width, traits->height, false);
 	QMouseHandler *mh = new QMouseHandler(_scene);
 	_scene->setMouseHandler(mh);
-	QWidget::connect(mh, SIGNAL(clickedIndex(int)), this, SLOT(clickedIndex(int)));
+	QWidget::connect(mh, SIGNAL(clickedObstacleIndex(int)), this, SLOT(clickedObstacleIndex(int)));
+	QWidget::connect(mh, SIGNAL(clickedRobotIndex(int)), this, SLOT(clickedRobotIndex(int)));
 
 	// set grid
 	_units = 0;
@@ -42,6 +51,11 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_grid.push_back(48/39.37);
 	_grid.push_back(1);
 	_scene->setGrid(_units, _grid);
+
+	// initialize current indices
+	_current[0] = -1;
+	_current[1] = -1;
+	_current[2] = -1;
 
 	// set highlighting of click
 	_scene->setHighlight(true);
@@ -61,24 +75,129 @@ QOsgWidget::~QOsgWidget(void) {
 	delete _scene;
 }
 
-void QOsgWidget::setRobotModel(robotModel *model) {
-	// set model
-	_r_model = model;
-
-	// update view with default model
-	this->robotDataChanged(_r_model->index(0, 0), _r_model->index(_r_model->rowCount()-1, 0));
+void QOsgWidget::changeLevel(void) {
+	_level = (_level) ? 0 : 1;
+	_scene->setLevel(_level);
 }
 
-void QOsgWidget::setObstacleModel(obstacleModel *model) {
-	// set model
-	_o_model = model;
-
-	// update view with default model
-	this->obstacleDataChanged(_o_model->index(0, 0), _o_model->index(_o_model->rowCount()-1, 0));
+void QOsgWidget::clickedObstacleIndex(int id) {
+	QModelIndex index;
+	for (int i = 0; i < _o_model->rowCount(); i++) {
+		index = _o_model->index(i, rsObstacleModel::ID);
+		if (_o_model->data(index, Qt::EditRole).toInt() == id) {
+			// highlight new item
+			if (id != _current[1] || _current[2] == 0) {
+				_current[1] = id;
+				_scene->addHighlight(_current[1], false);
+				emit currentTab(1);
+			}
+			// deselect current item
+			else {
+				_current[1] = -1;
+				index = _o_model->index(-1, -1);
+			}
+			// obstacle is valid index
+			_current[2] = 1;
+			emit obstacleIndexChanged(index);
+			return;
+		}
+	}
 }
 
-void QOsgWidget::setUnits(bool si) {
-	_units = si;
+void QOsgWidget::clickedRobotIndex(int id) {
+	QModelIndex index;
+	for (int i = 0; i < _r_model->rowCount(); i++) {
+		index = _r_model->index(i, rsRobotModel::ID);
+		if (_r_model->data(index, Qt::EditRole).toInt() == id) {
+			// highlight new item
+			if (id != _current[0] || _current[2] == 1) {
+				_current[0] = id;
+				_scene->addHighlight(_current[0]);
+				emit currentTab(0);
+			}
+			// deselect current item
+			else {
+				_current[0] = -1;
+				index = _r_model->index(-1, -1);
+			}
+			// undo robot index
+			_current[2] = 0;
+			emit robotIndexChanged(index);
+			return;
+		}
+	}
+}
+
+void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
+	// delete child with id from index
+	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
+	_scene->deleteObstacle(id);
+}
+
+void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
+	// delete child with id from index
+	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
+	_scene->deleteChild(id);
+}
+
+void QOsgWidget::gridDefaults(void) {
+	// reset to defaults
+	if (_units) {
+		_grid[0] = 5/100;
+		_grid[1] = 50/100;
+		_grid[2] = -200/100;
+		_grid[3] = 200/100;
+		_grid[4] = -200/100;
+		_grid[5] = 200/100;
+		_grid[6] = 1;
+	}
+	else {
+		_grid[0] = 1/39.37;
+		_grid[1] = 12/39.37;
+		_grid[2] = -48/39.37;
+		_grid[3] = 48/39.37;
+		_grid[4] = -48/39.37;
+		_grid[5] = 48/39.37;
+		_grid[6] = 1;
+	}
+
+	// draw new grid
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridTics(double value) {
+	_grid[0] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridHash(double value) {
+	_grid[1] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMinX(double value) {
+	_grid[2] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMaxX(double value) {
+	_grid[3] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMinY(double value) {
+	_grid[4] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridMaxY(double value) {
+	_grid[5] = convert(value);
+	_scene->setGrid(_units, _grid);
+}
+
+void QOsgWidget::gridEnabled(bool enabled) {
+	_grid[6] = static_cast<double>(enabled);
+	_scene->setGrid(_units, _grid);
 }
 
 void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
@@ -202,131 +321,73 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 				break;
 		}
 
-		// add new obstacle to scene 
+		// add new obstacle to scene
 		_scene->addChild();
 	}
 	// set current robot
 	this->setCurrentObstacleIndex(bottomRight);
 }
 
-void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
-	// get new robot ID
-	int newRobot = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
-
-	// set new current robot
-	_current = newRobot;
-
-	// update view
-	_scene->addHighlight(_current);
+void QOsgWidget::setCurrentIndex(int ind) {
+	if (ind == 0)
+		this->setCurrentRobotIndex(_r_model->index(_current[0], rsRobotModel::ID));
+	else if (ind == 1)
+		this->setCurrentObstacleIndex(_o_model->index(_current[1], rsObstacleModel::ID));
 }
 
 void QOsgWidget::setCurrentObstacleIndex(const QModelIndex &index) {
-	// get new obstacle ID
-	int new_obstacle = _o_model->data(_o_model->index(index.row(), rsObstacleModel::ID), Qt::EditRole).toInt();
+	// invalid index: remove all highlight and return
+	if ( !index.isValid() ) {
+		_scene->addHighlight(-1, false);
+		return;
+	}
 
-	// set new current robot
-	_current = new_obstacle;
+	// set new obstacle ID
+	_current[1] = _o_model->data(_o_model->index(index.row(), rsObstacleModel::ID), Qt::EditRole).toInt();
+
+	// obstacle is valid ID
+	_current[2] = 1;
 
 	// update view
-	_scene->addHighlight(_current);
+	_scene->addHighlight(_current[1], false);
 }
 
-void QOsgWidget::changeLevel(void) {
-	_level = (_level) ? 0 : 1;
-	_scene->setLevel(_level);
-}
-
-void QOsgWidget::clickedIndex(int id) {
-	QModelIndex index;
-	for (int i = 0; i < _r_model->rowCount(); i++) {
-		index = _r_model->index(i, rsRobotModel::ID);
-		if (_r_model->data(index, Qt::EditRole).toInt() == id) {
-			// highlight new item
-			if (id != _current) {
-				_current = id;
-				_scene->addHighlight(_current);
-			}
-			// deselect current item
-			else {
-				_current = -1;
-				index = _r_model->index(-1, -1);
-			}
-			emit robotIndexChanged(index);
-			return;
-		}
-	}
-}
-
-void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
-	// delete child with id from index
-	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
-	_scene->deleteChild(id);
-}
-
-void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
-	// delete child with id from index
-	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
-	_scene->deleteObstacle(id);
-}
-
-void QOsgWidget::gridDefaults(void) {
-	// reset to defaults
-	if (_units) {
-		_grid[0] = 5/100;
-		_grid[1] = 50/100;
-		_grid[2] = -200/100;
-		_grid[3] = 200/100;
-		_grid[4] = -200/100;
-		_grid[5] = 200/100;
-		_grid[6] = 1;
-	}
-	else {
-		_grid[0] = 1/39.37;
-		_grid[1] = 12/39.37;
-		_grid[2] = -48/39.37;
-		_grid[3] = 48/39.37;
-		_grid[4] = -48/39.37;
-		_grid[5] = 48/39.37;
-		_grid[6] = 1;
+void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
+	// invalid index: remove all highlight and return
+	if ( !index.isValid() ) {
+		_scene->addHighlight(-1, false);
+		return;
 	}
 
-	// draw new grid
-	_scene->setGrid(_units, _grid);
+	// set new robot ID
+	_current[0] = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
+
+	// robot is valid ID
+	_current[2] = 0;
+
+	// update view
+	_scene->addHighlight(_current[0]);
 }
 
-void QOsgWidget::gridTics(double value) {
-	_grid[0] = convert(value);
-	_scene->setGrid(_units, _grid);
+void QOsgWidget::setObstacleModel(obstacleModel *model) {
+	// set model
+	_o_model = model;
 }
 
-void QOsgWidget::gridHash(double value) {
-	_grid[1] = convert(value);
-	_scene->setGrid(_units, _grid);
+void QOsgWidget::setRobotModel(robotModel *model) {
+	// set model
+	_r_model = model;
+
+	// update view with default model
+	this->robotDataChanged(_r_model->index(0, 0), _r_model->index(_r_model->rowCount()-1, 0));
 }
 
-void QOsgWidget::gridMinX(double value) {
-	_grid[2] = convert(value);
-	_scene->setGrid(_units, _grid);
+void QOsgWidget::setUnits(bool si) {
+	_units = si;
 }
 
-void QOsgWidget::gridMaxX(double value) {
-	_grid[3] = convert(value);
-	_scene->setGrid(_units, _grid);
-}
-
-void QOsgWidget::gridMinY(double value) {
-	_grid[4] = convert(value);
-	_scene->setGrid(_units, _grid);
-}
-
-void QOsgWidget::gridMaxY(double value) {
-	_grid[5] = convert(value);
-	_scene->setGrid(_units, _grid);
-}
-
-void QOsgWidget::gridEnabled(bool enabled) {
-	_grid[6] = static_cast<double>(enabled);
-	_scene->setGrid(_units, _grid);
+double QOsgWidget::convert(double value) {
+	return ((_units) ? value/100 : value/39.37);
 }
 
 bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
@@ -335,23 +396,42 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 		switch (keyEvent->key()) {
 			case Qt::Key_Backspace:
 			case Qt::Key_Delete: {
-				// remove current robot from model
-				QModelIndex index = _r_model->index(_current, rsRobotModel::ID);
-				_r_model->removeRows(index.row(), 1);
+				if (_current[0] != -1 && _current[2] == 0) {
+					// remove current robot from model
+					QModelIndex index = _r_model->index(_current[0], rsRobotModel::ID);
+					_r_model->removeRows(index.row(), 1);
 
-				// new index is same row as last one
-				int row = _r_model->index(_current, rsRobotModel::ID).row();
+					// new index is same row as last one
+					int row = _r_model->index(_current[0], rsRobotModel::ID).row();
 
-				// if it is invalid, then set the last row in the model
-				if (row == -1) {
-					this->setCurrentRobotIndex(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
-					emit robotIndexChanged(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
+					// if it is invalid, then set the last row in the model
+					if (row == -1) {
+						this->setCurrentRobotIndex(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
+						emit robotIndexChanged(_r_model->index(_r_model->rowCount()-1, rsRobotModel::ID));
+					}
+					else {
+						this->setCurrentRobotIndex(_r_model->index(row, rsRobotModel::ID));
+						emit robotIndexChanged(_r_model->index(row, rsRobotModel::ID));
+					}
 				}
-				else {
-					this->setCurrentRobotIndex(_r_model->index(row, rsRobotModel::ID));
-					emit robotIndexChanged(_r_model->index(row, rsRobotModel::ID));
-				}
+				else if (_current[1] != -1 && _current[2] == 1) {
+					// remove current obstacle from model
+					QModelIndex index = _o_model->index(_current[1], rsObstacleModel::ID);
+					_o_model->removeRows(index.row(), 1);
 
+					// new index is same row as last one
+					int row = _o_model->index(_current[1], rsObstacleModel::ID).row();
+
+					// if it is invalid, then set the last row in the model
+					if (row == -1) {
+						this->setCurrentObstacleIndex(_o_model->index(_o_model->rowCount()-1, rsObstacleModel::ID));
+						emit obstacleIndexChanged(_o_model->index(_o_model->rowCount()-1, rsObstacleModel::ID));
+					}
+					else {
+						this->setCurrentObstacleIndex(_o_model->index(row, rsObstacleModel::ID));
+						emit obstacleIndexChanged(_o_model->index(row, rsObstacleModel::ID));
+					}
+				}
 				break;
 			}
 			default:
@@ -364,16 +444,21 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 		return QObject::eventFilter(obj, event);
 }
 
-double QOsgWidget::convert(double value) {
-	return ((_units) ? value/100 : value/39.37);
-}
+/*!
+ *
+ *
+ *	Mouse Handler
+ *
+ *
+ */
 
-QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scene) {
-}
+QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scene) { }
 
 int QMouseHandler::pick(const osgGA::GUIEventAdapter &ea, osgViewer::Viewer *viewer) {
 	int id = rsScene::MouseHandler::pick(ea, viewer);
-	if (id != -1)
-		emit clickedIndex(id);
+	if (id >= 1000)
+		emit clickedObstacleIndex(id-1000);
+	else if (id >= 0)
+		emit clickedRobotIndex(id);
 }
 

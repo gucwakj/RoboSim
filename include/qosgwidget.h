@@ -23,13 +23,15 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void setObstacleModel(obstacleModel*);
 
 	signals:
+		void currentTab(int);
 		void obstacleIndexChanged(const QModelIndex&);
 		void robotIndexChanged(const QModelIndex&);
 		void nullIndex(void);
 
 	public slots:
 		void changeLevel(void);
-		void clickedIndex(int);
+		void clickedObstacleIndex(int);
+		void clickedRobotIndex(int);
 		void deleteObstacleIndex(QModelIndex, int, int);
 		void deleteRobotIndex(QModelIndex, int, int);
 		void gridDefaults(void);
@@ -42,21 +44,22 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void gridTics(double);
 		void obstacleDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
+		void setCurrentIndex(int);
 		void setCurrentObstacleIndex(const QModelIndex&);
 		void setCurrentRobotIndex(const QModelIndex&);
 		void setUnits(bool);
 
 	protected:
-		~QOsgWidget();
-		bool eventFilter(QObject*, QEvent*);
+		~QOsgWidget(void);
 		double convert(double);
+		bool eventFilter(QObject*, QEvent*);
 
 	private:
 		rsScene::Scene *_scene;
 		robotModel *_r_model;
 		obstacleModel *_o_model;
 		bool _units;
-		int _current;
+		int _current[3];
 		int _level;
 		std::vector<double> _grid;
 };
@@ -70,7 +73,8 @@ class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {
 		virtual int pick(const osgGA::GUIEventAdapter&, osgViewer::Viewer*);
 
 	signals:
-		void clickedIndex(int);
+		void clickedObstacleIndex(int);
+		void clickedRobotIndex(int);
 };
 
 #endif // QOSGWIDGET_H

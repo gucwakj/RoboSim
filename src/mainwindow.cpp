@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->toolBox_config->setCurrentIndex(0);
 
 	// set robots as first view in scene editor tabwidget
-	ui->tab_scene->setCurrentIndex(1);
+	ui->tab_scene->setCurrentIndex(0);
 
 	// set up robot model
 	robotModel *model = new robotModel(this);
@@ -113,6 +113,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxY(double)));
 	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(gridEnabled(bool)));
 	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
+	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
+	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
+	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
+	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->osgWidget, SLOT(setCurrentIndex(int)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
