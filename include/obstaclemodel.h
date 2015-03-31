@@ -25,6 +25,7 @@ namespace rsObstacleModel {
 		L_2,
 		L_3,
 		COLOR,
+		MASS,
 		NUM_COLUMNS
 	};
 

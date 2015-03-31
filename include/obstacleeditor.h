@@ -86,6 +86,7 @@ class boxEditor : public QWidget {
 		QLabel *_lXUnits;
 		QLabel *_lYUnits;
 		QLabel *_lZUnits;
+		QLabel *_massUnits;
 		bodyColorPicker *_colorPicker;
 };
 
@@ -103,6 +104,7 @@ class cylinderEditor : public QWidget {
 		QLabel *_pZUnits;
 		QLabel *_lXUnits;
 		QLabel *_lYUnits;
+		QLabel *_massUnits;
 		bodyColorPicker *_colorPicker;
 };
 
@@ -119,6 +121,7 @@ class sphereEditor : public QWidget {
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
 		QLabel *_lXUnits;
+		QLabel *_massUnits;
 		bodyColorPicker *_colorPicker;
 };
 

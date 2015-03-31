@@ -240,6 +240,17 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lZLabel->setBuddy(lZBox);
 	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
+	// mass
+	QLabel *massLabel = new QLabel(tr("Mass:"));
+	_massUnits = new QLabel();
+	QDoubleSpinBox *massBox = new QDoubleSpinBox();
+	massBox->setObjectName("mass");
+	massBox->setMinimum(0);
+	massBox->setMaximum(100);
+	massBox->setSingleStep(0.5);
+	massLabel->setBuddy(massBox);
+	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("colorbutton");
@@ -275,6 +286,11 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	hbox4->addWidget(lZBox, 5);
 	hbox4->addWidget(_lZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(massLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(massBox, 5);
+	hbox5->addWidget(_massUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -293,6 +309,7 @@ void boxEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("lx"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("ly"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("lz"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
 
 	// dim color button
@@ -309,6 +326,7 @@ void boxEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lx"), rsObstacleModel::L_1);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("ly"), rsObstacleModel::L_2);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lz"), rsObstacleModel::L_3);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
 		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
 	}
 }
@@ -319,8 +337,14 @@ void boxEditor::nullIndex(bool nullify) {
  */
 void boxEditor::setUnits(bool si) {
 	QString text;
-	if (si) text = tr("cm");
-	else text = tr("in");
+	if (si) {
+		text = tr("cm");
+		_massUnits->setText(tr("g"));
+	}
+	else {
+		text = tr("in");
+		_massUnits->setText(tr("lb"));
+	}
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
@@ -405,6 +429,17 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	lYLabel->setBuddy(lYBox);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
+	// mass
+	QLabel *massLabel = new QLabel(tr("Mass:"));
+	_massUnits = new QLabel();
+	QDoubleSpinBox *massBox = new QDoubleSpinBox();
+	massBox->setObjectName("mass");
+	massBox->setMinimum(0);
+	massBox->setMaximum(100);
+	massBox->setSingleStep(0.5);
+	massLabel->setBuddy(massBox);
+	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("colorbutton");
@@ -437,6 +472,11 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(massLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(massBox, 5);
+	hbox5->addWidget(_massUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -454,6 +494,7 @@ void cylinderEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("length"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
 
 	// dim color button
@@ -469,6 +510,7 @@ void cylinderEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("length"), rsObstacleModel::L_2);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
 		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
 	}
 }
@@ -479,8 +521,14 @@ void cylinderEditor::nullIndex(bool nullify) {
  */
 void cylinderEditor::setUnits(bool si) {
 	QString text;
-	if (si) text = tr("cm");
-	else text = tr("in");
+	if (si) {
+		text = tr("cm");
+		_massUnits->setText(tr("g"));
+	}
+	else {
+		text = tr("in");
+		_massUnits->setText(tr("lb"));
+	}
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
@@ -553,6 +601,17 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
+	// mass
+	QLabel *massLabel = new QLabel(tr("Mass:"));
+	_massUnits = new QLabel();
+	QDoubleSpinBox *massBox = new QDoubleSpinBox();
+	massBox->setObjectName("mass");
+	massBox->setMinimum(0);
+	massBox->setMaximum(100);
+	massBox->setSingleStep(0.5);
+	massLabel->setBuddy(massBox);
+	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("colorbutton");
@@ -582,6 +641,11 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(massLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(massBox, 5);
+	hbox5->addWidget(_massUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -598,6 +662,7 @@ void sphereEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
 
 	// dim color button
@@ -612,6 +677,7 @@ void sphereEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
 		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
 	}
 }
@@ -622,8 +688,14 @@ void sphereEditor::nullIndex(bool nullify) {
  */
 void sphereEditor::setUnits(bool si) {
 	QString text;
-	if (si) text = tr("cm");
-	else text = tr("in");
+	if (si) {
+		text = tr("cm");
+		_massUnits->setText(tr("g"));
+	}
+	else {
+		text = tr("in");
+		_massUnits->setText(tr("lb"));
+	}
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
