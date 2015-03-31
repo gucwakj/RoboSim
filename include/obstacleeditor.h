@@ -19,15 +19,14 @@
 #include <QMetaProperty>
 
 #include "obstaclemodel.h"
-#include "roboteditor.h"
 
-/*class colorEditor : public QWidget {
+class bodyColorPicker : public QWidget {
 		Q_OBJECT
 		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 	public:
-		explicit colorEditor(QWidget* = 0);
-		virtual ~colorEditor(void) {};
+		explicit bodyColorPicker(QWidget* = 0);
+		virtual ~bodyColorPicker(void) {};
 
 		QColor color(void) const;
 
@@ -43,7 +42,7 @@
 	private:
 		QColor _color;
 		QPushButton *_button;
-};*/
+};
 
 class obstacleEditor : public QWidget {
 		Q_OBJECT
@@ -69,6 +68,7 @@ class obstacleEditor : public QWidget {
 		QPushButton *_deleteButton;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
+		bool _units;
 };
 
 class boxEditor : public QWidget {
@@ -86,48 +86,42 @@ class boxEditor : public QWidget {
 		QLabel *_lXUnits;
 		QLabel *_lYUnits;
 		QLabel *_lZUnits;
-		colorEditor *_colorEditor;
+		bodyColorPicker *_colorPicker;
 };
-/*
-class customEditor : public QWidget {
+
+class cylinderEditor : public QWidget {
 		Q_OBJECT
 	public:
-		customEditor(QDataWidgetMapper*, QWidget* = 0);
+		cylinderEditor(QDataWidgetMapper*, QWidget* = 0);
 		void nullIndex(bool);
 		void setUnits(bool);
 
-	protected slots:
-		void rotate(double);
-
 	private:
 		QDataWidgetMapper *_mapper;
-		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
-		QLabel *_wheelUnits;
-		QComboBox *_wheelBox;
-		QLabel *_radiusUnits;
-		colorEditor *_colorEditor;
+		QLabel *_pZUnits;
+		QLabel *_lXUnits;
+		QLabel *_lYUnits;
+		bodyColorPicker *_colorPicker;
 };
 
-class preconfigEditor : public QWidget {
+class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:
-		preconfigEditor(QDataWidgetMapper*, QWidget* = 0);
+		sphereEditor(QDataWidgetMapper*, QWidget* = 0);
 		void nullIndex(bool);
 		void setUnits(bool);
 
-	protected slots:
-		void rotate(double);
-
 	private:
 		QDataWidgetMapper *_mapper;
-		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
-		colorEditor *_colorEditor;
+		QLabel *_pZUnits;
+		QLabel *_lXUnits;
+		bodyColorPicker *_colorPicker;
 };
-*/
+
 class obstacleEditorDelegate : public QItemDelegate {
 		Q_OBJECT
 	public:
@@ -137,3 +131,4 @@ class obstacleEditorDelegate : public QItemDelegate {
 };
 
 #endif // OBSTACLEEDITOR_H_
+

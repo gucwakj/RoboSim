@@ -75,18 +75,18 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		if (_model->data(_model->index(index.row(), rsModel::PRECONFIG), Qt::EditRole).toInt()) {
 			_pages->setCurrentIndex(2);	// preconfig
 			this->setUnits(_units);
-			dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(false);
+			dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(false);
 		}
 		else {
 			if (_model->data(_model->index(index.row(), rsModel::WHEEL), Qt::EditRole).toInt() == 4) {
 				_pages->setCurrentIndex(1);	// custom
 				this->setUnits(_units);
-				dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false);
 			}
 			else {
 				_pages->setCurrentIndex(0);	// individual
 				this->setUnits(_units);
-				dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<individualEditor *>(_pages->currentWidget())->nullIndex(false);
 			}
 		}
 
@@ -100,12 +100,12 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	}
 	else {
 		// disable current page
-		if (dynamic_cast<individualEditor*>(_pages->currentWidget()))
-			dynamic_cast<individualEditor*>(_pages->currentWidget())->nullIndex(true);
-		else if (dynamic_cast<preconfigEditor*>(_pages->currentWidget()))
-			dynamic_cast<preconfigEditor*>(_pages->currentWidget())->nullIndex(true);
-		else if (dynamic_cast<customEditor*>(_pages->currentWidget()))
-			dynamic_cast<customEditor*>(_pages->currentWidget())->nullIndex(true);
+		if (dynamic_cast<individualEditor *>(_pages->currentWidget()))
+			dynamic_cast<individualEditor *>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
+			dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<customEditor *>(_pages->currentWidget()))
+			dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(true);
 
 		// disable all buttons
 		_deleteButton->setDisabled(true);
@@ -148,12 +148,12 @@ void robotEditor::setUnits(bool si) {
 	_units = si;
 
 	// set units labels for editors
-	if (dynamic_cast<individualEditor*>(_pages->currentWidget()))
-		dynamic_cast<individualEditor*>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<preconfigEditor*>(_pages->currentWidget()))
-		dynamic_cast<preconfigEditor*>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<customEditor*>(_pages->currentWidget()))
-		dynamic_cast<customEditor*>(_pages->currentWidget())->setUnits(si);
+	if (dynamic_cast<individualEditor *>(_pages->currentWidget()))
+		dynamic_cast<individualEditor *>(_pages->currentWidget())->setUnits(si);
+	else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
+		dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(si);
+	else if (dynamic_cast<customEditor *>(_pages->currentWidget()))
+		dynamic_cast<customEditor *>(_pages->currentWidget())->setUnits(si);
 }
 
 /*!
@@ -237,9 +237,9 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// color
-	_colorEditor = new colorEditor();
-	_colorEditor->setObjectName("color");
-	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	_colorPicker = new ledColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -278,7 +278,7 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	hbox5->addWidget(_wheelUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
-	hbox6->addWidget(_colorEditor);
+	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
 	layout->addStretch(2);
 	this->setLayout(layout);
@@ -436,9 +436,9 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	QWidget::connect(radiusEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
 
 	// color
-	_colorEditor = new colorEditor();
-	_colorEditor->setObjectName("color");
-	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	_colorPicker = new ledColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -482,7 +482,7 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	hbox6->addWidget(_radiusUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox6);
 	QHBoxLayout *hbox7 = new QHBoxLayout();
-	hbox7->addWidget(_colorEditor);
+	hbox7->addWidget(_colorPicker);
 	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
@@ -616,9 +616,9 @@ preconfigEditor::preconfigEditor(QDataWidgetMapper *mapper, QWidget *parent) : Q
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
 	// color
-	_colorEditor = new colorEditor();
-	_colorEditor->setObjectName("color");
-	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	_colorPicker = new ledColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -647,7 +647,7 @@ preconfigEditor::preconfigEditor(QDataWidgetMapper *mapper, QWidget *parent) : Q
 	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
-	hbox6->addWidget(_colorEditor);
+	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
 	layout->addStretch(2);
 	this->setLayout(layout);
@@ -707,12 +707,12 @@ void preconfigEditor::setUnits(bool si) {
 /*!
  *
  *
- *	colorEditor
+ *	ledColorPicker
  *
  *
  */
 
-colorEditor::colorEditor(QWidget *parent) : QWidget(parent) {
+ledColorPicker::ledColorPicker(QWidget *parent) : QWidget(parent) {
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 
 	QLabel *label = new QLabel(tr("LED Color:"));
@@ -730,11 +730,11 @@ colorEditor::colorEditor(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_button, SIGNAL(clicked()), this, SLOT(onButtonClicked()));
 }
 
-QColor colorEditor::color(void) const {
+QColor ledColorPicker::color(void) const {
     return _color;
 }
 
-void colorEditor::setColor(const QColor color) {
+void ledColorPicker::setColor(const QColor color) {
 	if (color == _color)
 		return;
 
@@ -742,7 +742,7 @@ void colorEditor::setColor(const QColor color) {
 	_button->setPalette(QPalette(_color));
 }
 
-void colorEditor::onButtonClicked(void) {
+void ledColorPicker::onButtonClicked(void) {
 	const QColor color = QColorDialog::getColor(_color, this);
 	if (!color.isValid())
 		return;
@@ -759,8 +759,7 @@ void colorEditor::onButtonClicked(void) {
  *
  */
 
-robotEditorDelegate::robotEditorDelegate(QObject *parent) : QItemDelegate(parent) {
-}
+robotEditorDelegate::robotEditorDelegate(QObject *parent) : QItemDelegate(parent) { }
 
 void robotEditorDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
 	if (!strcmp(editor->metaObject()->className(), "QComboBox")) {

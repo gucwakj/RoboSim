@@ -16,11 +16,12 @@ bool obstacleModel::addObstacle(int form, int role) {
 
 	if (role == Qt::EditRole) {
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
+		_list[row][FORM] = QVariant(form).toString();
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
-		_list[row][L_1] = QVariant(0.1).toString();
-		_list[row][L_2] = QVariant(0.1).toString();
-		_list[row][L_3] = QVariant(0.1).toString();
-		_list[row][COLOR] = QString("#00ff00");
+		_list[row][L_1] = QVariant(0.0254).toString();	// 1 inch
+		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
+		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
+		_list[row][COLOR] = QString("#00ff00");	// green
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -134,17 +135,18 @@ bool obstacleModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	int r, c;
 	QMap<int,  QVariant> map;
 	stream >> r >> c >> map;
+
 	if (!map[0].toString().compare("Box"))
 		this->addObstacle(rs::BOX);
 	else if (!map[0].toString().compare("Cylinder"))
 		this->addObstacle(rs::CYLINDER);
-	else if (!map[0].toString().compare("dot"))
+	else if (!map[0].toString().compare("Dot"))
 		this->addObstacle(rs::DOT);
-	else if (!map[0].toString().compare("line"))
+	else if (!map[0].toString().compare("Line"))
 		this->addObstacle(rs::LINE);
-	else if (!map[0].toString().compare("sphere"))
+	else if (!map[0].toString().compare("Sphere"))
 		this->addObstacle(rs::SPHERE);
-	else if (!map[0].toString().compare("text"))
+	else if (!map[0].toString().compare("Text"))
 		this->addObstacle(rs::TEXT);
 
 	return true;
@@ -163,6 +165,7 @@ bool obstacleModel::setData(const QModelIndex &index, const QVariant &value, int
 		else {
 			_list[index.row()][index.column()] = value.toString();
 		}
+this->printModel();
 		// only emit signal if data has actually changed
 		if (oldValue.compare(_list[index.row()][index.column()])) {
 			emit dataChanged(index, index);

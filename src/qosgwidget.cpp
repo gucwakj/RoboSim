@@ -156,7 +156,7 @@ void QOsgWidget::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 }
 
 void QOsgWidget::dataChanged2(QModelIndex topLeft, QModelIndex bottomRight) {
-	// draw all new robots
+	// draw all new obstacles
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		// get form and id
 		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
@@ -179,11 +179,17 @@ void QOsgWidget::dataChanged2(QModelIndex topLeft, QModelIndex bottomRight) {
 		QColor color(_o_model->data(_o_model->index(i, rsObstacleModel::COLOR)).toString());
 		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
 
-		// delete old robot
+		// delete old obstacle
 		_scene->deleteObstacle(id);
 
 		// draw new obstacle
-		_scene->drawGround(id, form, pos, led, dims, quat);
+		switch (form) {
+			case rs::BOX:
+			case rs::CYLINDER:
+			case rs::SPHERE:
+				_scene->drawGround(id, form, pos, led, dims, quat);
+				break;
+		}
 
 		// add new obstacle to scene 
 		_scene->addChild();

@@ -24,8 +24,8 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	// set up editor pages
 	_pages = new QStackedWidget;
 	_pages->addWidget(new boxEditor(_mapper));
-	//_pages->addWidget(new customEditor(_mapper));
-	//_pages->addWidget(new preconfigEditor(_mapper));
+	_pages->addWidget(new cylinderEditor(_mapper));
+	_pages->addWidget(new sphereEditor(_mapper));
 
 	// set up buttons
 	_deleteButton = new QPushButton(tr("Delete"));
@@ -45,8 +45,8 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	QWidget::connect(_previousButton, SIGNAL(clicked()), _mapper, SLOT(toPrevious()));
 	QWidget::connect(_previousButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
 
-	// set up units for item labels
-	this->setUnits(true);
+	// set default units
+	_units = false;	// us
 
 	// lay out grid
 	QVBoxLayout *vbox = new QVBoxLayout();
@@ -68,12 +68,26 @@ void obstacleEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight
 
 void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid()) {
+		// disable current mappings
+		_mapper->clearMapping();
+
 		// load appropriate page
-		int id = _model->data(_model->index(index.row(), rsObstacleModel::FORM), Qt::EditRole).toInt();
-		_pages->setCurrentIndex(id);
-		switch (id) {
+		int form = _model->data(_model->index(index.row(), rsObstacleModel::FORM), Qt::EditRole).toInt();
+		switch (form) {
 			case rs::BOX:
-				dynamic_cast<boxEditor*>(_pages->currentWidget())->nullIndex(false);
+				_pages->setCurrentIndex(0);
+				this->setUnits(_units);
+				dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(false);
+				break;
+			case rs::CYLINDER:
+				_pages->setCurrentIndex(1);
+				this->setUnits(_units);
+				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(false);
+				break;
+			case rs::SPHERE:
+				_pages->setCurrentIndex(2);
+				this->setUnits(_units);
+				dynamic_cast<sphereEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 		}
 
@@ -87,18 +101,12 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 	}
 	else {
 		// disable current page
-		if (dynamic_cast<boxEditor*>(_pages->currentWidget()))
-			dynamic_cast<boxEditor*>(_pages->currentWidget())->nullIndex(true);
-		/*else if (dynamic_cast<cylinderEditor*>(_pages->currentWidget()))
-			dynamic_cast<cylinderEditor*>(_pages->currentWidget())->nullIndex(true);
-		else if (dynamic_cast<dotEditor*>(_pages->currentWidget()))
-			dynamic_cast<dotEditor*>(_pages->currentWidget())->nullIndex(true);
-		else if (dynamic_cast<lineEditor*>(_pages->currentWidget()))
-			dynamic_cast<lineEditor*>(_pages->currentWidget())->nullIndex(true);
+		if (dynamic_cast<boxEditor *>(_pages->currentWidget()))
+			dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
+			dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<sphereEditor*>(_pages->currentWidget()))
 			dynamic_cast<sphereEditor*>(_pages->currentWidget())->nullIndex(true);
-		else if (dynamic_cast<textEditor*>(_pages->currentWidget()))
-			dynamic_cast<textEditor*>(_pages->currentWidget())->nullIndex(true);*/
 
 		// disable all buttons
 		_deleteButton->setDisabled(true);
@@ -137,12 +145,12 @@ void obstacleEditor::deleteCurrentIndex(void) {
 }
 
 void obstacleEditor::setUnits(bool si) {
-	/*if (dynamic_cast<Editor*>(_pages->currentWidget()))
-		dynamic_cast<individualEditor*>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<preconfigEditor*>(_pages->currentWidget()))
-		dynamic_cast<preconfigEditor*>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<customEditor*>(_pages->currentWidget()))
-		dynamic_cast<customEditor*>(_pages->currentWidget())->setUnits(si);*/
+	if (dynamic_cast<boxEditor *>(_pages->currentWidget()))
+		dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(si);
+	else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
+		dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(si);
+	else if (dynamic_cast<sphereEditor *>(_pages->currentWidget()))
+		dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(si);
 }
 
 /*!
@@ -175,7 +183,6 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	mapper->addMapping(pXBox, rsObstacleModel::P_X);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position y
@@ -187,7 +194,6 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	mapper->addMapping(pYBox, rsObstacleModel::P_Y);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position z
@@ -199,7 +205,6 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	mapper->addMapping(pZBox, rsObstacleModel::P_Z);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// length x
@@ -211,7 +216,6 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lXBox->setMaximum(100);
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
-	mapper->addMapping(lXBox, rsObstacleModel::L_1);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// length y
@@ -223,7 +227,6 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lYBox->setMaximum(100);
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
-	mapper->addMapping(lYBox, rsObstacleModel::L_2);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// length z
@@ -235,17 +238,12 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lZBox->setMaximum(100);
 	lZBox->setSingleStep(0.5);
 	lZLabel->setBuddy(lZBox);
-	mapper->addMapping(lZBox, rsObstacleModel::L_3);
 	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// color
-	_colorEditor = new colorEditor();
-	_colorEditor->setObjectName("color");
-	mapper->addMapping(_colorEditor, rsObstacleModel::COLOR, "color");
-	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
-
-	// set up units for item labels
-	this->setUnits(false);
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("colorbutton");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -278,7 +276,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	hbox4->addWidget(_lZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
-	hbox6->addWidget(_colorEditor);
+	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
 	layout->addStretch(2);
 	this->setLayout(layout);
@@ -296,12 +294,23 @@ void boxEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("ly"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("lz"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
 	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify)
-		color.setAlpha(50);
-	else
-		color.setAlpha(255);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
 	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lx"), rsObstacleModel::L_1);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("ly"), rsObstacleModel::L_2);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lz"), rsObstacleModel::L_3);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+	}
 }
 
 /*!	\brief Slot to set units labels.
@@ -310,10 +319,8 @@ void boxEditor::nullIndex(bool nullify) {
  */
 void boxEditor::setUnits(bool si) {
 	QString text;
-	if (si)
-		text = tr("cm");
-	else
-		text = tr("in");
+	if (si) text = tr("cm");
+	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
@@ -325,43 +332,23 @@ void boxEditor::setUnits(bool si) {
 /*!
  *
  *
- *	CustomEditor
+ *	Cylinder Editor
  *
  *
  */
 
-/*!	\brief Custom Wheeled obstacle Editor.
+/*!	\brief Cylinder Obstacle Editor.
  *
- *	Build individual obstacle editor with custom wheel size.
+ *	Build individual cylinder editor with relevant pieces of information.
  *
  *	\param		mapper data mapper from obstacleEditor model.
  */
-/*customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
+cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
 	// save mapper
 	_mapper = mapper;
 
 	// set title
-	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">obstacle Editor</span>"));
-
-	// form list
-	QLabel *formLabel = new QLabel(tr("Form: "));
-	QStringList formItems;
-	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms") << tr("Mobot");
-	QStringListModel *formModel = new QStringListModel(formItems, this);
-	QComboBox *formBox = new QComboBox();
-	formBox->setObjectName("form");
-	formBox->setModel(formModel);
-	formLabel->setBuddy(formBox);
-	mapper->addMapping(formBox, rsModel::FORM);
-	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
-
-	// name
-	QLabel *nameLabel = new QLabel(tr("Name:"));
-	QLineEdit *nameEdit = new QLineEdit;
-	nameEdit->setObjectName("name");
-	nameLabel->setBuddy(nameEdit);
-	mapper->addMapping(nameEdit, rsModel::NAME);
-	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Cylinder Editor</span>"));
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -372,7 +359,6 @@ void boxEditor::setUnits(bool si) {
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	mapper->addMapping(pXBox, rsModel::P_X);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// position y
@@ -384,47 +370,45 @@ void boxEditor::setUnits(bool si) {
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	mapper->addMapping(pYBox, rsModel::P_Y);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
-	// rotation psi
-	QLabel *rZLabel = new QLabel(tr("Angle:"));
-	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
-	_rZBox = new QDoubleSpinBox();
-	_rZBox->setObjectName("rz");
-	_rZBox->setMinimum(-360);
-	_rZBox->setMaximum(360);
-	_rZBox->setSingleStep(0.5);
-	rZLabel->setBuddy(_rZBox);
-	mapper->addMapping(_rZBox, rsModel::R_PSI);
-	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("pz");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
-	// wheels list
-	QLabel *wheelLabel = new QLabel(tr("Wheels:"));
-	_wheelUnits = new QLabel(tr("cm"));
-	_wheelBox = new QComboBox();
-	_wheelBox->setObjectName("wheels");
-	wheelLabel->setBuddy(_wheelBox);
-	mapper->addMapping(_wheelBox, rsModel::WHEEL);
-	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+	// radius
+	QLabel *lXLabel = new QLabel(tr("Radius:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("radius");
+	lXBox->setMinimum(0);
+	lXBox->setMaximum(100);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
-	// radius of wheel
-	QLabel *radiusLabel = new QLabel(tr("Radius:"));
-	_radiusUnits = new QLabel(tr("cm"));
-	QLineEdit *radiusEdit = new QLineEdit;
-	radiusEdit->setObjectName("radius");
-	radiusLabel->setBuddy(radiusEdit);
-	mapper->addMapping(radiusEdit, rsModel::RADIUS);
-	QWidget::connect(radiusEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
+	// length
+	QLabel *lYLabel = new QLabel(tr("Length:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("length");
+	lYBox->setMinimum(0);
+	lYBox->setMaximum(100);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
 	// color
-	_colorEditor = new colorEditor();
-	_colorEditor->setObjectName("color");
-	mapper->addMapping(_colorEditor, rsModel::COLOR, "color");
-	QWidget::connect(_colorEditor, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
-
-	// set up units for item labels
-	this->setUnits(true);
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("colorbutton");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -432,20 +416,161 @@ void boxEditor::setUnits(bool si) {
 	hbox0->addWidget(title, 5, Qt::AlignHCenter);
 	layout->addLayout(hbox0);
 	layout->addStretch(1);
-	QHBoxLayout *hbox1 = new QHBoxLayout();
-	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
-	hbox1->addWidget(formBox, 5);
-	hbox1->addStretch(1);
-	layout->addLayout(hbox1);
-	QHBoxLayout *hbox = new QHBoxLayout();
-	hbox->addWidget(nameLabel, 2, Qt::AlignRight);
-	hbox->addWidget(nameEdit, 5);
-	hbox->addStretch(1);
-	layout->addLayout(hbox);
 	QHBoxLayout *hbox2 = new QHBoxLayout();
 	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
 	hbox2->addWidget(pXBox, 5);
 	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void cylinderEditor::nullIndex(bool nullify) {
+	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("length"))->setDisabled(nullify);
+	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
+	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
+	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("length"), rsObstacleModel::L_2);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+	}
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void cylinderEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Sphere Editor
+ *
+ *
+ */
+
+/*!	\brief Sphere Obstacle Editor.
+ *
+ *	Build individual sphere editor with relevant pieces of information.
+ *
+ *	\param		mapper data mapper from obstacleEditor model.
+ */
+sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
+	// save mapper
+	_mapper = mapper;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Sphere Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("pz");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// radius
+	QLabel *lXLabel = new QLabel(tr("Radius:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("radius");
+	lXBox->setMinimum(0);
+	lXBox->setMaximum(100);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("colorbutton");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox2);
 	QHBoxLayout *hbox3 = new QHBoxLayout();
 	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
@@ -453,93 +578,70 @@ void boxEditor::setUnits(bool si) {
 	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox3);
 	QHBoxLayout *hbox4 = new QHBoxLayout();
-	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
-	hbox4->addWidget(_rZBox, 5);
-	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
-	QHBoxLayout *hbox5 = new QHBoxLayout();
-	hbox5->addWidget(wheelLabel, 2, Qt::AlignRight);
-	hbox5->addWidget(_wheelBox, 5);
-	hbox5->addWidget(_wheelUnits, 1, Qt::AlignLeft);
-	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
-	hbox6->addWidget(radiusLabel, 2, Qt::AlignRight);
-	hbox6->addWidget(radiusEdit, 5);
-	hbox6->addWidget(_radiusUnits, 1, Qt::AlignLeft);
+	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
-	QHBoxLayout *hbox7 = new QHBoxLayout();
-	hbox7->addWidget(_colorEditor);
-	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
-}*/
-
-/*!	\brief Slot to keep rotations between
- *		   -360 and 360 degrees.
- *
- *	\param		value Current value of the spinbox.
- */
-/*void customEditor::rotate(double value) {
-	_rZBox->setValue(value - static_cast<int>(value/360)*360);
-	_mapper->submit();
-}*/
+}
 
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-/*void customEditor::nullIndex(bool nullify) {
-	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
+void sphereEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("radius"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
 	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify)
-		color.setAlpha(50);
-	else
-		color.setAlpha(255);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
 	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-}*/
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
+		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+	}
+}
 
 /*!	\brief Slot to set units labels.
  *
  *	\param		si Units are SI (true) or US (false).
  */
-/*void customEditor::setUnits(bool si) {
+void sphereEditor::setUnits(bool si) {
 	QString text;
-	if (si)
-		text = tr("cm");
-	else
-		text = tr("in");
+	if (si) text = tr("cm");
+	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
-	_wheelUnits->setText(text);
-
-	// set wheel list to new values
-	QStringList wheelItems;
-	if (si)
-		wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
-	else
-		wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
-	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
-	_wheelBox->setModel(wheelModel);
-}*/
+	_pZUnits->setText(text);
+	_lXUnits->setText(text);
+}
 
 /*!
  *
  *
- *	colorEditor
+ *	bodyColorPicker
  *
  *
  */
-/*colorEditor::colorEditor(QWidget *parent) : QWidget(parent) {
+
+bodyColorPicker::bodyColorPicker(QWidget *parent) : QWidget(parent) {
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 
-	QLabel *label = new QLabel(tr("LED Color:"));
+	QLabel *label = new QLabel(tr("Color:"));
 	hbox->addWidget(label, 2, Qt::AlignRight);
 
 	_color = QColor(0, 255, 0);
@@ -554,11 +656,11 @@ void boxEditor::setUnits(bool si) {
 	QWidget::connect(_button, SIGNAL(clicked()), this, SLOT(onButtonClicked()));
 }
 
-QColor colorEditor::color(void) const {
+QColor bodyColorPicker::color(void) const {
     return _color;
 }
 
-void colorEditor::setColor(const QColor color) {
+void bodyColorPicker::setColor(const QColor color) {
 	if (color == _color)
 		return;
 
@@ -566,14 +668,14 @@ void colorEditor::setColor(const QColor color) {
 	_button->setPalette(QPalette(_color));
 }
 
-void colorEditor::onButtonClicked(void) {
+void bodyColorPicker::onButtonClicked(void) {
 	const QColor color = QColorDialog::getColor(_color, this);
 	if (!color.isValid())
 		return;
 
 	this->setColor(color);
 	emit colorChanged(color);
-}*/
+}
 
 /*!
  *
@@ -582,8 +684,7 @@ void colorEditor::onButtonClicked(void) {
  *
  *
  */
-obstacleEditorDelegate::obstacleEditorDelegate(QObject *parent) : QItemDelegate(parent) {
-}
+obstacleEditorDelegate::obstacleEditorDelegate(QObject *parent) : QItemDelegate(parent) { }
 
 void obstacleEditorDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
 	if (!strcmp(editor->metaObject()->className(), "QComboBox")) {
@@ -601,8 +702,6 @@ void obstacleEditorDelegate::setModelData(QWidget *editor, QAbstractItemModel *m
 			return;
 		}
 	}
-qDebug() << "ob: " << model->data(index);
-qDebug() << "ob: " << editor->property("value");
 	QItemDelegate::setModelData(editor, model, index);
 }
 

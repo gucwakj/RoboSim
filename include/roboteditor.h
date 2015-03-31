@@ -20,13 +20,13 @@
 
 #include "robotmodel.h"
 
-class colorEditor : public QWidget {
+class ledColorPicker : public QWidget {
 		Q_OBJECT
 		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 	public:
-		explicit colorEditor(QWidget* = 0);
-		virtual ~colorEditor(void) {};
+		explicit ledColorPicker(QWidget* = 0);
+		virtual ~ledColorPicker(void) {};
 
 		QColor color(void) const;
 
@@ -88,7 +88,7 @@ class individualEditor : public QWidget {
 		QLabel *_pYUnits;
 		QLabel *_wheelUnits;
 		QComboBox *_wheelBox;
-		colorEditor *_colorEditor;
+		ledColorPicker *_colorPicker;
 };
 
 class customEditor : public QWidget {
@@ -109,7 +109,7 @@ class customEditor : public QWidget {
 		QLabel *_wheelUnits;
 		QComboBox *_wheelBox;
 		QLabel *_radiusUnits;
-		colorEditor *_colorEditor;
+		ledColorPicker *_colorPicker;
 };
 
 class preconfigEditor : public QWidget {
@@ -127,7 +127,7 @@ class preconfigEditor : public QWidget {
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
-		colorEditor *_colorEditor;
+		ledColorPicker *_colorPicker;
 };
 
 class robotEditorDelegate : public QItemDelegate {
