@@ -21,6 +21,7 @@ bool obstacleModel::addObstacle(int form, int role) {
 		_list[row][L_1] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
+		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][COLOR] = QString("#00ff00");	// green
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;

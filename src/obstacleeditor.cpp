@@ -440,6 +440,17 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
 
+	// axis
+	QLabel *axisLabel = new QLabel(tr("Axis: "));
+	QStringList axisItems;
+	axisItems << tr("X") << tr("Y") << tr("Z");
+	QStringListModel *axisModel = new QStringListModel(axisItems, this);
+	QComboBox *axisBox = new QComboBox();
+	axisBox->setObjectName("axis");
+	axisBox->setModel(axisModel);
+	axisLabel->setBuddy(axisBox);
+	QWidget::connect(axisBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("colorbutton");
@@ -476,6 +487,9 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	hbox5->addWidget(massLabel, 2, Qt::AlignRight);
 	hbox5->addWidget(massBox, 5);
 	hbox5->addWidget(_massUnits, 1, Qt::AlignLeft);
+	hbox5->addWidget(axisLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(axisBox, 5);
+	hbox5->addStretch(1);
 	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
@@ -495,6 +509,7 @@ void cylinderEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("length"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
+	(this->findChild<QComboBox *>("axis"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
 
 	// dim color button
@@ -511,6 +526,7 @@ void cylinderEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("length"), rsObstacleModel::L_2);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
+		_mapper->addMapping(this->findChild<QComboBox *>("axis"), rsObstacleModel::AXIS);
 		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
 	}
 }

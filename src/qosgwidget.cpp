@@ -173,7 +173,18 @@ void QOsgWidget::dataChanged2(QModelIndex topLeft, QModelIndex bottomRight) {
 						  _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble()};
 
 		// quaternion
+		int axis = _o_model->data(_o_model->index(i, rsObstacleModel::AXIS)).toInt();
 		double quat[4] = {0, 0, 0, 1};
+		switch (axis) {
+			case 0: // x
+				quat[1] = sin(0.785398);
+				quat[3] = cos(0.785398);
+				break;
+			case 1: // y
+				quat[0] = sin(0.785398);
+				quat[3] = cos(0.785398);
+				break;
+		}
 
 		// get led color
 		QColor color(_o_model->data(_o_model->index(i, rsObstacleModel::COLOR)).toString());
