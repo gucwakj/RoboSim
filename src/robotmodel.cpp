@@ -101,25 +101,25 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 					int id = _list[index.row()][rsRobotModel::ID].toInt();
 					QString name = _list[index.row()][rsRobotModel::NAME];
 					switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
-						case rsLinkbot::BOW:				return QString("Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW]); break;
-						case rsLinkbot::EXPLORER:			return QString("Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER]); break;
-						case rsLinkbot::FOURBOTDRIVE:		return QString("Four Bot Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURBOTDRIVE]); break;
-						case rsLinkbot::FOURWHEELDRIVE:		return QString("Four Wheel Drive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELDRIVE]); break;
-						case rsLinkbot::FOURWHEELEXPLORER:	return QString("Four Wheel Explorer\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELEXPLORER]); break;
-						case rsLinkbot::GROUPBOW:			return QString("Group Bow\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::GROUPBOW]); break;
-						case rsLinkbot::INCHWORM:			return QString("Inchworm\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::INCHWORM]); break;
-						case rsLinkbot::LIFT:				return QString("Lift\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::LIFT]); break;
-						case rsLinkbot::OMNIDRIVE:			return QString("Omnidrive\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::OMNIDRIVE]); break;
-						case rsLinkbot::SNAKE:				return QString("Snake\nRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::SNAKE]); break;
-						case rsLinkbot::STAND:				return QString("StandRobots %1 - %2").arg(id + 1).arg(id + _l_preconfig[rsLinkbot::STAND]); break;
-						default:							return QString("%1\nRobot %2").arg(name).arg(id + 1); break;
+						case rsLinkbot::BOW:				return QString(tr("Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW]); break;
+						case rsLinkbot::EXPLORER:			return QString(tr("Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER]); break;
+						case rsLinkbot::FOURBOTDRIVE:		return QString(tr("Four Bot Drive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURBOTDRIVE]); break;
+						case rsLinkbot::FOURWHEELDRIVE:		return QString(tr("Four Wheel Drive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELDRIVE]); break;
+						case rsLinkbot::FOURWHEELEXPLORER:	return QString(tr("Four Wheel Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELEXPLORER]); break;
+						case rsLinkbot::GROUPBOW:			return QString(tr("Group Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::GROUPBOW]); break;
+						case rsLinkbot::INCHWORM:			return QString(tr("Inchworm\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::INCHWORM]); break;
+						case rsLinkbot::LIFT:				return QString(tr("Lift\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::LIFT]); break;
+						case rsLinkbot::OMNIDRIVE:			return QString(tr("Omnidrive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::OMNIDRIVE]); break;
+						case rsLinkbot::SNAKE:				return QString(tr("Snake\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::SNAKE]); break;
+						case rsLinkbot::STAND:				return QString(tr("StandRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::STAND]); break;
+						default:							return QString(tr("%1\nRobot %2")).arg(name).arg(id + 1); break;
 					}
 				}
 				case rs::EV3: case rs::NXT:
-					return QString("Robot %1").arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Robot %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 					break;
 				default:
-					return QString("Robot %1").arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Robot %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 					break;
 			}
 		}
@@ -179,9 +179,9 @@ QVariant robotModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant();
 
 	if (orientation == Qt::Horizontal)
-		return QString("Column %1").arg(section);
+		return QString(tr("Column %1")).arg(section);
 	else
-		return QString("Row %1").arg(section);
+		return QString(tr("Row %1")).arg(section);
 }
 
 Qt::ItemFlags robotModel::flags(const QModelIndex &index) const {

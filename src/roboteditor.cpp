@@ -180,7 +180,7 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
 	QStringList formItems;
-	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms EV3") << tr("Mindstorms NXT");
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -341,8 +341,8 @@ void individualEditor::setUnits(bool si) {
 
 	// set wheel list to new values
 	QStringList wheelItems;
-	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
-	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
+	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
 	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
 	_wheelBox->setModel(wheelModel);
 }
@@ -371,7 +371,7 @@ customEditor::customEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
 	QStringList formItems;
-	formItems << tr("Linkbot I") << tr("Linkbot L") << tr("Mindstorms EV3") << tr("Mindstorms NXT");
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -548,8 +548,8 @@ void customEditor::setUnits(bool si) {
 
 	// set wheel list to new values
 	QStringList wheelItems;
-	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << "Custom";
-	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << "Custom";
+	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
 	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
 	_wheelBox->setModel(wheelModel);
 }

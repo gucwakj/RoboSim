@@ -61,7 +61,7 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 	// return data
 	if (role == Qt::DisplayRole) {
 		if (index.column() == rsObstacleModel::ID)
-			return QString("Obstacle %1").arg(_list[index.row()][index.column()].toInt() + 1);
+			return QString(tr("Obstacle %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 		else
 			return _list[index.row()][index.column()];
 	}
@@ -110,9 +110,9 @@ QVariant obstacleModel::headerData(int section, Qt::Orientation orientation, int
 		return QVariant();
 
 	if (orientation == Qt::Horizontal)
-		return QString("Column %1").arg(section);
+		return QString(tr("Column %1")).arg(section);
 	else
-		return QString("Row %1").arg(section);
+		return QString(tr("Row %1")).arg(section);
 }
 
 Qt::ItemFlags obstacleModel::flags(const QModelIndex &index) const {
