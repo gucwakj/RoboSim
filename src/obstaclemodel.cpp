@@ -60,8 +60,14 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 
 	// return data
 	if (role == Qt::DisplayRole) {
-		if (index.column() == rsObstacleModel::ID)
-			return QString(tr("Obstacle %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+		if (index.column() == rsObstacleModel::ID) {
+			switch (_list[index.row()][rsObstacleModel::FORM].toInt()) {
+				case rs::BOX: case rs::CYLINDER: case rs::SPHERE:
+					return QString(tr("Obstacle %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::DOT: case rs::LINE: case rs::TEXT:
+					return QString(tr("Marker %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+			}
+		}
 		else
 			return _list[index.row()][index.column()];
 	}
