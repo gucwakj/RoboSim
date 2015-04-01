@@ -47,13 +47,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	this->build_selector(ui->list_drawings, names, icons);
 	ui->list_drawings->setDragEnabled(true);
 
-	// build scenes selector
-	names.clear();
-	icons.clear();
-	names << "Outdoors" <<  "Board";
-	icons << "line.jpg" << "point.jpg";
-	this->build_selector(ui->list_scenes, names, icons);
-
 	// set robots as first view in toolbox
 	ui->toolBox_config->setCurrentIndex(0);
 
@@ -74,13 +67,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up obstacle model
 	obstacleModel *o_model = new obstacleModel(this);
 
-	// set up robot view
+	// set up obstacle view
 	obstacleView *o_view = new obstacleView(o_model);
 	ui->layout_obstacles->addWidget(o_view);
 
 	// set up obstacle editor
 	obstacleEditor *o_editor = new obstacleEditor(o_model);
 	ui->layout_obstacles->addWidget(o_editor);
+
+	// set up background view
+	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Outdoors")));
+	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Board")));
+	ui->backgroundListWidget->setCurrentRow(0);
 
 	// set up osg view
 	ui->osgWidget->setRobotModel(model);
@@ -117,6 +115,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->osgWidget, SLOT(setCurrentIndex(int)));
+	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));

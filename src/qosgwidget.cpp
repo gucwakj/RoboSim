@@ -75,11 +75,6 @@ QOsgWidget::~QOsgWidget(void) {
 	delete _scene;
 }
 
-void QOsgWidget::changeLevel(void) {
-	_level = (_level) ? 0 : 1;
-	_scene->setLevel(_level);
-}
-
 void QOsgWidget::clickedObstacleIndex(int id) {
 	QModelIndex index;
 	for (int i = 0; i < _o_model->rowCount(); i++) {
@@ -335,6 +330,16 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 	}
 	// set current robot
 	this->setCurrentObstacleIndex(bottomRight);
+}
+
+void QOsgWidget::setCurrentBackground(int ind) {
+	if (_level == ind) return;
+
+	// set new level
+	_level = ind;
+
+	// draw new level
+	_scene->setLevel(_level);
 }
 
 void QOsgWidget::setCurrentIndex(int ind) {
