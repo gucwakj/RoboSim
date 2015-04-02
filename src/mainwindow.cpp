@@ -83,6 +83,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	// set up xml parser
 	xmlParser *xml = new xmlParser("/home/kgucwa/.robosimrc");
+	xml->setRobotModel(model);
+	xml->setObstacleModel(o_model);
 
 	// set up default grid units
 	_us.push_back(1);
@@ -139,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 
 	// connect obstacle pieces together

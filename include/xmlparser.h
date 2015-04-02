@@ -6,7 +6,11 @@
 #include <QModelIndex>
 #include <QObject>
 
+#include <rs/Macros>
 #include <rsXML/Writer>
+
+#include "obstaclemodel.h"
+#include "robotmodel.h"
 
 class xmlParser : public QObject, public rsXML::Writer {
 		Q_OBJECT
@@ -14,6 +18,8 @@ class xmlParser : public QObject, public rsXML::Writer {
 		xmlParser(char*);
 		virtual ~xmlParser(void) {};
 		void parse(char*);
+		void setRobotModel(robotModel*);
+		void setObstacleModel(obstacleModel*);
 
 	signals:
 		void grid(std::vector<double>);
@@ -21,7 +27,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void units(bool);
 
 	public slots:
-		void dataChanged(QModelIndex, QModelIndex);
+		void robotDataChanged(QModelIndex, QModelIndex);
 		void setGridEnabled(bool);
 		void setGridHash(double);
 		void setGridMaxX(double);
@@ -35,6 +41,8 @@ class xmlParser : public QObject, public rsXML::Writer {
 	private:
 		bool _units;
 		std::vector<double> _grid;
+		obstacleModel *_o_model;
+		robotModel *_r_model;
 };
 
 #endif // XMLPARSER_H_
