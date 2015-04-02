@@ -18,9 +18,6 @@ robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 
 	// set US units
 	_units = false;
-
-	// create initial robot for model
-	this->addRobot(rs::LINKBOTI);
 }
 
 robotModel::~robotModel(void) {
@@ -40,6 +37,26 @@ bool robotModel::addRobot(int form, int role) {
 		return true;
 	}
 	return false;
+}
+
+bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &a, const rs::Vec &c, std::string name, int role) {
+	if (role == Qt::EditRole) {
+		int row = _list.size();
+		this->insertRows(row, 1);
+
+		_list[row][ID] = QVariant(id).toString();
+		_list[row][FORM] = QVariant(form).toString();
+		_list[row][NAME] = QString(name.c_str());
+		_list[row][P_X] = QVariant(p[0]).toString();
+		_list[row][P_Y] = QVariant(p[1]).toString();
+		_list[row][P_Z] = QVariant(p[2]).toString();
+		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
+		_list[row][COLOR] = QString(qtc.name());
+		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
+		return true;
+	}
+	return false;
+
 }
 
 bool robotModel::addPreconfig(int type, int role) {

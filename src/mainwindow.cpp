@@ -126,9 +126,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->osgWidget, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), xml, SLOT(setTrace(bool)));
+
+	// connect xml parser to gui elements
 	QWidget::connect(xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
 	QWidget::connect(xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
 	QWidget::connect(xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
+	QWidget::connect(xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));

@@ -7,6 +7,9 @@
 #include <QObject>
 
 #include <rs/Macros>
+#include <rs/Pos>
+#include <rs/Quat>
+#include <rs/Vec>
 #include <rsXML/Writer>
 
 #include "obstaclemodel.h"
@@ -22,6 +25,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void setObstacleModel(obstacleModel*);
 
 	signals:
+		void newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string);
 		void grid(std::vector<double>);
 		void trace(bool);
 		void units(bool);

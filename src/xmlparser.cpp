@@ -17,6 +17,13 @@ void xmlParser::parse(char *name) {
 	for (int i = 0; i < 6; i++)
 		_grid[i] = ((_units) ? _grid[i]*100 : _grid[i]*39.37);
 	emit grid(_grid);
+
+	// add all robots
+	rsXML::Robot *xmlbot = reader.getNextRobot(-1);
+	while (xmlbot) {
+		emit newRobot(xmlbot->getID(), xmlbot->getForm(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getJoints(), xmlbot->getLED(), xmlbot->getName());
+		xmlbot = reader.getNextRobot(-1);
+	}
 }
 
 void xmlParser::setObstacleModel(obstacleModel *model) {
@@ -61,7 +68,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	double j[3] = {0};
 
 	// set new robot data
-	Writer::setRobot(robot, p, Q, j, c);
+	Writer::setRobot(robot, name, p, Q, j, c);
 
 	// save
 	Writer::save();

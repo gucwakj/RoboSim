@@ -393,9 +393,6 @@ void QOsgWidget::setObstacleModel(obstacleModel *model) {
 void QOsgWidget::setRobotModel(robotModel *model) {
 	// set model
 	_r_model = model;
-
-	// update view with default model
-	this->robotDataChanged(_r_model->index(0, 0), _r_model->index(_r_model->rowCount()-1, 0));
 }
 
 void QOsgWidget::setUnits(bool si) {
