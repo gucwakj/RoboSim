@@ -105,11 +105,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), this, SLOT(set_units(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), xml, SLOT(setUnits(bool)));
 	QWidget::connect(ui->spin_grid_tics, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridTics(double)));
+	QWidget::connect(ui->spin_grid_tics, SIGNAL(valueChanged(double)), xml, SLOT(setGridTics(double)));
 	QWidget::connect(ui->spin_grid_hash, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridHash(double)));
+	QWidget::connect(ui->spin_grid_hash, SIGNAL(valueChanged(double)), xml, SLOT(setGridHash(double)));
 	QWidget::connect(ui->spin_grid_x_min, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMinX(double)));
+	QWidget::connect(ui->spin_grid_x_min, SIGNAL(valueChanged(double)), xml, SLOT(setGridMinX(double)));
 	QWidget::connect(ui->spin_grid_x_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxX(double)));
+	QWidget::connect(ui->spin_grid_x_max, SIGNAL(valueChanged(double)), xml, SLOT(setGridMaxX(double)));
 	QWidget::connect(ui->spin_grid_y_min, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMinY(double)));
+	QWidget::connect(ui->spin_grid_y_min, SIGNAL(valueChanged(double)), xml, SLOT(setGridMinY(double)));
 	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxY(double)));
+	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), xml, SLOT(setGridMaxY(double)));
 	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(gridEnabled(bool)));
 	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
@@ -120,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), xml, SLOT(setTrace(bool)));
 	QWidget::connect(xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
 	QWidget::connect(xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
+	QWidget::connect(xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -220,5 +227,15 @@ void MainWindow::set_units(bool si) {
 			ui->spin_grid_y_min->setValue(_us[4]);
 			ui->spin_grid_y_max->setValue(_us[5]);
 	}
+}
+
+void MainWindow::grid(std::vector<double> v) {
+	ui->grid_on->setChecked(static_cast<bool>(v[6]));
+	ui->spin_grid_tics->setValue(v[0]);
+	ui->spin_grid_hash->setValue(v[1]);
+	ui->spin_grid_x_min->setValue(v[2]);
+	ui->spin_grid_x_max->setValue(v[3]);
+	ui->spin_grid_y_min->setValue(v[4]);
+	ui->spin_grid_y_max->setValue(v[5]);
 }
 

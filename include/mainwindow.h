@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow {
 	protected slots:
 		void grid_defaults(void);
 		void set_units(bool);
+		void grid(std::vector<double>);
 
 	private:
 		void build_selector(QListWidget*, QStringList&, QStringList&);
