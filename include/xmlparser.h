@@ -15,10 +15,12 @@ class xmlParser : public QObject, public rsXML::Writer {
 
 	signals:
 		void trace(bool);
+		void units(bool);
 
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
 		void setTrace(bool);
+		void setUnits(bool);
 };
 
 #endif // XMLPARSER_H_

@@ -50,7 +50,8 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_grid.push_back(-48/39.37);
 	_grid.push_back(48/39.37);
 	_grid.push_back(1);
-	_scene->setGrid(_units, _grid);
+	_scene->setUnits(_units);
+	_scene->setGrid(_grid, true);
 
 	// initialize current indices
 	_current[0] = -1;
@@ -157,42 +158,43 @@ void QOsgWidget::gridDefaults(void) {
 	}
 
 	// draw new grid
-	_scene->setGrid(_units, _grid);
+	_scene->setUnits(_units);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridTics(double value) {
 	_grid[0] = convert(value);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridHash(double value) {
 	_grid[1] = convert(value);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridMinX(double value) {
 	_grid[2] = convert(value);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridMaxX(double value) {
 	_grid[3] = convert(value);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridMinY(double value) {
 	_grid[4] = convert(value);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridMaxY(double value) {
 	_grid[5] = convert(value);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::gridEnabled(bool enabled) {
 	_grid[6] = static_cast<double>(enabled);
-	_scene->setGrid(_units, _grid);
+	_scene->setGrid(_grid, true);
 }
 
 void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
