@@ -163,6 +163,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// parse xml file
 	xml->parse("/home/kgucwa/.robosimrc");
 
+	// if no robots were added, add a token Linkbot-I now
+	if (!model->rowCount())
+		model->addRobot(rs::LINKBOTI);
+
 	// parsing of xml complete
 	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
 }
