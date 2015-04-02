@@ -13,9 +13,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui = new Ui::MainWindow;
 	ui->setupUi(this);
 
-	// parse xml
-	//xmlParser *xml = new xmlParser("/home/kgucwa/.robosimrc");
-
 	// build robot selector
 	QStringList names, icons;
 	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
@@ -84,6 +81,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->osgWidget->setRobotModel(model);
 	ui->osgWidget->setObstacleModel(o_model);
 
+	// set up xml parser
+	xmlParser *xml = new xmlParser("/home/kgucwa/.robosimrc");
+
 	// set up default grid units
 	_us.push_back(1);
 	_us.push_back(12);
@@ -116,6 +116,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->osgWidget, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
+	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), xml, SLOT(setTrace(bool)));
+	QWidget::connect(xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -142,6 +144,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
+
+	// parse xml file
+	xml->parse("/home/kgucwa/.robosimrc");
 
 	// parsing of xml complete
 	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);

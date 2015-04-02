@@ -1,21 +1,20 @@
-#include <iostream>
+#include <QDebug>
 
-#include <QFile>
+#include <rsXML/Reader>
 
 #include "xmlparser.h"
 
-xmlParser::xmlParser(char *filename) : rsXML::Reader(filename), rsXML::Writer(filename) {
-    /*QString fileName = "/home/kgucwa/projects/playground/RS/RoboSim/robosimrc";
-	if (fileName.isEmpty())
-		return;
+xmlParser::xmlParser(char *filename) : rsXML::Writer(filename, filename) { }
 
-	QFile file(fileName);
-	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		//QMessageBox::warning(this, tr("RoboSim"), tr("Cannot read file %1.").arg(fileName));
-		//return;
-	}*/
+void xmlParser::parse(char *name) {
+	rsXML::Reader reader(name);
+	emit trace(reader.getTrace());
 }
 
 void xmlParser::dataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
+}
+
+void xmlParser::setTrace(bool state) {
+	Writer::setTrace(state);
 }
 

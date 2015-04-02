@@ -4,22 +4,21 @@
 #include <QModelIndex>
 #include <QObject>
 
-#include <rsXML/Reader>
 #include <rsXML/Writer>
 
-class xmlParser : public QObject, public rsXML::Reader, public rsXML::Writer {
+class xmlParser : public QObject, public rsXML::Writer {
 		Q_OBJECT
-
 	public:
 		xmlParser(char*);
 		virtual ~xmlParser(void) {};
+		void parse(char*);
+
+	signals:
+		void trace(bool);
 
 	public slots:
 		void dataChanged(QModelIndex, QModelIndex);
-
-	private:
-		int _version;
-		tinyxml2::XMLDocument _doc;
+		void setTrace(bool);
 };
 
 #endif // XMLPARSER_H_
