@@ -322,7 +322,7 @@ void individualEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
 		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEEL);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsRobotModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}
 }
 
@@ -528,7 +528,7 @@ void customEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
 		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEEL);
 		_mapper->addMapping(this->findChild<QLineEdit *>("radius"), rsRobotModel::RADIUS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsRobotModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}
 }
 
@@ -687,7 +687,7 @@ void preconfigEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsRobotModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}
 }
 
@@ -731,7 +731,7 @@ ledColorPicker::ledColorPicker(QWidget *parent) : QWidget(parent) {
 }
 
 QColor ledColorPicker::color(void) const {
-    return _color;
+	return _color;
 }
 
 void ledColorPicker::setColor(const QColor color) {
@@ -740,6 +740,7 @@ void ledColorPicker::setColor(const QColor color) {
 
 	_color = color;
 	_button->setPalette(QPalette(_color));
+	emit colorChanged(_color);
 }
 
 void ledColorPicker::onButtonClicked(void) {
@@ -748,7 +749,6 @@ void ledColorPicker::onButtonClicked(void) {
 		return;
 
 	this->setColor(color);
-	emit colorChanged(color);
 }
 
 /*!
