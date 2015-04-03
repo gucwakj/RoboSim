@@ -31,6 +31,13 @@ void xmlParser::parse(char *name) {
 		emit newObstacle(xmlob->getID(), xmlob->getForm(), xmlob->getPosition(), xmlob->getQuaternion(), xmlob->getColor(), xmlob->getDimensions(), xmlob->getMass());
 		xmlob = reader.getNextObstacle();
 	}
+
+	// add all markers 
+	rsXML::Marker *xmlm = reader.getNextMarker();
+	while (xmlm) {
+		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getColor(), xmlm->getSize(), xmlm->getLabel());
+		xmlm = reader.getNextMarker();
+	}
 }
 
 void xmlParser::setObstacleModel(obstacleModel *model) {
@@ -93,9 +100,6 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
 		int mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS), Qt::EditRole).toInt();
 
-		// create obstacle element
-		tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
-
 		// get name
 		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
 
@@ -129,16 +133,16 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 
 		// save obstacle
 		switch (form) {
-			case rs::BOX:
-			case rs::CYLINDER:
-			case rs::SPHERE:
+			case rs::BOX: case rs::CYLINDER: case rs::SPHERE: {
+				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
 				Writer::setObstacle(obstacle, name, pos, quat, dims, led, mass);
 				break;
-			case rs::DOT:
-			case rs::LINE:
-			case rs::TEXT:
-				//Writer::setMarker(obstacle, id, form, name, pos, led, dims, quat);
+			}
+			case rs::DOT: case rs::LINE: case rs::TEXT: {
+				tinyxml2::XMLElement *marker= Writer::getOrCreateMarker(form, id);
+				Writer::setMarker(marker, name, pos, dims, led, mass);
 				break;
+			}
 		}
 	}
 

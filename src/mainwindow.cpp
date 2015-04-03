@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
 	QWidget::connect(xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)));
 	QWidget::connect(xml, SIGNAL(newObstacle(int, int, double*, double*, double*, double*, double)), o_model, SLOT(newObstacle(int, int, double*, double*, double*, double*, double)));
+	QWidget::connect(xml, SIGNAL(newMarker(int, int, double*, double*, double*, int, std::string)), o_model, SLOT(newMarker(int, int, double*, double*, double*, int, std::string)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));

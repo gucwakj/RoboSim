@@ -31,8 +31,31 @@ bool obstacleModel::addObstacle(int form, int role) {
 	return false;
 }
 
+bool obstacleModel::newMarker(int id, int form, double *p1, double *p2, double *c, int size, std::string name, int role) {
+	if (role == Qt::EditRole) {
+		// add row
+		int row = _list.size();
+		this->insertRows(row, 1);
+
+		// new marker data
+		_list[row][ID] = QVariant(id).toString();
+		_list[row][FORM] = QVariant(form).toString();
+		_list[row][P_X] = QVariant(p1[0]).toString();
+		_list[row][P_Y] = QVariant(p1[1]).toString();
+		_list[row][P_Z] = QVariant(p1[2]).toString();
+		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
+		_list[row][COLOR] = QString(qtc.name());
+		_list[row][L_1] = QVariant(p2[0]).toString();
+		_list[row][L_2] = QVariant(p2[1]).toString();
+		_list[row][L_3] = QVariant(p2[2]).toString();
+		_list[row][TEXT] = QString(name.c_str());
+		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
+		return true;
+	}
+	return false;
+}
+
 bool obstacleModel::newObstacle(int id, int form, double *p, double *q, double *c, double *l, double mass, int role) {
-qDebug() << "newObstacle";
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();

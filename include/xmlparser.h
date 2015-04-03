@@ -25,8 +25,9 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void setObstacleModel(obstacleModel*);
 
 	signals:
-		void newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string);
+		void newMarker(int, int, double*, double*, double*, int, std::string);
 		void newObstacle(int, int, double*, double*, double*, double*, double);
+		void newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string);
 		void grid(std::vector<double>);
 		void trace(bool);
 		void units(bool);
