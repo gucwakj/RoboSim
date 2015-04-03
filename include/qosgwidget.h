@@ -53,6 +53,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		~QOsgWidget(void);
 		double convert(double);
 		bool eventFilter(QObject*, QEvent*);
+		void highlight_robots(const QModelIndex&);
 
 	private:
 		rsScene::Scene *_scene;

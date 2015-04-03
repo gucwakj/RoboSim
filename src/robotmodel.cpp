@@ -30,7 +30,12 @@ bool robotModel::addRobot(int form, int role) {
 		this->insertRows(row, 1);
 
 		// new robot data
-		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
+		if (row && this->data(createIndex(row-1, PRECONFIG), Qt::EditRole).toInt()) {
+			_list[row][ID] = QVariant(this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 + _l_preconfig[this->data(createIndex(row-1, PRECONFIG), Qt::EditRole).toInt()]).toString();
+		}
+		else {
+			_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
+		}
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches

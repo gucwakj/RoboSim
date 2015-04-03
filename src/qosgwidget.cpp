@@ -108,7 +108,7 @@ void QOsgWidget::clickedRobotIndex(int id) {
 			// highlight new item
 			if (id != _current[0] || _current[2] == 1) {
 				_current[0] = id;
-				_scene->addHighlight(_current[0]);
+				this->highlight_robots(index);
 				emit currentTab(0);
 			}
 			// deselect current item
@@ -414,8 +414,8 @@ void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
 	// robot is valid ID
 	_current[2] = 0;
 
-	// update view
-	_scene->addHighlight(_current[0]);
+	// highlight robots
+	this->highlight_robots(index);
 }
 
 void QOsgWidget::setObstacleModel(obstacleModel *model) {
@@ -488,6 +488,39 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 	}
 	else
 		return QObject::eventFilter(obj, event);
+}
+
+void QOsgWidget::highlight_robots(const QModelIndex &index) {
+	// update view
+	_scene->addHighlight(_current[0]);
+
+	// highlight rest of preconfig robots
+	int preconfig = _r_model->data(_r_model->index(index.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt();
+	switch (preconfig) {
+		case rsLinkbot::BOW:
+			_scene->addHighlight(_current[0] + 1, true, false);
+			break;
+		case rsLinkbot::EXPLORER:
+			break;
+		case rsLinkbot::FOURBOTDRIVE:
+			break;
+		case rsLinkbot::FOURWHEELDRIVE:
+			break;
+		case rsLinkbot::FOURWHEELEXPLORER:
+			break;
+		case rsLinkbot::GROUPBOW:
+			break;
+		case rsLinkbot::INCHWORM:
+			break;
+		case rsLinkbot::LIFT:
+			break;
+		case rsLinkbot::OMNIDRIVE:
+			break;
+		case rsLinkbot::SNAKE:
+			break;
+		case rsLinkbot::STAND:
+			break;
+	}
 }
 
 /*!
