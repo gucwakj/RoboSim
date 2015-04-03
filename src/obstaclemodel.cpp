@@ -24,6 +24,7 @@ bool obstacleModel::addObstacle(int form, int role) {
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][AXIS] = QVariant(2).toString();
+		_list[row][MASS] = QVariant(5).toString();
 		_list[row][COLOR] = QString("#00ff00");	// green
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -48,6 +49,7 @@ bool obstacleModel::newMarker(int id, int form, double *p1, double *p2, double *
 		_list[row][L_1] = QVariant(p2[0]).toString();
 		_list[row][L_2] = QVariant(p2[1]).toString();
 		_list[row][L_3] = QVariant(p2[2]).toString();
+		_list[row][MASS] = QVariant(size).toString();
 		_list[row][TEXT] = QString(name.c_str());
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
