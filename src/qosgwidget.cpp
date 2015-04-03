@@ -63,7 +63,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// set global hud
 	_scene->setHUD(false);
 	// set level to display
-	_level = 0;
+	_level = 1;
 	_scene->setLevel(_level);
 	_scene->setLabel(false);
 
@@ -72,7 +72,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 }
 
 QOsgWidget::~QOsgWidget(void) {
-	//this->unref();
+	this->unref();
 	delete _scene;
 }
 

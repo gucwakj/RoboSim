@@ -73,9 +73,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->layout_obstacles->addWidget(o_editor);
 
 	// set up background view
+	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("None")));
 	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Outdoors")));
 	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Board")));
-	ui->backgroundListWidget->setCurrentRow(0);
+	ui->backgroundListWidget->setCurrentRow(1);
 
 	// set up osg view
 	ui->osgWidget->setRobotModel(model);
