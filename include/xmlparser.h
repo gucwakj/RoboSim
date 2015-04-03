@@ -26,11 +26,13 @@ class xmlParser : public QObject, public rsXML::Writer {
 
 	signals:
 		void newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string);
+		void newObstacle(int, int, double*, double*, double*, double*, double);
 		void grid(std::vector<double>);
 		void trace(bool);
 		void units(bool);
 
 	public slots:
+		void obstacleDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
 		void setGridEnabled(bool);
 		void setGridHash(double);

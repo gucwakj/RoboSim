@@ -24,10 +24,12 @@ robotModel::~robotModel(void) {
 }
 
 bool robotModel::addRobot(int form, int role) {
-	int row = _list.size();
-	this->insertRows(row, 1);
-
 	if (role == Qt::EditRole) {
+		// add row
+		int row = _list.size();
+		this->insertRows(row, 1);
+
+		// new robot data
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
@@ -41,9 +43,11 @@ bool robotModel::addRobot(int form, int role) {
 
 bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &a, const rs::Vec &c, std::string name, int role) {
 	if (role == Qt::EditRole) {
+		// add row
 		int row = _list.size();
 		this->insertRows(row, 1);
 
+		// new robot data
 		_list[row][ID] = QVariant(id).toString();
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString(name.c_str());

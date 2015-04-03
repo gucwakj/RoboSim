@@ -132,6 +132,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
 	QWidget::connect(xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
 	QWidget::connect(xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)));
+	QWidget::connect(xml, SIGNAL(newObstacle(int, int, double*, double*, double*, double*, double)), o_model, SLOT(newObstacle(int, int, double*, double*, double*, double*, double)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -158,6 +159,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
 
 	// parse xml file
@@ -166,6 +168,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// if no robots were added, add a token Linkbot-I now
 	if (!model->rowCount())
 		model->addRobot(rs::LINKBOTI);
+
+	// highlight and show first robot found
+	ui->osgWidget->setCurrentIndex(0);
 
 	// parsing of xml complete
 	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);

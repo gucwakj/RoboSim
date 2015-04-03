@@ -62,6 +62,7 @@ class obstacleModel : public QAbstractTableModel {
 
 	public slots:
 		bool addObstacle(int = 0, int = Qt::EditRole);
+		bool newObstacle(int, int, double*, double*, double*, double*, double, int role = Qt::EditRole);
 		void setUnits(bool);
 
 	private:
