@@ -239,8 +239,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						robot0->setID(id);
 						robot0->setName(name);
 						rsScene::Robot *sceneRobot0 = _scene->drawRobot(robot0, p, q, rs::Vec(0, 0, 0), c, 0);
-						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::BRIDGE, rsLinkbot::FACE1, 1, 0, 1, -1);
-						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, 1, 0, 1, -1);
+						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::BRIDGE, rsLinkbot::FACE1, rs::LEFT, 0, 1, -1);
+						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
 
 						// draw second robot
 						rsRobots::Linkbot *robot1 = new rsRobots::Linkbot(rs::LINKBOTL);
@@ -253,7 +253,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						P = robot1->getRobotCenterPosition(rsLinkbot::FACE3, P, Q);
 						Q = robot1->getRobotCenterQuaternion(rsLinkbot::FACE3, rs::LEFT, 0, Q);
 						rsScene::Robot *sceneRobot1 = _scene->drawRobot(robot1, P, Q, rs::Vec(0, 0, 0), c, 0);
-						_scene->drawConnector(robot1, sceneRobot1, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, 1, 0, 1, -1);
+						_scene->drawConnector(robot1, sceneRobot1, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
 						break;
 					}
 					default: {
@@ -262,12 +262,12 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						robot->setID(id);
 						robot->setName(name);
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 1, -1);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 2, rsLinkbot::CASTER);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 1, -1);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 2, rsLinkbot::SMALLWHEEL);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 2, rsLinkbot::SMALLWHEEL);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 2, rsLinkbot::SMALLWHEEL);
 						break;
 					}
 				}
