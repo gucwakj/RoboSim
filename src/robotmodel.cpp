@@ -79,6 +79,33 @@ bool robotModel::addPreconfig(int type, int role) {
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		_list[row][COLOR] = QString("#00ff00");
 		_list[row][PRECONFIG] = QVariant(type).toString();
+		switch (type) {
+			case rsLinkbot::BOW:
+				_list[row][R_PHI] = QVariant(90).toString();
+				_list[row][R_THETA] = QVariant(0).toString();
+				_list[row][R_PSI] = QVariant(0).toString();
+				break;
+			case rsLinkbot::EXPLORER:
+				break;
+			case rsLinkbot::FOURBOTDRIVE:
+				break;
+			case rsLinkbot::FOURWHEELDRIVE:
+				break;
+			case rsLinkbot::FOURWHEELEXPLORER:
+				break;
+			case rsLinkbot::GROUPBOW:
+				break;
+			case rsLinkbot::INCHWORM:
+				break;
+			case rsLinkbot::LIFT:
+				break;
+			case rsLinkbot::OMNIDRIVE:
+				break;
+			case rsLinkbot::SNAKE:
+				break;
+			case rsLinkbot::STAND:
+				break;
+		}
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}

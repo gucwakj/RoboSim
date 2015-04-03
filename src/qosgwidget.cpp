@@ -204,6 +204,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		int form = _r_model->data(_r_model->index(i, rsRobotModel::FORM)).toInt();
 		int id = _r_model->data(_r_model->index(i, rsRobotModel::ID), Qt::EditRole).toInt();
 		std::string name = _r_model->data(_r_model->index(i, rsRobotModel::NAME)).toString().toStdString();
+		int preconfig = _r_model->data(_r_model->index(i, rsRobotModel::PRECONFIG)).toInt();
 
 		// get position
 		rs::Pos p(_r_model->data(_r_model->index(i, rsRobotModel::P_X)).toDouble(),
@@ -224,25 +225,55 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		QColor color(_r_model->data(_r_model->index(i, rsRobotModel::COLOR)).toString());
 		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
-		// delete old robot
-		_scene->deleteChild(id);
-
 		// draw new robot
 		switch (form) {
 			case rs::LINKBOTI: {
-				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
-				robot->setID(id);
-				robot->setName(name);
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
-				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
-				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
-				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 1, -1);
-				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 2, rsLinkbot::CASTER);
-				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 1, -1);
-				_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 2, rsLinkbot::SMALLWHEEL);
-				break;
+				switch (preconfig) {
+					case rsLinkbot::BOW: {
+						// delete old robots
+						_scene->deleteChild(id);
+						_scene->deleteChild(id + 1);
+
+						// draw base robot
+						rsRobots::Linkbot *robot0 = new rsRobots::Linkbot(rs::LINKBOTL);
+						robot0->setID(id);
+						robot0->setName(name);
+						rsScene::Robot *sceneRobot0 = _scene->drawRobot(robot0, p, q, rs::Vec(0, 0, 0), c, 0);
+						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::BRIDGE, rsLinkbot::FACE1, 1, 0, 1, -1);
+						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, 1, 0, 1, -1);
+
+						// draw second robot
+						rsRobots::Linkbot *robot1 = new rsRobots::Linkbot(rs::LINKBOTL);
+						robot1->setID(id + 1);
+						robot1->setName(name);
+						rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::FACE1, p, q);
+						rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::FACE1, 0, q);
+						P = robot0->getConnFacePosition(rsLinkbot::DOUBLEBRIDGE, rsLinkbot::SIDE2, rs::LEFT, P, Q);
+						Q = robot0->getConnFaceQuaternion(rsLinkbot::DOUBLEBRIDGE, rsLinkbot::SIDE2, rs::LEFT, Q);
+						P = robot1->getRobotCenterPosition(rsLinkbot::FACE3, P, Q);
+						Q = robot1->getRobotCenterQuaternion(rsLinkbot::FACE3, rs::LEFT, 0, Q);
+						rsScene::Robot *sceneRobot1 = _scene->drawRobot(robot1, P, Q, rs::Vec(0, 0, 0), c, 0);
+						_scene->drawConnector(robot1, sceneRobot1, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, 1, 0, 1, -1);
+						break;
+					}
+					default: {
+						_scene->deleteChild(id);
+						rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
+						robot->setID(id);
+						robot->setName(name);
+						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 1, -1);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, 1, 0, 2, rsLinkbot::SMALLWHEEL);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 1, -1);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, 1, 0, 2, rsLinkbot::CASTER);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 1, -1);
+						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, 1, 0, 2, rsLinkbot::SMALLWHEEL);
+						break;
+					}
+				}
 			}
 			case rs::LINKBOTL: {
+				_scene->deleteChild(id);
 				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTL);
 				robot->setID(id);
 				robot->setName(name);
@@ -250,6 +281,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				break;
 			}
 			case rs::EV3: {
+				_scene->deleteChild(id);
 				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::EV3);
 				robot->setID(id);
 				robot->setName(name);
@@ -257,6 +289,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				break;
 			}
 			case rs::NXT: {
+				_scene->deleteChild(id);
 				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::NXT);
 				robot->setID(id);
 				robot->setName(name);
@@ -265,7 +298,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 			}
 		}
 		// add new robot
-		_scene->addChild();
+		_scene->addChildren();
 	}
 	// set current robot
 	this->setCurrentRobotIndex(bottomRight);
@@ -328,7 +361,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		}
 
 		// add new obstacle to scene
-		_scene->addChild();
+		_scene->addChildren();
 	}
 	// set current robot
 	this->setCurrentObstacleIndex(bottomRight);
