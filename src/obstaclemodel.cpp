@@ -114,10 +114,18 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 	if (role == Qt::DisplayRole) {
 		if (index.column() == rsObstacleModel::ID) {
 			switch (_list[index.row()][rsObstacleModel::FORM].toInt()) {
-				case rs::BOX: case rs::CYLINDER: case rs::SPHERE:
-					return QString(tr("Obstacle %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::DOT: case rs::LINE: case rs::TEXT:
-					return QString(tr("Marker %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::BOX:
+					return QString(tr("Box %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::CYLINDER:
+					return QString(tr("Cylinder %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::DOT:
+					return QString(tr("Point %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::LINE:
+					return QString(tr("Line %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::SPHERE:
+					return QString(tr("Sphere %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::TEXT:
+					return QString(tr("Text %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 			}
 		}
 		else
