@@ -26,9 +26,9 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
 	traits->x = this->x();
 	traits->y = this->y();
-	traits->width = this->width();
-	traits->height = this->height();
-	traits->doubleBuffer = false;
+	traits->width = 640;
+	traits->height = 360;
+	traits->doubleBuffer = true;
 	traits->inheritedWindowData = new osgQt::GraphicsWindowQt::WindowData(this);
 	osg::ref_ptr<osgQt::GraphicsWindowQt> gw = new osgQt::GraphicsWindowQt(traits.get());
 
