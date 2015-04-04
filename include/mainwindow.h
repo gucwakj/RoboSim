@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow {
 		~MainWindow(void);
 
 	protected slots:
+		void changeIndices(int);
 		void grid_defaults(void);
 		void set_units(bool);
 		void grid(std::vector<double>);

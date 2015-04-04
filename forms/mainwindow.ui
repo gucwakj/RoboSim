@@ -449,43 +449,11 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="movable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="tab_robots">
-         <attribute name="title">
-          <string>Robots</string>
-         </attribute>
-         <attribute name="toolTip">
-          <string>Add Robots into the Scene</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="spacing">
-           <number>10</number>
-          </property>
-          <property name="margin">
-           <number>4</number>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" name="layout_robots"/>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_obstacles">
-         <attribute name="title">
-          <string>Objects</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_14">
-          <property name="spacing">
-           <number>10</number>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" name="layout_obstacles"/>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="tab_config">
          <attribute name="title">
           <string>Configuration</string>
@@ -779,6 +747,38 @@
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QListWidget" name="backgroundListWidget"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_robots">
+         <attribute name="title">
+          <string>Robots</string>
+         </attribute>
+         <attribute name="toolTip">
+          <string>Add Robots into the Scene</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="layout_robots"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_obstacles">
+         <attribute name="title">
+          <string>Objects</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="layout_obstacles"/>
           </item>
          </layout>
         </widget>

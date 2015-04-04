@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set robots as first view in toolbox
 	ui->toolBox_config->setCurrentIndex(0);
 
-	// set robots as first view in scene editor tabwidget
+	// set configuration as first view in scene editor tabwidget
 	ui->tab_scene->setCurrentIndex(0);
 
 	// set up robot model
@@ -123,8 +123,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
-	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
-	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), ui->osgWidget, SLOT(setCurrentIndex(int)));
+	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), this, SLOT(changeIndices(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), xml, SLOT(setTrace(bool)));
 
@@ -190,6 +189,11 @@ void MainWindow::build_selector(QListWidget *widget, QStringList &names, QString
 		button->setTextAlignment(Qt::AlignCenter);
 		button->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
 	}
+}
+
+void MainWindow::changeIndices(int ind) {
+	ui->toolBox_config->setCurrentIndex(ind-2);
+	ui->osgWidget->setCurrentIndex(ind-2);
 }
 
 void MainWindow::grid_defaults(void) {
