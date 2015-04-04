@@ -87,7 +87,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="robots">
            <property name="enabled">
@@ -207,7 +207,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="extras">
+          <widget class="QWidget" name="objects">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -217,7 +217,7 @@
             </rect>
            </property>
            <attribute name="label">
-            <string>Extras</string>
+            <string>Objects</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <property name="spacing">
@@ -449,7 +449,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <property name="movable">
          <bool>true</bool>
@@ -475,7 +475,7 @@
         </widget>
         <widget class="QWidget" name="tab_obstacles">
          <attribute name="title">
-          <string>Extras</string>
+          <string>Objects</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_14">
           <property name="spacing">
