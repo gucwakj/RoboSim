@@ -127,6 +127,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), this, SLOT(changeIndices(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
+
+	// menu actions
+	QWidget::connect(ui->action_About, SIGNAL(triggered()), this, SLOT(about()));
+	QWidget::connect(ui->action_AboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 	QWidget::connect(ui->action_Load, SIGNAL(triggered()), this, SLOT(load()));
 	QWidget::connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
 	QWidget::connect(ui->action_SaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
@@ -263,6 +267,20 @@ void MainWindow::grid(std::vector<double> v) {
 	ui->spin_grid_x_max->setValue(v[3]);
 	ui->spin_grid_y_min->setValue(v[4]);
 	ui->spin_grid_y_max->setValue(v[5]);
+}
+
+void MainWindow::about(void) {
+	QMessageBox::about(this, tr("About RoboSim"),
+		tr("<h3>About RoboSim</h3><p><b>RoboSim</b> is a robot simulation environment, developed by the UC"
+		"Davis Center for Integrated Computing and STEM Education (C-STEM) <a"
+		"href=\"%1\"</a>%1</a>, for programming Barobo Mobot and Linkbot.  The same Ch"
+		"program can control hardware robots or virtual robots in RoboSim without any"
+		"modification.</p>"
+		"<p>Copyright (C) %2 The C-STEM Center</p>"
+		"<p><b>Authors:</b> Kevin Gucwa</p>"
+		).arg(QLatin1String("http://cstem.ucdavis.edu"),
+		QLatin1String("2015")
+		));
 }
 
 void MainWindow::load(void) {

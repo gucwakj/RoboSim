@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow {
 		void grid_defaults(void);
 		void set_units(bool);
 		void grid(std::vector<double>);
+		void about(void);
 		void load(void);
 		void save(void);
 		bool saveAs(void);
