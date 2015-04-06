@@ -1,3 +1,5 @@
+#include <QFileDialog>
+
 #include "mainwindow.h"
 #include "obstacleeditor.h"
 #include "obstaclemodel.h"
@@ -5,7 +7,6 @@
 #include "roboteditor.h"
 #include "robotmodel.h"
 #include "robotview.h"
-#include "xmlparser.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -83,9 +84,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->osgWidget->setObstacleModel(o_model);
 
 	// set up xml parser
-	xmlParser *xml = new xmlParser("/home/kgucwa/.robosimrc");
-	xml->setRobotModel(model);
-	xml->setObstacleModel(o_model);
+	_xml = new xmlParser("/home/kgucwa/.robosimrc");
+	_xml->setRobotModel(model);
+	_xml->setObstacleModel(o_model);
 
 	// set up default grid units
 	_us.push_back(1);
@@ -106,34 +107,38 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), editor, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), this, SLOT(set_units(bool)));
-	QWidget::connect(ui->si, SIGNAL(toggled(bool)), xml, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), _xml, SLOT(setUnits(bool)));
 	QWidget::connect(ui->spin_grid_tics, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridTics(double)));
-	QWidget::connect(ui->spin_grid_tics, SIGNAL(valueChanged(double)), xml, SLOT(setGridTics(double)));
+	QWidget::connect(ui->spin_grid_tics, SIGNAL(valueChanged(double)), _xml, SLOT(setGridTics(double)));
 	QWidget::connect(ui->spin_grid_hash, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridHash(double)));
-	QWidget::connect(ui->spin_grid_hash, SIGNAL(valueChanged(double)), xml, SLOT(setGridHash(double)));
+	QWidget::connect(ui->spin_grid_hash, SIGNAL(valueChanged(double)), _xml, SLOT(setGridHash(double)));
 	QWidget::connect(ui->spin_grid_x_min, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMinX(double)));
-	QWidget::connect(ui->spin_grid_x_min, SIGNAL(valueChanged(double)), xml, SLOT(setGridMinX(double)));
+	QWidget::connect(ui->spin_grid_x_min, SIGNAL(valueChanged(double)), _xml, SLOT(setGridMinX(double)));
 	QWidget::connect(ui->spin_grid_x_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxX(double)));
-	QWidget::connect(ui->spin_grid_x_max, SIGNAL(valueChanged(double)), xml, SLOT(setGridMaxX(double)));
+	QWidget::connect(ui->spin_grid_x_max, SIGNAL(valueChanged(double)), _xml, SLOT(setGridMaxX(double)));
 	QWidget::connect(ui->spin_grid_y_min, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMinY(double)));
-	QWidget::connect(ui->spin_grid_y_min, SIGNAL(valueChanged(double)), xml, SLOT(setGridMinY(double)));
+	QWidget::connect(ui->spin_grid_y_min, SIGNAL(valueChanged(double)), _xml, SLOT(setGridMinY(double)));
 	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxY(double)));
-	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), xml, SLOT(setGridMaxY(double)));
+	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), _xml, SLOT(setGridMaxY(double)));
 	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(gridEnabled(bool)));
 	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), this, SLOT(changeIndices(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
-	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), xml, SLOT(setTrace(bool)));
+	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
+	QWidget::connect(ui->action_Load, SIGNAL(triggered()), this, SLOT(load()));
+	QWidget::connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
+	QWidget::connect(ui->action_SaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
+	QWidget::connect(ui->action_Quit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	// connect xml parser to gui elements
-	QWidget::connect(xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
-	QWidget::connect(xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
-	QWidget::connect(xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
-	QWidget::connect(xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)));
-	QWidget::connect(xml, SIGNAL(newObstacle(int, int, double*, double*, double*, double*, double)), o_model, SLOT(newObstacle(int, int, double*, double*, double*, double*, double)));
-	QWidget::connect(xml, SIGNAL(newMarker(int, int, double*, double*, double*, int, std::string)), o_model, SLOT(newMarker(int, int, double*, double*, double*, int, std::string)));
+	QWidget::connect(_xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
+	QWidget::connect(_xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
+	QWidget::connect(_xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
+	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)));
+	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, double*, double*, double*, double*, double)), o_model, SLOT(newObstacle(int, int, double*, double*, double*, double*, double)));
+	QWidget::connect(_xml, SIGNAL(newMarker(int, int, double*, double*, double*, int, std::string)), o_model, SLOT(newMarker(int, int, double*, double*, double*, int, std::string)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -146,7 +151,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 
 	// connect obstacle pieces together
@@ -160,11 +165,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
 
 	// parse xml file
-	xml->parse("/home/kgucwa/.robosimrc");
+	_xml->parse("");
 
 	// if no robots were added, add a token Linkbot-I now
 	if (!model->rowCount())
@@ -174,7 +179,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->osgWidget->setCurrentIndex(0);
 
 	// parsing of xml complete
-	//ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
+	ui->statusBar->showMessage(tr("Ready"), 2000);
 }
 
 MainWindow::~MainWindow(void) {
@@ -258,5 +263,32 @@ void MainWindow::grid(std::vector<double> v) {
 	ui->spin_grid_x_max->setValue(v[3]);
 	ui->spin_grid_y_min->setValue(v[4]);
 	ui->spin_grid_y_max->setValue(v[5]);
+}
+
+void MainWindow::load(void) {
+	QString fileName = QFileDialog::getOpenFileName(this);
+	if (!fileName.isEmpty()) {
+		_xml->parse(fileName.toStdString().c_str());
+		ui->statusBar->showMessage(tr("Loaded %1").arg(fileName), 2000);
+	}
+}
+
+void MainWindow::save(void) {
+	_xml->save();
+}
+
+bool MainWindow::saveAs(void) {
+	QFileDialog dialog(this);
+	dialog.setWindowModality(Qt::WindowModal);
+	dialog.setAcceptMode(QFileDialog::AcceptSave);
+	QStringList files;
+	if (dialog.exec())
+		files = dialog.selectedFiles();
+	else
+		return false;
+
+	bool retval = _xml->saveFile(files.at(0));
+	ui->statusBar->showMessage(tr("Saved %1").arg(files.at(0)), 2000);
+	return retval;
 }
 

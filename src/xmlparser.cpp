@@ -6,7 +6,7 @@
 
 xmlParser::xmlParser(char *filename) : rsXML::Writer(filename, filename) { }
 
-void xmlParser::parse(char *name) {
+void xmlParser::parse(const char *name) {
 	rsXML::Reader reader(name);
 	emit trace(reader.getTrace());
 	_units = reader.getUnits();
@@ -192,5 +192,13 @@ void xmlParser::setTrace(bool state) {
 void xmlParser::setUnits(bool state) {
 	_units = state;
 	Writer::setUnits(state);
+}
+
+bool xmlParser::save(void) {
+	Writer::save();
+}
+
+bool xmlParser::saveFile(const QString &fileName) {
+	Writer::saveFile(fileName.toStdString());
 }
 

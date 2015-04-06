@@ -20,7 +20,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 	public:
 		xmlParser(char*);
 		virtual ~xmlParser(void) {};
-		void parse(char*);
+		void parse(const char*);
 		void setRobotModel(robotModel*);
 		void setObstacleModel(obstacleModel*);
 
@@ -35,6 +35,8 @@ class xmlParser : public QObject, public rsXML::Writer {
 	public slots:
 		void obstacleDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
+		bool save(void);
+		bool saveFile(const QString&);
 		void setGridEnabled(bool);
 		void setGridHash(double);
 		void setGridMaxX(double);

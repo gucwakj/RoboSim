@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFile>
 #include <QMessageBox>
 #include <QListView>
 #include <QListWidget>
+
+#include "xmlparser.h"
 
 namespace Ui {
 	class MainWindow;
@@ -22,6 +23,9 @@ class MainWindow : public QMainWindow {
 		void grid_defaults(void);
 		void set_units(bool);
 		void grid(std::vector<double>);
+		void load(void);
+		void save(void);
+		bool saveAs(void);
 
 	private:
 		void build_selector(QListWidget*, QStringList&, QStringList&);
@@ -30,6 +34,7 @@ class MainWindow : public QMainWindow {
 		Ui::MainWindow *ui;
 		std::vector<double> _us;
 		std::vector<double> _si;
+		xmlParser *_xml;
 };
 
 #endif // MAINWINDOW_H
