@@ -225,6 +225,11 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		QColor color(_r_model->data(_r_model->index(i, rsRobotModel::COLOR)).toString());
 		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
+		// get wheels
+		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEEL)).toInt();
+		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
+		int wheel = 0;
+
 		// draw new robot
 		switch (form) {
 			case rs::LINKBOTI: {
@@ -261,13 +266,31 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
 						robot->setID(id);
 						robot->setName(name);
+						if (wheelID == 1)
+							p[2] += robot->riseByWheels(rsLinkbot::TINYWHEEL);
+						else if (wheelID == 2)
+							p[2] += robot->riseByWheels(rsLinkbot::SMALLWHEEL);
+						else if (wheelID == 3)
+							p[2] += robot->riseByWheels(rsLinkbot::BIGWHEEL);
+						else if (wheelID == 4)
+							p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 2, rsLinkbot::SMALLWHEEL);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
-						_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 2, rsLinkbot::SMALLWHEEL);
+						if (wheelID == 1)
+							wheel = rsLinkbot::TINYWHEEL;
+						else if (wheelID == 2)
+							wheel = rsLinkbot::SMALLWHEEL;
+						else if (wheelID == 3)
+							wheel = rsLinkbot::BIGWHEEL;
+						else if (wheelID == 4)
+							wheel = rsLinkbot::WHEEL;
+						if (wheelID) {
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, radius, 2, wheel);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
+						}
 						break;
 					}
 				}
@@ -277,7 +300,31 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTL);
 				robot->setID(id);
 				robot->setName(name);
+				if (wheelID == 1)
+					p[2] += robot->riseByWheels(rsLinkbot::TINYWHEEL);
+				else if (wheelID == 2)
+					p[2] += robot->riseByWheels(rsLinkbot::SMALLWHEEL);
+				else if (wheelID == 3)
+					p[2] += robot->riseByWheels(rsLinkbot::BIGWHEEL);
+				else if (wheelID == 4)
+					p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
+				if (wheelID == 1)
+					wheel = rsLinkbot::TINYWHEEL;
+				else if (wheelID == 2)
+					wheel = rsLinkbot::SMALLWHEEL;
+				else if (wheelID == 3)
+					wheel = rsLinkbot::BIGWHEEL;
+				else if (wheelID == 4)
+					wheel = rsLinkbot::WHEEL;
+				if (wheelID) {
+					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
+					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, radius, 2, wheel);
+					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
+					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
+					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
+					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
+				}
 				break;
 			}
 			case rs::EV3: {
