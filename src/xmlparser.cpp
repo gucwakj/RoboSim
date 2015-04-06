@@ -87,6 +87,32 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 
 		// set new robot data
 		Writer::setRobot(robot, name, p, Q, j, c);
+
+		// get wheels
+		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEEL)).toInt();
+		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
+		int wheel = 0;
+
+		// add connectors to xml file
+		if (wheelID == 1)
+			wheel = rsLinkbot::TINYWHEEL;
+		else if (wheelID == 2)
+			wheel = rsLinkbot::SMALLWHEEL;
+		else if (wheelID == 3)
+			wheel = rsLinkbot::BIGWHEEL;
+		else if (wheelID == 4)
+			wheel = rsLinkbot::WHEEL;
+		if (wheelID) {
+			tinyxml2::XMLElement *conn = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
+			Writer::setConnectorSide(conn, 1, id, 1, rsLinkbot::FACE1);
+			Writer::setConnectorSide(conn, 2, id, 0, wheel, radius);
+			tinyxml2::XMLElement *conn2 = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
+			Writer::setConnectorSide(conn2, 1, id, 1, rsLinkbot::FACE2);
+			Writer::setConnectorSide(conn2, 2, id, 0, rsLinkbot::CASTER);
+			tinyxml2::XMLElement *conn3 = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
+			Writer::setConnectorSide(conn3, 1, id, 1, rsLinkbot::FACE3);
+			Writer::setConnectorSide(conn3, 2, id, 0, wheel, radius);
+		}
 	}
 
 	// save
