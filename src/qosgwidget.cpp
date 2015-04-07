@@ -266,6 +266,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
 						robot->setID(id);
 						robot->setName(name);
+						// move up by wheel heights
 						if (wheelID == 1)
 							p[2] += robot->riseByWheels(rsLinkbot::TINYWHEEL);
 						else if (wheelID == 2)
@@ -274,7 +275,13 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							p[2] += robot->riseByWheels(rsLinkbot::BIGWHEEL);
 						else if (wheelID == 4)
 							p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
+						// adjust height to be above zero
+						if (fabs(p[2]) < (robot->getBodyHeight() - EPSILON)) {
+							p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
+						}
+						// draw linkbot
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
+						// draw wheels
 						if (wheelID == 1)
 							wheel = rsLinkbot::TINYWHEEL;
 						else if (wheelID == 2)

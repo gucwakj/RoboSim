@@ -7,7 +7,7 @@
 xmlParser::xmlParser(char *filename) : rsXML::Writer(filename, filename) { }
 
 void xmlParser::parse(const char *name) {
-	rsXML::Reader reader(name);
+	rsXML::Reader reader(name, false);
 	emit trace(reader.getTrace());
 	_units = reader.getUnits();
 	emit units(_units);
@@ -42,7 +42,7 @@ void xmlParser::parse(const char *name) {
 		xmlob = reader.getNextObstacle();
 	}
 
-	// add all markers 
+	// add all markers
 	rsXML::Marker *xmlm = reader.getNextMarker();
 	while (xmlm) {
 		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getColor(), xmlm->getSize(), xmlm->getLabel());
@@ -95,13 +95,13 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		// joints
 		double j[3] = {0};
 
-		// set new robot data
-		Writer::setRobot(robot, name, p, Q, j, c);
-
 		// get wheels
 		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEEL)).toInt();
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
 		int wheel = 0;
+
+		// set new robot data
+		Writer::setRobot(robot, name, p, Q, j, c);
 
 		// add connectors to xml file
 		if (wheelID == 1)
