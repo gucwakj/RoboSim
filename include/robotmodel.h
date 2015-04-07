@@ -69,6 +69,7 @@ class robotModel : public QAbstractTableModel {
 		bool addPreconfig(int = 1, int = Qt::EditRole);
 		void setUnits(bool);
 		bool newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string, int = Qt::EditRole);
+		bool newWheel(int, int, double = 0, int = Qt::EditRole);
 
 	private:
 		QVariant convert(double, bool) const;

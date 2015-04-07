@@ -22,8 +22,18 @@ void xmlParser::parse(const char *name) {
 	rsXML::Robot *xmlbot = reader.getNextRobot(-1);
 	while (xmlbot) {
 		emit newRobot(xmlbot->getID(), xmlbot->getForm(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getJoints(), xmlbot->getLED(), xmlbot->getName());
+		// add all robot connectors
+		rsXML::ConnectorList conn = xmlbot->getConnectorList();
+		for (int i = 0; i < conn.size(); i++) {
+			if (conn[i]->getConn() == rsLinkbot::TINYWHEEL ||
+				conn[i]->getConn() == rsLinkbot::SMALLWHEEL ||
+				conn[i]->getConn() == rsLinkbot::BIGWHEEL ||
+				conn[i]->getConn() == rsLinkbot::BIGWHEEL)
+				emit newWheel(xmlbot->getID(), conn[i]->getConn(), conn[i]->getSize());
+		}
 		xmlbot = reader.getNextRobot(-1);
 	}
+
 
 	// add all obstacles
 	rsXML::Ground *xmlob = reader.getNextObstacle();

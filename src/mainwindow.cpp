@@ -141,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(_xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
 	QWidget::connect(_xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
 	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string)));
+	QWidget::connect(_xml, SIGNAL(newWheel(int, int, double)), model, SLOT(newWheel(int, int, double)));
 	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, double*, double*, double*, double*, double)), o_model, SLOT(newObstacle(int, int, double*, double*, double*, double*, double)));
 	QWidget::connect(_xml, SIGNAL(newMarker(int, int, double*, double*, double*, int, std::string)), o_model, SLOT(newMarker(int, int, double*, double*, double*, int, std::string)));
 

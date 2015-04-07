@@ -65,7 +65,28 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 		return true;
 	}
 	return false;
+}
 
+bool robotModel::newWheel(int id, int type, double size, int role) {
+	if (role == Qt::EditRole) {
+		for (int i = 0; i < _list.size(); i++) {
+			if (id == _list[i][ID].toInt()) {
+				if (type == rsLinkbot::TINYWHEEL)
+					_list[i][WHEEL] = QVariant(1).toString();
+				else if (type == rsLinkbot::SMALLWHEEL)
+					_list[i][WHEEL] = QVariant(2).toString();
+				else if (type == rsLinkbot::BIGWHEEL)
+					_list[i][WHEEL] = QVariant(3).toString();
+				else if (type == rsLinkbot::WHEEL) {
+					_list[i][WHEEL] = QVariant(4).toString();
+					_list[i][RADIUS] = QVariant(size).toString();
+				}
+				emit dataChanged(createIndex(i, 0), createIndex(i, NUM_COLUMNS));
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 bool robotModel::addPreconfig(int type, int role) {
