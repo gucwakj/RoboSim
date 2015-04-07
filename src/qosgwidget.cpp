@@ -209,7 +209,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		// get position
 		rs::Pos p(_r_model->data(_r_model->index(i, rsRobotModel::P_X)).toDouble(),
 				  _r_model->data(_r_model->index(i, rsRobotModel::P_Y)).toDouble(),
-				  _r_model->data(_r_model->index(i, rsRobotModel::P_Z)).toDouble() + 0.04445);
+				  _r_model->data(_r_model->index(i, rsRobotModel::P_Z)).toDouble());
 
 		// get euler angles
 		double r[3] = {DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_PHI)).toDouble()),
