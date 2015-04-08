@@ -78,7 +78,7 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 			dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(false);
 		}
 		else {
-			if (_model->data(_model->index(index.row(), rsRobotModel::WHEEL), Qt::EditRole).toInt() == 4) {
+			if (_model->data(_model->index(index.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4) {
 				_pages->setCurrentIndex(1);	// custom
 				this->setUnits(_units);
 				dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false);
@@ -321,7 +321,7 @@ void individualEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
-		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEEL);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEELLEFT);
 		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}
 }
@@ -526,7 +526,7 @@ void customEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
-		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEEL);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEELLEFT);
 		_mapper->addMapping(this->findChild<QLineEdit *>("radius"), rsRobotModel::RADIUS);
 		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}

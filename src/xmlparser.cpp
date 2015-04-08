@@ -29,7 +29,7 @@ void xmlParser::parse(const char *name) {
 				conn[i]->getConn() == rsLinkbot::SMALLWHEEL ||
 				conn[i]->getConn() == rsLinkbot::BIGWHEEL ||
 				conn[i]->getConn() == rsLinkbot::BIGWHEEL)
-				emit newWheel(xmlbot->getID(), conn[i]->getConn(), conn[i]->getSize());
+				emit newWheel(xmlbot->getID(), conn[i]->getConn(), conn[i]->getFace1(), conn[i]->getSize());
 		}
 		xmlbot = reader.getNextRobot(-1);
 	}
@@ -96,7 +96,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		double j[3] = {0};
 
 		// get wheels
-		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEEL)).toInt();
+		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt();
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
 		int wheel = 0;
 

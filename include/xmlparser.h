@@ -29,7 +29,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void newMarker(int, int, double*, double*, double*, int, std::string);
 		void newObstacle(int, int, double*, double*, double*, double*, double);
 		void newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, std::string);
-		void newWheel(int, int, double);
+		void newWheel(int, int, int, double);
 		void grid(std::vector<double>);
 		void trace(bool);
 		void units(bool);

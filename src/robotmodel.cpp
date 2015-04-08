@@ -67,20 +67,25 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 	return false;
 }
 
-bool robotModel::newWheel(int id, int type, double size, int role) {
+bool robotModel::newWheel(int id, int type, int face, double size, int role) {
 	if (role == Qt::EditRole) {
 		for (int i = 0; i < _list.size(); i++) {
 			if (id == _list[i][ID].toInt()) {
+				int val = 0;
 				if (type == rsLinkbot::TINYWHEEL)
-					_list[i][WHEEL] = QVariant(1).toString();
+					val = 1;
 				else if (type == rsLinkbot::SMALLWHEEL)
-					_list[i][WHEEL] = QVariant(2).toString();
+					val = 2;
 				else if (type == rsLinkbot::BIGWHEEL)
-					_list[i][WHEEL] = QVariant(3).toString();
+					val = 3;
 				else if (type == rsLinkbot::WHEEL) {
-					_list[i][WHEEL] = QVariant(4).toString();
+					val = 4;
 					_list[i][RADIUS] = QVariant(size).toString();
 				}
+				if (face == 1)
+					_list[i][WHEELLEFT] = QVariant(val).toString();
+				else if (face == 2 || face == 3)
+					_list[i][WHEELRIGHT] = QVariant(val).toString();
 				emit dataChanged(createIndex(i, 0), createIndex(i, NUM_COLUMNS));
 				return true;
 			}
