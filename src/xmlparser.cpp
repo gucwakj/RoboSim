@@ -4,7 +4,7 @@
 
 #include "xmlparser.h"
 
-xmlParser::xmlParser(char *filename) : rsXML::Writer(filename, filename) { }
+xmlParser::xmlParser(const std::string filename) : rsXML::Writer(filename, filename) { }
 
 void xmlParser::parse(const char *name) {
 	rsXML::Reader reader(name, false);

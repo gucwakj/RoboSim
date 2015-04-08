@@ -10,6 +10,7 @@
 #include <rs/Pos>
 #include <rs/Quat>
 #include <rs/Vec>
+#include <rsXML/Reader>
 #include <rsXML/Writer>
 
 #include "obstaclemodel.h"
@@ -18,7 +19,7 @@
 class xmlParser : public QObject, public rsXML::Writer {
 		Q_OBJECT
 	public:
-		xmlParser(char*);
+		xmlParser(const std::string);
 		virtual ~xmlParser(void) {};
 		void parse(const char*);
 		void setRobotModel(robotModel*);

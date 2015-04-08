@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->osgWidget->setObstacleModel(o_model);
 
 	// set up xml parser
-	_xml = new xmlParser("/home/kgucwa/.robosimrc");
+	_xml = new xmlParser(rsXML::getDefaultPath());
 	_xml->setRobotModel(model);
 	_xml->setObstacleModel(o_model);
 
