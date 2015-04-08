@@ -63,7 +63,15 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
-	this->setCurrentIndex(bottomRight);
+	int current = _pages->currentIndex();
+
+	// only update if page is changing
+	if (_model->data(_model->index(bottomRight.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt() && current != 2)
+		this->setCurrentIndex(bottomRight);
+	else if (_model->data(_model->index(bottomRight.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4 && current != 1)
+		this->setCurrentIndex(bottomRight);
+	else if (current != 0)
+		this->setCurrentIndex(bottomRight);
 }
 
 void robotEditor::setCurrentIndex(const QModelIndex &index) {
@@ -228,13 +236,21 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	rZLabel->setBuddy(_rZBox);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
-	// wheels list
-	QLabel *wheelLabel = new QLabel(tr("Wheels:"));
-	_wheelUnits = new QLabel(tr("cm"));
-	_wheelBox = new QComboBox();
-	_wheelBox->setObjectName("wheels");
-	wheelLabel->setBuddy(_wheelBox);
-	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+	// left wheel list
+	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
+	_wheelLUnits = new QLabel(tr("cm"));
+	_wheelLBox = new QComboBox();
+	_wheelLBox->setObjectName("wheelLeft");
+	wheelLLabel->setBuddy(_wheelLBox);
+	QWidget::connect(_wheelLBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+
+	// right wheel list
+	QLabel *wheelRLabel = new QLabel(tr("Right Wheel:"));
+	_wheelRUnits = new QLabel(tr("cm"));
+	_wheelRBox = new QComboBox();
+	_wheelRBox->setObjectName("wheelRight");
+	wheelRLabel->setBuddy(_wheelRBox);
+	QWidget::connect(_wheelRBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// color
 	_colorPicker = new ledColorPicker();
@@ -273,9 +289,12 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
 	QHBoxLayout *hbox5 = new QHBoxLayout();
-	hbox5->addWidget(wheelLabel, 2, Qt::AlignRight);
-	hbox5->addWidget(_wheelBox, 5);
-	hbox5->addWidget(_wheelUnits, 1, Qt::AlignLeft);
+	hbox5->addWidget(wheelLLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(_wheelLBox, 5);
+	hbox5->addWidget(_wheelLUnits, 1, Qt::AlignLeft);
+	hbox5->addWidget(wheelRLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(_wheelRBox, 5);
+	hbox5->addWidget(_wheelRUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
@@ -305,7 +324,8 @@ void individualEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
+	(this->findChild<QComboBox *>("wheelLeft"))->setDisabled(nullify);
+	(this->findChild<QComboBox *>("wheelRight"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
 
 	// dim color button
@@ -321,7 +341,8 @@ void individualEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
-		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEELLEFT);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheelLeft"), rsRobotModel::WHEELLEFT);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheelRight"), rsRobotModel::WHEELRIGHT);
 		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}
 }
@@ -337,14 +358,23 @@ void individualEditor::setUnits(bool si) {
 	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
-	_wheelUnits->setText(text);
+	_wheelLUnits->setText(text);
+	_wheelRUnits->setText(text);
 
 	// set wheel list to new values
-	QStringList wheelItems;
-	if (si) wheelItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
-	else wheelItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
-	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
-	_wheelBox->setModel(wheelModel);
+	QStringList wheelLItems, wheelRItems;
+	if (si) {
+		wheelLItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+		wheelRItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	}
+	else {
+		wheelLItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
+		wheelRItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
+	}
+	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
+	QStringListModel *wheelRModel = new QStringListModel(wheelRItems, this);
+	_wheelLBox->setModel(wheelLModel);
+	_wheelRBox->setModel(wheelRModel);
 }
 
 /*!

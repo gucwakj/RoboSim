@@ -186,6 +186,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 	// highlight and show first robot found
 	ui->osgWidget->setCurrentIndex(0);
+	editor->setCurrentIndex(model->index(0,0));
 
 	// parsing of xml complete
 	ui->statusBar->showMessage(tr("Ready"), 2000);

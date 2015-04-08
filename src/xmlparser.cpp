@@ -113,7 +113,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		else if (wheelID == 4)
 			wheel = rsLinkbot::WHEEL;
 		if (wheelID) {
-			tinyxml2::XMLElement *conn = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
+			/*tinyxml2::XMLElement *conn = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
 			Writer::setConnectorSide(conn, 1, id, 1, rsLinkbot::FACE1);
 			Writer::setConnectorSide(conn, 2, id, 0, wheel, radius);
 			tinyxml2::XMLElement *conn2 = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
@@ -121,7 +121,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 			Writer::setConnectorSide(conn2, 2, id, 0, rsLinkbot::CASTER);
 			tinyxml2::XMLElement *conn3 = Writer::getOrCreateConnector(rsLinkbot::SIMPLE, rs::RIGHT);
 			Writer::setConnectorSide(conn3, 1, id, 1, rsLinkbot::FACE3);
-			Writer::setConnectorSide(conn3, 2, id, 0, wheel, radius);
+			Writer::setConnectorSide(conn3, 2, id, 0, wheel, radius);*/
 		}
 	}
 

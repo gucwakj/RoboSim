@@ -86,8 +86,10 @@ class individualEditor : public QWidget {
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
-		QLabel *_wheelUnits;
-		QComboBox *_wheelBox;
+		QLabel *_wheelLUnits;
+		QLabel *_wheelRUnits;
+		QComboBox *_wheelLBox;
+		QComboBox *_wheelRBox;
 		ledColorPicker *_colorPicker;
 };
 
