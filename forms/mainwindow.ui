@@ -32,47 +32,6 @@
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <item>
-         <widget class="QGroupBox" name="group_platform">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Platform</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-           <item>
-            <widget class="QRadioButton" name="virtual_2">
-             <property name="text">
-              <string>Virtual Robots</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="hardware">
-             <property name="text">
-              <string>Hardware Robots</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
          <widget class="QToolBox" name="toolBox_config">
           <property name="minimumSize">
            <size>
@@ -213,7 +172,7 @@
              <x>0</x>
              <y>0</y>
              <width>249</width>
-             <height>551</height>
+             <height>644</height>
             </rect>
            </property>
            <attribute name="label">

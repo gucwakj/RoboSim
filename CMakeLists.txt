@@ -86,6 +86,7 @@ set (SRCS ${SRCS}
 	src/obstacleeditor.cpp
 	src/obstaclemodel.cpp
 	src/obstacleview.cpp
+	src/platformselector.cpp
 	src/roboteditor.cpp
 	src/robotmodel.cpp
 	src/robotview.cpp
@@ -99,6 +100,7 @@ set (HEADERS
 	include/obstacleeditor.h
 	include/obstaclemodel.h
 	include/obstacleview.h
+	include/platformselector.h
 	include/roboteditor.h
 	include/robotmodel.h
 	include/robotview.h

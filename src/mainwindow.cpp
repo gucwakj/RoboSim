@@ -4,6 +4,7 @@
 #include "obstacleeditor.h"
 #include "obstaclemodel.h"
 #include "obstacleview.h"
+#include "platformselector.h"
 #include "roboteditor.h"
 #include "robotmodel.h"
 #include "robotview.h"
@@ -13,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up UI from forms file
 	ui = new Ui::MainWindow;
 	ui->setupUi(this);
+
+	// insert platform selector
+	ui->layout_lhs->insertWidget(0, new platformSelector(this));
 
 	// build robot selector
 	QStringList names, icons;
