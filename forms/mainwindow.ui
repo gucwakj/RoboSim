@@ -57,7 +57,7 @@
              <x>0</x>
              <y>0</y>
              <width>249</width>
-             <height>551</height>
+             <height>644</height>
             </rect>
            </property>
            <attribute name="label">
@@ -340,7 +340,7 @@
                  </property>
                  <property name="gridSize">
                   <size>
-                   <width>150</width>
+                   <width>230</width>
                    <height>68</height>
                   </size>
                  </property>

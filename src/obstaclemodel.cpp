@@ -144,25 +144,22 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 		QPixmap image;
 		switch (_list[index.row()][rsObstacleModel::FORM].toInt()) {
 			case rs::BOX:
-				image.load("linkbotI.jpg");
+				image.load("icons/box32.png");
 				break;
 			case rs::CYLINDER:
-				image.load("linkbotL.jpg");
+				image.load("icons/cylinder32.png");
 				break;
 			case rs::DOT:
-				image.load("mobot.jpg");
+				image.load("icons/point32.png");
 				break;
 			case rs::LINE:
-				image.load("mobot.jpg");
+				image.load("icons/line32.png");
 				break;
 			case rs::SPHERE:
-				image.load("mobot.jpg");
+				image.load("icons/sphere32.png");
 				break;
 			case rs::TEXT:
-				image.load("mobot.jpg");
-				break;
-			default:
-				image.load("monkey_on_32x32.png");
+				image.load("icons/text32.png");
 				break;
 		}
 		return image;

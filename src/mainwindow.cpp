@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	names.clear();
 	icons.clear();
 	names << "Box" <<  "Cylinder" << "Sphere";
-	icons << "box.jpg" << "cylinder.jpg" << "sphere.jpg";
+	icons << "icons/box128.png" << "icons/cylinder128.png" << "icons/sphere128.png";
 	this->build_selector(ui->list_obstacles, names, icons);
 	ui->list_obstacles->setDragEnabled(true);
 
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	names.clear();
 	icons.clear();
 	names << "Line" <<  "Point" << "Text";
-	icons << "line.jpg" << "point.jpg" << "text.jpg";
+	icons << "icons/line128.png" << "icons/point128.png" << "icons/text128.png";
 	this->build_selector(ui->list_drawings, names, icons);
 	ui->list_drawings->setDragEnabled(true);
 
