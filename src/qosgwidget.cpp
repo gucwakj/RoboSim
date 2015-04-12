@@ -22,7 +22,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	this->installEventFilter(this);
 
 	// set display settings
-	osg::DisplaySettings *ds = osg::DisplaySettings::instance().get();
+	osg::ref_ptr<osg::DisplaySettings> ds = osg::DisplaySettings::instance().get();
 	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
 	traits->x = this->x();
 	traits->y = this->y();
@@ -73,6 +73,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 
 QOsgWidget::~QOsgWidget(void) {
 	//this->unref();
+	//_scene->setMouseHandler(NULL);
 	delete _scene;
 }
 
@@ -259,6 +260,10 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						Q = robot1->getRobotCenterQuaternion(rsLinkbot::FACE3, rs::LEFT, 0, Q);
 						rsScene::Robot *sceneRobot1 = _scene->drawRobot(robot1, P, Q, rs::Vec(0, 0, 0), c, 0);
 						_scene->drawConnector(robot1, sceneRobot1, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
+
+						// end
+						delete robot0;
+						delete robot1;
 						break;
 					}
 					default: {
@@ -298,7 +303,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
 						}
-						break;
+						// delete local robot
+						delete robot;
 					}
 				}
 			}
@@ -332,6 +338,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
 					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
 				}
+				// end
+				delete robot;
 				break;
 			}
 			case rs::EV3: {
@@ -340,6 +348,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setID(id);
 				robot->setName(name);
 				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				// end
+				delete robot;
 				break;
 			}
 			case rs::NXT: {
@@ -348,6 +358,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setID(id);
 				robot->setName(name);
 				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				// end
+				delete robot;
 				break;
 			}
 		}

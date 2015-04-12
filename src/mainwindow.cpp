@@ -193,6 +193,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 MainWindow::~MainWindow(void) {
+	delete _xml;
 	delete ui;
 }
 
