@@ -24,7 +24,7 @@ void xmlParser::parse(const char *name) {
 		emit newRobot(xmlbot->getID(), xmlbot->getForm(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getJoints(), xmlbot->getLED(), xmlbot->getName());
 		// add all robot connectors
 		rsXML::ConnectorList conn = xmlbot->getConnectorList();
-		for (int i = 0; i < conn.size(); i++) {
+		for (unsigned int i = 0; i < conn.size(); i++) {
 			if (conn[i]->getConn() == rsLinkbot::TINYWHEEL ||
 				conn[i]->getConn() == rsLinkbot::SMALLWHEEL ||
 				conn[i]->getConn() == rsLinkbot::BIGWHEEL ||
@@ -97,7 +97,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 
 		// get wheels
 		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt();
-		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
+		//double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
 		int wheel = 0;
 
 		// set new robot data
@@ -230,11 +230,11 @@ void xmlParser::setUnits(bool state) {
 	Writer::setUnits(state);
 }
 
-bool xmlParser::save(void) {
-	Writer::save();
+int xmlParser::save(void) {
+	return Writer::save();
 }
 
-bool xmlParser::saveFile(const QString &fileName) {
-	Writer::saveFile(fileName.toStdString());
+int xmlParser::saveFile(const QString &fileName) {
+	return Writer::saveFile(fileName.toStdString());
 }
 

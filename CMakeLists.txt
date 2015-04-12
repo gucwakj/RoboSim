@@ -7,31 +7,20 @@ cmake_minimum_required (VERSION 2.8)
 # verbose ouptut
 set (CMAKE_VERBOSE_MAKEFILE off)
 
-# set build type
-set (CMAKE_BUILD_TYPE "Release")
-
 # set the build postfix extension
-if (CMAKE_BUILD_TYPE MATCHES "Release")
-    set (CMAKE_BUILD_POSTFIX "")
-elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
-    set (CMAKE_BUILD_POSTFIX "s")
-elseif (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
-    set (CMAKE_BUILD_POSTFIX "rd")
-elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (CMAKE_BUILD_POSTFIX "d")
-else()
-    set (CMAKE_BUILD_POSTFIX "")
-endif()
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+    set (CMAKE_DEBUG_POSTFIX "d")
+endif ()
 
 # supress developer warnings
 cmake_policy (SET CMP0015 NEW)
 
 # set developer warnings
-if (MSVC)
+if (WIN32)
 	add_definitions (-D_CRT_SECURE_NO_WARNINGS)
-else (MSVC)
-	set (CMAKE_CXX_FLAGS "-Wno-write-strings")
-endif (MSVC)
+else ()
+	set (CMAKE_CXX_FLAGS "-Wall -Wno-write-strings")
+endif ()
 
 # include directory
 include_directories (
@@ -64,12 +53,12 @@ set (EXTRA_LIBS ${EXTRA_LIBS} optimized osgViewer debug osgViewerd)
 
 # add tinyxml2 library
 include_directories ("/home/kgucwa/projects/librs/deps/tinyxml2")
-if (MSVC)
+if (WIN32)
 	link_directories ("/home/kgucwa/projects/librs/deps/tinyxml2/build/Release")
-else (MSVC)
+else ()
 	link_directories ("/home/kgucwa/projects/librs/deps/tinyxml2/build")
-endif (MSVC)
-set (EXTRA_LIBS ${EXTRA_LIBS} optimized tinyxml2 debug tinyxml2d)
+endif ()
+set (EXTRA_LIBS ${EXTRA_LIBS} tinyxml2)
 
 # add librs modules
 include_directories ("/home/kgucwa/projects/librs/include")

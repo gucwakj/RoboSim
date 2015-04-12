@@ -339,7 +339,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::EV3);
 				robot->setID(id);
 				robot->setName(name);
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				break;
 			}
 			case rs::NXT: {
@@ -347,7 +347,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::NXT);
 				robot->setID(id);
 				robot->setName(name);
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				break;
 			}
 		}
@@ -593,5 +593,7 @@ int QMouseHandler::pick(const osgGA::GUIEventAdapter &ea, osgViewer::Viewer *vie
 		emit clickedObstacleIndex(id-1000);
 	else if (id >= 0)
 		emit clickedRobotIndex(id);
+
+	return id;
 }
 

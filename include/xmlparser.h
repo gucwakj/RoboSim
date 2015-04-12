@@ -37,8 +37,8 @@ class xmlParser : public QObject, public rsXML::Writer {
 	public slots:
 		void obstacleDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
-		bool save(void);
-		bool saveFile(const QString&);
+		int save(void);
+		int saveFile(const QString&);
 		void setGridEnabled(bool);
 		void setGridHash(double);
 		void setGridMaxX(double);

@@ -164,8 +164,9 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 		}
 		return image;
 	}
-	else
-		return QVariant();
+
+	// default return
+	return QVariant();
 }
 
 QVariant obstacleModel::headerData(int section, Qt::Orientation orientation, int role) const {
