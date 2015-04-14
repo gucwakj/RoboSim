@@ -6,6 +6,27 @@
 
 xmlParser::xmlParser(const std::string filename) : rsXML::Writer(filename, filename) { }
 
+void xmlParser::deleteObstacleIndex(QModelIndex index, int first, int last) {
+	// delete child with id from index
+	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
+	int form = _o_model->data(_o_model->index(first, rsObstacleModel::FORM)).toInt();
+	// save obstacle
+	switch (form) {
+		case rs::BOX: case rs::CYLINDER: case rs::SPHERE:
+			Writer::deleteObstacle(id);
+			break;
+		case rs::DOT: case rs::LINE: case rs::TEXT:
+			Writer::deleteMarker(id);
+			break;
+	}
+}
+
+void xmlParser::deleteRobotIndex(QModelIndex index, int first, int last) {
+	// delete child with id from index
+	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
+	Writer::deleteRobot(id);
+}
+
 void xmlParser::parse(const char *name) {
 	rsXML::Reader reader(name, false);
 	emit trace(reader.getTrace());

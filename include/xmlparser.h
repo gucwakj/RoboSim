@@ -35,6 +35,8 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void units(bool);
 
 	public slots:
+		void deleteObstacleIndex(QModelIndex, int, int);
+		void deleteRobotIndex(QModelIndex, int, int);
 		void obstacleDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
 		int save(void);

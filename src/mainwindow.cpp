@@ -162,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
+	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 
 	// connect obstacle pieces together
 	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -176,6 +177,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
+	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
 
 	// parse xml file
 	_xml->parse("");
