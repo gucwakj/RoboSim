@@ -303,10 +303,12 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
 						}
-						// delete local robot
+						// end
 						delete robot;
+						break;
 					}
 				}
+				break;
 			}
 			case rs::LINKBOTL: {
 				_scene->deleteRobot(id);
