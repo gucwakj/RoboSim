@@ -134,7 +134,7 @@ void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
 void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
-	_scene->deleteChild(id);
+	_scene->deleteRobot(id);
 }
 
 void QOsgWidget::gridDefaults(void) {
@@ -237,8 +237,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				switch (preconfig) {
 					case rsLinkbot::BOW: {
 						// delete old robots
-						_scene->deleteChild(id);
-						_scene->deleteChild(id + 1);
+						_scene->deleteRobot(id);
+						_scene->deleteRobot(id + 1);
 
 						// draw base robot
 						rsRobots::Linkbot *robot0 = new rsRobots::Linkbot(rs::LINKBOTL);
@@ -267,7 +267,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						break;
 					}
 					default: {
-						_scene->deleteChild(id);
+						_scene->deleteRobot(id);
 						rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
 						robot->setID(id);
 						robot->setName(name);
@@ -309,7 +309,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				}
 			}
 			case rs::LINKBOTL: {
-				_scene->deleteChild(id);
+				_scene->deleteRobot(id);
 				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTL);
 				robot->setID(id);
 				robot->setName(name);
@@ -343,7 +343,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				break;
 			}
 			case rs::EV3: {
-				_scene->deleteChild(id);
+				_scene->deleteRobot(id);
 				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::EV3);
 				robot->setID(id);
 				robot->setName(name);
@@ -353,7 +353,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				break;
 			}
 			case rs::NXT: {
-				_scene->deleteChild(id);
+				_scene->deleteRobot(id);
 				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::NXT);
 				robot->setID(id);
 				robot->setName(name);

@@ -20,6 +20,14 @@
 
 #include "robotmodel.h"
 
+enum FormList {
+	LINKBOTI,
+	LINKBOTL,
+	EV3,
+	NXT,
+	NUM_FORMS
+};
+
 class ledColorPicker : public QWidget {
 		Q_OBJECT
 		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
@@ -90,6 +98,26 @@ class individualEditor : public QWidget {
 		QLabel *_wheelRUnits;
 		QComboBox *_wheelLBox;
 		QComboBox *_wheelRBox;
+		ledColorPicker *_colorPicker;
+};
+
+class mindstormsEditor : public QWidget {
+		Q_OBJECT
+	public:
+		mindstormsEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
+		void setUnits(bool);
+
+	protected slots:
+		void rotate(double);
+
+	private:
+		QDataWidgetMapper *_mapper;
+		QDoubleSpinBox *_rZBox;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_wheelUnits;
+		QComboBox *_wheelBox;
 		ledColorPicker *_colorPicker;
 };
 
