@@ -23,7 +23,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// set up editor pages
 	_pages = new QStackedWidget;
-	_pages->addWidget(new individualEditor(_mapper));
+	_pages->addWidget(new linkbotEditor(_mapper));
 	_pages->addWidget(new mindstormsEditor(_mapper));
 	_pages->addWidget(new customEditor(_mapper));
 	_pages->addWidget(new preconfigEditor(_mapper));
@@ -103,9 +103,9 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 					dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
 				else {
-					_pages->setCurrentIndex(0);	// individual
+					_pages->setCurrentIndex(0);	// linkbot
 					this->setUnits(_units);
-					dynamic_cast<individualEditor *>(_pages->currentWidget())->nullIndex(false);
+					dynamic_cast<linkbotEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
 			}
 		}
@@ -120,8 +120,8 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	}
 	else {
 		// disable current page
-		if (dynamic_cast<individualEditor *>(_pages->currentWidget()))
-			dynamic_cast<individualEditor *>(_pages->currentWidget())->nullIndex(true);
+		if (dynamic_cast<linkbotEditor *>(_pages->currentWidget()))
+			dynamic_cast<linkbotEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<mindstormsEditor *>(_pages->currentWidget()))
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
@@ -170,8 +170,8 @@ void robotEditor::setUnits(bool si) {
 	_units = si;
 
 	// set units labels for editors
-	if (dynamic_cast<individualEditor *>(_pages->currentWidget()))
-		dynamic_cast<individualEditor *>(_pages->currentWidget())->setUnits(si);
+	if (dynamic_cast<linkbotEditor *>(_pages->currentWidget()))
+		dynamic_cast<linkbotEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<mindstormsEditor *>(_pages->currentWidget()))
 		dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
@@ -183,18 +183,18 @@ void robotEditor::setUnits(bool si) {
 /*!
  *
  *
- *	IndividualEditor
+ *	linkbotEditor
  *
  *
  */
 
-/*!	\brief Individual Robot Editor.
+/*!	\brief linkbot Robot Editor.
  *
- *	Build individual robot editor with relevant pieces of information.
+ *	Build linkbot robot editor with relevant pieces of information.
  *
  *	\param		mapper data mapper from robotEditor model.
  */
-individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
+linkbotEditor::linkbotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
 	// save mapper
 	_mapper = mapper;
 
@@ -324,7 +324,7 @@ individualEditor::individualEditor(QDataWidgetMapper *mapper, QWidget *parent) :
  *
  *	\param		value Current value of the spinbox.
  */
-void individualEditor::rotate(double value) {
+void linkbotEditor::rotate(double value) {
 	_rZBox->setValue(value - static_cast<int>(value/360)*360);
 	_mapper->submit();
 }
@@ -333,7 +333,7 @@ void individualEditor::rotate(double value) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void individualEditor::nullIndex(bool nullify) {
+void linkbotEditor::nullIndex(bool nullify) {
 	// nullify (or not) input boxes
 	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
 	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
@@ -367,7 +367,7 @@ void individualEditor::nullIndex(bool nullify) {
  *
  *	\param		si Units are SI (true) or US (false).
  */
-void individualEditor::setUnits(bool si) {
+void linkbotEditor::setUnits(bool si) {
 	// update unit labels
 	QString text;
 	if (si) text = tr("cm");
@@ -596,7 +596,7 @@ void mindstormsEditor::setUnits(bool si) {
 
 /*!	\brief Custom Wheeled Robot Editor.
  *
- *	Build individual robot editor with custom wheel size.
+ *	Build linkbot robot editor with custom wheel size.
  *
  *	\param		mapper data mapper from robotEditor model.
  */

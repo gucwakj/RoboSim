@@ -79,10 +79,10 @@ class robotEditor : public QWidget {
 		bool _units;
 };
 
-class individualEditor : public QWidget {
+class linkbotEditor : public QWidget {
 		Q_OBJECT
 	public:
-		individualEditor(QDataWidgetMapper*, QWidget* = 0);
+		linkbotEditor(QDataWidgetMapper*, QWidget* = 0);
 		void nullIndex(bool);
 		void setUnits(bool);
 
