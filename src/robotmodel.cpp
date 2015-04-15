@@ -147,6 +147,14 @@ void robotModel::setUnits(bool si) {
 	_units = si;
 }
 
+QVariant robotModel::findByID(int id) {
+	for (int i = 0; i < this->rowCount(); i++) {
+		if (id == _list[i][rsRobotModel::ID].toInt())
+			return i;
+	}
+	return QVariant();
+}
+
 void robotModel::printModel(void) {
 	qDebug() << "model:";
 	for (int i = 0; i < _list.size(); i++) {

@@ -81,6 +81,14 @@ bool obstacleModel::newObstacle(int id, int form, double *p, double *q, double *
 	return false;
 }
 
+QVariant obstacleModel::findByID(int id) {
+	for (int i = 0; i < this->rowCount(); i++) {
+		if (id == _list[i][rsObstacleModel::ID].toInt())
+			return i;
+	}
+	return QVariant();
+}
+
 void obstacleModel::setUnits(bool si) {
 	_units = si;
 }

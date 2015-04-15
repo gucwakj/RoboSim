@@ -86,7 +86,7 @@ void QOsgWidget::clickedObstacleIndex(int id) {
 			if (id != _current[1] || _current[2] == 0) {
 				_current[1] = id;
 				_scene->addHighlight(_current[1], false);
-				emit currentTab(1);
+				emit currentTab(3);
 			}
 			// deselect current item
 			else {
@@ -110,7 +110,7 @@ void QOsgWidget::clickedRobotIndex(int id) {
 			if (id != _current[0] || _current[2] == 1) {
 				_current[0] = id;
 				this->highlight_robots(index);
-				emit currentTab(0);
+				emit currentTab(2);
 			}
 			// deselect current item
 			else {
@@ -471,10 +471,10 @@ void QOsgWidget::setCurrentBackground(int ind) {
 }
 
 void QOsgWidget::setCurrentIndex(int ind) {
-	if (ind == 0)
-		this->setCurrentRobotIndex(_r_model->index(_current[0], rsRobotModel::ID));
+	if (ind == 0) {
+		this->setCurrentRobotIndex(_r_model->index(_r_model->findByID(_current[0]).toInt(), rsRobotModel::ID)); }
 	else if (ind == 1)
-		this->setCurrentObstacleIndex(_o_model->index(_current[1], rsObstacleModel::ID));
+		this->setCurrentObstacleIndex(_o_model->index(_o_model->findByID(_current[1]).toInt(), rsObstacleModel::ID));
 }
 
 void QOsgWidget::setCurrentObstacleIndex(const QModelIndex &index) {

@@ -59,6 +59,7 @@ class obstacleModel : public QAbstractTableModel {
 
 		// utility
 		void printModel(void);
+		QVariant findByID(int);
 
 	public slots:
 		bool addObstacle(int = 0, int = Qt::EditRole);
