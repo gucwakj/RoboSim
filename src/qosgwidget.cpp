@@ -409,18 +409,13 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
 
 		// get position
-		double pos[3] = {_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
-						 _o_model->data(_o_model->index(i, rsObstacleModel::P_Y)).toDouble(),
-						 _o_model->data(_o_model->index(i, rsObstacleModel::P_Z)).toDouble()};
-
-		// get dimensions
-		double dims[3] = {_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
-						  _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
-						  _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble()};
+		rs::Pos p(_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Y)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Z)).toDouble());
 
 		// quaternion
 		int axis = _o_model->data(_o_model->index(i, rsObstacleModel::AXIS)).toInt();
-		double quat[4] = {0, 0, 0, 1};
+		rs::Quat quat;
 		switch (axis) {
 			case 0: // x
 				quat[1] = sin(0.785398);
@@ -434,7 +429,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 
 		// get led color
 		QColor color(_o_model->data(_o_model->index(i, rsObstacleModel::COLOR)).toString());
-		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
+		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// delete old obstacle
 		_scene->deleteObstacle(id);
@@ -443,14 +438,22 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		switch (form) {
 			case rs::BOX:
 			case rs::CYLINDER:
-			case rs::SPHERE:
-				_scene->drawGround(id, form, pos, led, dims, quat);
+			case rs::SPHERE: {
+				rs::Vec dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				_scene->drawGround(id, form, p, led, dims, quat);
 				break;
+			}
 			case rs::DOT:
 			case rs::LINE:
-			case rs::TEXT:
-				_scene->drawMarker(id, form, pos, dims, led, mass, name);
+			case rs::TEXT: {
+				rs::Pos dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				_scene->drawMarker(id, form, p, dims, led, mass, name);
 				break;
+			}
 		}
 
 		// add new obstacle to scene
