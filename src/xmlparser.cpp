@@ -57,7 +57,7 @@ void xmlParser::parse(const char *name) {
 
 
 	// add all obstacles
-	rsXML::Ground *xmlob = reader.getNextObstacle();
+	rsXML::Obstacle *xmlob = reader.getNextObstacle();
 	while (xmlob) {
 		emit newObstacle(xmlob->getID(), xmlob->getForm(), xmlob->getPosition(), xmlob->getQuaternion(), xmlob->getColor(), xmlob->getDimensions(), xmlob->getMass());
 		xmlob = reader.getNextObstacle();

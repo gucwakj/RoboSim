@@ -442,7 +442,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
-				_scene->drawGround(id, form, p, led, dims, quat);
+				_scene->drawObstacle(id, form, p, led, dims, quat);
 				break;
 			}
 			case rs::DOT:
