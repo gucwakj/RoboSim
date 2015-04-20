@@ -94,9 +94,9 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		std::string name = _r_model->data(_r_model->index(i, rsRobotModel::NAME)).toString().toStdString();
 
 		// get position
-		double p[3] = {_r_model->data(_r_model->index(i, rsRobotModel::P_X)).toDouble(),
+		rs::Pos p(_r_model->data(_r_model->index(i, rsRobotModel::P_X)).toDouble(),
 				  _r_model->data(_r_model->index(i, rsRobotModel::P_Y)).toDouble(),
-				  _r_model->data(_r_model->index(i, rsRobotModel::P_Z)).toDouble()};
+				  _r_model->data(_r_model->index(i, rsRobotModel::P_Z)).toDouble());
 
 		// get euler angles
 		double r[3] = {DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_PHI)).toDouble()),
@@ -107,14 +107,14 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		rs::Quat q(sin(0.5*r[0]), 0, 0, cos(0.5*r[0]));
 		q.multiply(0, sin(0.5*r[1]), 0, cos(0.5*r[1]));
 		q.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
-		double Q[4] = {q[0], q[1], q[2], q[3]};
 
 		// get led color
 		QColor color(_r_model->data(_r_model->index(i, rsRobotModel::COLOR)).toString());
-		double c[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
+		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// joints
-		double j[3] = {0};
+		rs::Vec j;
+		j.allocate(3);
 
 		// get wheels
 		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt();
@@ -122,7 +122,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		int wheel = 0;
 
 		// set new robot data
-		Writer::setRobot(robot, name, p, Q, j, c);
+		Writer::setRobot(robot, name, p, q, j, c);
 
 		// add connectors to xml file
 		if (wheelID == 1)
@@ -151,43 +151,44 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
 
 		// get position
-		double pos[3] = {_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
-						 _o_model->data(_o_model->index(i, rsObstacleModel::P_Y)).toDouble(),
-						 _o_model->data(_o_model->index(i, rsObstacleModel::P_Z)).toDouble()};
-
-		// get dimensions
-		double dims[3] = {_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
-						  _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
-						  _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble()};
+		rs::Pos p(_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Y)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Z)).toDouble());
 
 		// quaternion
 		int axis = _o_model->data(_o_model->index(i, rsObstacleModel::AXIS)).toInt();
-		double quat[4] = {0, 0, 0, 1};
+		rs::Quat q;
 		switch (axis) {
 			case 0: // x
-				quat[1] = sin(0.785398);
-				quat[3] = cos(0.785398);
+				q[1] = sin(0.785398);
+				q[3] = cos(0.785398);
 				break;
 			case 1: // y
-				quat[0] = sin(0.785398);
-				quat[3] = cos(0.785398);
+				q[0] = sin(0.785398);
+				q[3] = cos(0.785398);
 				break;
 		}
 
 		// get led color
 		QColor color(_o_model->data(_o_model->index(i, rsObstacleModel::COLOR)).toString());
-		double led[4] = {color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0};
+		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// save obstacle
 		switch (form) {
 			case rs::BOX: case rs::CYLINDER: case rs::SPHERE: {
+				rs::Vec dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
 				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
-				Writer::setObstacle(obstacle, name, pos, quat, dims, led, mass);
+				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;
 			}
 			case rs::DOT: case rs::LINE: case rs::TEXT: {
-				tinyxml2::XMLElement *marker= Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, pos, dims, led, mass);
+				rs::Pos p2(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
+						   _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
+						   _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
+				Writer::setMarker(marker, name, p, p2, led, mass);
 				break;
 			}
 		}
