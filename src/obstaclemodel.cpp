@@ -32,7 +32,7 @@ bool obstacleModel::addObstacle(int form, int role) {
 	return false;
 }
 
-bool obstacleModel::newMarker(int id, int form, double *p1, double *p2, double *c, int size, std::string name, int role) {
+bool obstacleModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Vec &c, int size, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -57,7 +57,7 @@ bool obstacleModel::newMarker(int id, int form, double *p1, double *p2, double *
 	return false;
 }
 
-bool obstacleModel::newObstacle(int id, int form, double *p, double *q, double *c, double *l, double mass, int role) {
+bool obstacleModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &c, const rs::Vec &l, double mass, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();

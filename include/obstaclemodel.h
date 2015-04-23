@@ -12,6 +12,9 @@
 #include <QMimeData>
 
 #include <rs/Enum>
+#include <rs/Pos>
+#include <rs/Quat>
+#include <rs/Vec>
 
 namespace rsObstacleModel {
 
@@ -63,8 +66,8 @@ class obstacleModel : public QAbstractTableModel {
 
 	public slots:
 		bool addObstacle(int = 0, int = Qt::EditRole);
-		bool newMarker(int, int, double*, double*, double*, int, std::string, int = Qt::EditRole);
-		bool newObstacle(int, int, double*, double*, double*, double*, double, int = Qt::EditRole);
+		bool newMarker(int, int, const rs::Pos&, const rs::Pos&, const rs::Vec&, int, std::string, int = Qt::EditRole);
+		bool newObstacle(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, double, int = Qt::EditRole);
 		void setUnits(bool);
 
 	private:
