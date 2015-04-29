@@ -584,7 +584,9 @@ void mindstormsEditor::setUnits(bool si) {
 	else
 		wheelItems << "None" << "1.625" << "1.75";
 	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
+	int row = _wheelBox->currentIndex();
 	_wheelBox->setModel(wheelModel);
+	_wheelBox->setCurrentIndex(row);
 }
 
 /*!
