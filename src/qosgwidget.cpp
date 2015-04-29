@@ -364,7 +364,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setName(name);
 				// adjust height to be above zero
 				if (fabs(p[2]) < (robot->getWheelRadius() - EPSILON)) {
-					p.add(q.multiply(0, 0, robot->getWheelRadius()/2));
+					p.add(q.multiply(0, 0, robot->getWheelRadius()));
 				}
 				// draw mindstorms
 				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
@@ -381,7 +381,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setName(name);
 				// adjust height to be above zero
 				if (fabs(p[2]) < (robot->getWheelRadius() - EPSILON)) {
-					p.add(q.multiply(0, 0, robot->getWheelRadius()/2));
+					p.add(q.multiply(0, 0, robot->getWheelRadius()));
 				}
 				// draw mindstorms
 				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
