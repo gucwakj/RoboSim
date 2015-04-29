@@ -64,17 +64,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
-	int current = _pages->currentIndex();
-
-	// only update if page is changing
-	int form = _model->data(_model->index(bottomRight.row(), rsRobotModel::FORM)).toInt();
-	if (form == rs::EV3 || form == rs::NXT)
-		this->setCurrentIndex(bottomRight);
-	else if (_model->data(_model->index(bottomRight.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt() && current != 2)
-		this->setCurrentIndex(bottomRight);
-	else if (_model->data(_model->index(bottomRight.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4 && current != 1)
-		this->setCurrentIndex(bottomRight);
-	else if (current != 0)
+	if (bottomRight.row() != _row)
 		this->setCurrentIndex(bottomRight);
 }
 
@@ -82,6 +72,9 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid()) {
 		// disable current mappings
 		_mapper->clearMapping();
+
+		// set new curent model row
+		_row = index.row();
 
 		// load appropriate page
 		int form = _model->data(_model->index(index.row(), rsRobotModel::FORM)).toInt();
@@ -254,9 +247,13 @@ linkbotEditor::linkbotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidg
 
 	// left wheel list
 	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
+	QStringList wheelLItems;
+	wheelLItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
 	_wheelLUnits = new QLabel(tr("cm"));
 	_wheelLBox = new QComboBox();
 	_wheelLBox->setObjectName("wheelLeft");
+	_wheelLBox->setModel(wheelLModel);
 	wheelLLabel->setBuddy(_wheelLBox);
 	QWidget::connect(_wheelLBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
@@ -389,8 +386,12 @@ void linkbotEditor::setUnits(bool si) {
 	}
 	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
 	QStringListModel *wheelRModel = new QStringListModel(wheelRItems, this);
+	int row = _wheelLBox->currentIndex();
 	_wheelLBox->setModel(wheelLModel);
+	_wheelLBox->setCurrentIndex(row);
+	row = _wheelRBox->currentIndex();
 	_wheelRBox->setModel(wheelRModel);
+	_wheelRBox->setCurrentIndex(row);
 }
 
 /*!

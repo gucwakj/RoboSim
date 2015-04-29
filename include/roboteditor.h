@@ -77,6 +77,7 @@ class robotEditor : public QWidget {
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
 		bool _units;
+		int _row;
 };
 
 class linkbotEditor : public QWidget {

@@ -174,8 +174,6 @@ int robotModel::rowCount(const QModelIndex&) const {
 }
 
 QVariant robotModel::data(const QModelIndex &index, int role) const {
-	//qDebug() << QString("row %1, col %2, role %3").arg(index.row()).arg(index.column()).arg(role);
-
 	// check if index is valid
 	if (!index.isValid())
 		return QVariant();
