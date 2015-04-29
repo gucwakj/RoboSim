@@ -283,7 +283,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 
 	// color
 	_colorPicker = new bodyColorPicker();
-	_colorPicker->setObjectName("colorbutton");
+	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -357,7 +357,7 @@ void boxEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("ly"), rsObstacleModel::L_2);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lz"), rsObstacleModel::L_3);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
 	}
 }
 
@@ -483,7 +483,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 
 	// color
 	_colorPicker = new bodyColorPicker();
-	_colorPicker->setObjectName("colorbutton");
+	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -557,7 +557,7 @@ void cylinderEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("length"), rsObstacleModel::L_2);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
 		_mapper->addMapping(this->findChild<QComboBox *>("axis"), rsObstacleModel::AXIS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
 	}
 }
 
@@ -648,7 +648,7 @@ dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 
 	// color
 	_colorPicker = new bodyColorPicker();
-	_colorPicker->setObjectName("colorbutton");
+	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -706,7 +706,7 @@ void dotEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("size"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
 	}
 }
 
@@ -823,7 +823,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 
 	// color
 	_colorPicker = new bodyColorPicker();
-	_colorPicker->setObjectName("colorbutton");
+	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -897,7 +897,7 @@ void lineEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py2"), rsObstacleModel::L_2);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz2"), rsObstacleModel::L_3);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("width"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
 	}
 }
 
@@ -996,7 +996,7 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 
 	// color
 	_colorPicker = new bodyColorPicker();
-	_colorPicker->setObjectName("colorbutton");
+	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -1060,7 +1060,7 @@ void sphereEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
 	}
 }
 
@@ -1157,7 +1157,7 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 
 	// color
 	_colorPicker = new bodyColorPicker();
-	_colorPicker->setObjectName("colorbutton");
+	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
 
 	// lay out grid
@@ -1222,7 +1222,7 @@ void textEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("size"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<QPushButton *>("colorbutton"), rsObstacleModel::COLOR, "color");
+		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
 	}
 }
 
@@ -1275,6 +1275,7 @@ void bodyColorPicker::setColor(const QColor color) {
 
 	_color = color;
 	_button->setPalette(QPalette(_color));
+	emit colorChanged(color);
 }
 
 void bodyColorPicker::onButtonClicked(void) {
@@ -1283,7 +1284,6 @@ void bodyColorPicker::onButtonClicked(void) {
 		return;
 
 	this->setColor(color);
-	emit colorChanged(color);
 }
 
 /*!
