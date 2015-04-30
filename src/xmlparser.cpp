@@ -64,9 +64,9 @@ void xmlParser::parse(const char *name) {
 				case rs::EV3:
 				case rs::NXT: {
 					if (xmlwheels[i] == rsMindstorms::SMALL)
-						wheels[i] = 0;
-					else if (xmlwheels[i] == rsMindstorms::BIG)
 						wheels[i] = 1;
+					else if (xmlwheels[i] == rsMindstorms::BIG)
+						wheels[i] = 2;
 					else
 						wheels[i] = 0;
 					break;

@@ -355,36 +355,36 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				delete robot;
 				break;
 			}
-			case rs::EV3: {
-				// remove old robot
-				_scene->deleteRobot(id);
-				// create new one
-				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::EV3);
-				robot->setID(id);
-				robot->setName(name);
-				// adjust height to be above zero
-				if (fabs(p[2]) < (robot->getWheelRadius() - EPSILON)) {
-					p.add(q.multiply(0, 0, robot->getWheelRadius()));
-				}
-				// draw mindstorms
-				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
-				// end
-				delete robot;
-				break;
-			}
+			case rs::EV3:
 			case rs::NXT: {
 				// remove old robot
 				_scene->deleteRobot(id);
 				// create new one
-				rsRobots::Mindstorms *robot = new rsRobots::Mindstorms(rs::NXT);
+				rsRobots::Mindstorms *robot;
+				if (form == rs::EV3)
+					robot = new rsRobots::Mindstorms(rs::EV3);
+				else if (form == rs::NXT)
+					robot = new rsRobots::Mindstorms(rs::NXT);
 				robot->setID(id);
 				robot->setName(name);
+				// move up by wheel heights
+				if (wheelID == 1)
+					p[2] += robot->riseByWheels(rsMindstorms::SMALL);
+				else if (wheelID == 2)
+					p[2] += robot->riseByWheels(rsMindstorms::BIG);
 				// adjust height to be above zero
 				if (fabs(p[2]) < (robot->getWheelRadius() - EPSILON)) {
 					p.add(q.multiply(0, 0, robot->getWheelRadius()));
 				}
 				// draw mindstorms
-				_scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
+				// draw wheels
+				if (wheelID == 1)
+					wheel = rsMindstorms::SMALL;
+				else if (wheelID == 2)
+					wheel = rsMindstorms::BIG;
+				_scene->drawWheel(robot, sceneRobot, wheel, rsMindstorms::WHEEL1);
+				_scene->drawWheel(robot, sceneRobot, wheel, rsMindstorms::WHEEL2);
 				// end
 				delete robot;
 				break;
