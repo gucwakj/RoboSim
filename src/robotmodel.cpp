@@ -46,7 +46,7 @@ bool robotModel::addRobot(int form, int role) {
 	return false;
 }
 
-bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &a, const rs::Vec &c, std::string name, int role) {
+bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &a, const rs::Vec &c, const rs::Vec &wheels, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -61,35 +61,10 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 		_list[row][P_Z] = QVariant(p[2]).toString();
 		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
 		_list[row][COLOR] = QString(qtc.name());
+		_list[row][WHEELLEFT] = QVariant(wheels[0]).toString();
+		_list[row][WHEELRIGHT] = QVariant(wheels[1]).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
-	}
-	return false;
-}
-
-bool robotModel::newWheel(int id, int type, int face, double size, int role) {
-	if (role == Qt::EditRole) {
-		for (int i = 0; i < _list.size(); i++) {
-			if (id == _list[i][ID].toInt()) {
-				int val = 0;
-				if (type == rsLinkbot::TINYWHEEL)
-					val = 1;
-				else if (type == rsLinkbot::SMALLWHEEL)
-					val = 2;
-				else if (type == rsLinkbot::BIGWHEEL)
-					val = 3;
-				else if (type == rsLinkbot::WHEEL) {
-					val = 4;
-					_list[i][RADIUS] = QVariant(size).toString();
-				}
-				if (face == 1)
-					_list[i][WHEELLEFT] = QVariant(val).toString();
-				else if (face == 2 || face == 3)
-					_list[i][WHEELRIGHT] = QVariant(val).toString();
-				emit dataChanged(createIndex(i, 0), createIndex(i, NUM_COLUMNS));
-				return true;
-			}
-		}
 	}
 	return false;
 }
