@@ -134,9 +134,10 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// get wheels
-		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt();
+		int wheelID[2] = {_r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt(),
+						  _r_model->data(_r_model->index(i, rsRobotModel::WHEELRIGHT)).toInt()};
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
-		int wheel = 0;
+		int wheel[2] = {0};
 
 		switch (form) {
 			case rs::LINKBOTI:
@@ -148,16 +149,17 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				// set new robot data
 				Writer::setRobot(robot, name, p, q, j, c);
 
-				// add connectors to xml file
-				if (wheelID == 1)
-					wheel = rsLinkbot::TINYWHEEL;
-				else if (wheelID == 2)
-					wheel = rsLinkbot::SMALLWHEEL;
-				else if (wheelID == 3)
-					wheel = rsLinkbot::BIGWHEEL;
-				else if (wheelID == 4)
-					wheel = rsLinkbot::WHEEL;
-				Writer::setRobotWheels(robot, wheel, radius);
+				// set wheel sizes
+				for (int i = 0; i < 2; i++) {
+					if (wheelID[i] == 1)
+						wheel[i] = rsLinkbot::TINYWHEEL;
+					else if (wheelID[i] == 2)
+						wheel[i] = rsLinkbot::SMALLWHEEL;
+					else if (wheelID[i] == 3)
+						wheel[i] = rsLinkbot::BIGWHEEL;
+					else if (wheelID[i] == 4)
+						wheel[i] = rsLinkbot::WHEEL;
+				}
 
 				// done
 				break;
@@ -172,16 +174,20 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				Writer::setRobot(robot, name, p, q, j, c);
 
 				// set wheel sizes
-				if (wheelID == 1)
-					wheel = rsMindstorms::SMALL;
-				else if (wheelID == 2)
-					wheel = rsMindstorms::BIG;
-				Writer::setRobotWheels(robot, wheel, radius);
+				for (int i = 0; i < 2; i++) {
+					if (wheelID[i] == 1)
+						wheel[i] = rsMindstorms::SMALL;
+					else if (wheelID[i] == 2)
+						wheel[i] = rsMindstorms::BIG;
+				}
 
 				// done
 				break;
 			}
 		}
+
+		// write wheels
+		Writer::setRobotWheels(robot, wheel[0], radius, wheel[1], radius);
 	}
 
 	// save
