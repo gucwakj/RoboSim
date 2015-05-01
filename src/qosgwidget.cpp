@@ -3,6 +3,8 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <rs/Macros>
+
 /*!
  *
  *
@@ -283,7 +285,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						else if (wheelID == 4)
 							p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
 						// adjust height to be above zero
-						if (fabs(p[2]) < (robot->getBodyHeight() - EPSILON)) {
+						if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
 							p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
 						}
 						// draw linkbot
@@ -329,7 +331,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				else if (wheelID == 4)
 					p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
 				// adjust height to be above zero
-				if (fabs(p[2]) < (robot->getBodyHeight() - EPSILON)) {
+				if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
 					p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
 				}
 				// draw linkbot
@@ -373,7 +375,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				else if (wheelID == 2)
 					p[2] += robot->riseByWheels(rsMindstorms::BIG);
 				// adjust height to be above zero
-				if (fabs(p[2]) < (robot->getWheelRadius() - EPSILON)) {
+				if (fabs(p[2]) < (robot->getWheelRadius() - rs::EPSILON)) {
 					p.add(q.multiply(0, 0, robot->getWheelRadius()));
 				}
 				// draw mindstorms

@@ -6,10 +6,6 @@
 #include <QModelIndex>
 #include <QObject>
 
-#include <rs/Macros>
-#include <rs/Pos>
-#include <rs/Quat>
-#include <rs/Vec>
 #include <rsXML/Reader>
 #include <rsXML/Writer>
 

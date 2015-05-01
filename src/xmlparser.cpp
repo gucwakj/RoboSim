@@ -1,6 +1,9 @@
 #include <QDebug>
 
-#include <rsXML/Reader>
+#include <rs/Macros>
+#include <rs/Pos>
+#include <rs/Quat>
+#include <rs/Vec>
 
 #include "xmlparser.h"
 
