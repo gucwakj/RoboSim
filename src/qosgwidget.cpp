@@ -229,9 +229,10 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		rs::Vec c(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
 		// get wheels
-		int wheelID = _r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt();
+		int wheelID[2] = {_r_model->data(_r_model->index(i, rsRobotModel::WHEELLEFT)).toInt(),
+						  _r_model->data(_r_model->index(i, rsRobotModel::WHEELRIGHT)).toInt()};
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
-		int wheel = 0;
+		int wheel[2] = {0};
 
 		// draw new robot
 		switch (form) {
@@ -275,37 +276,45 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
 						robot->setID(id);
 						robot->setName(name);
-						// move up by wheel heights
-						if (wheelID == 1)
-							p[2] += robot->riseByWheels(rsLinkbot::TINYWHEEL);
-						else if (wheelID == 2)
-							p[2] += robot->riseByWheels(rsLinkbot::SMALLWHEEL);
-						else if (wheelID == 3)
-							p[2] += robot->riseByWheels(rsLinkbot::BIGWHEEL);
-						else if (wheelID == 4)
-							p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
+						// get wheels
+						for (int i = 0; i < 2; i++) {
+							if (wheelID[i] == 0)
+								wheel[i] = -1;
+							else if (wheelID[i] == 1)
+								wheel[i] = rsLinkbot::TINYWHEEL;
+							else if (wheelID[i] == 2)
+								wheel[i] = rsLinkbot::SMALLWHEEL;
+							else if (wheelID[i] == 3)
+								wheel[i] = rsLinkbot::BIGWHEEL;
+							else if (wheelID[i] == 4)
+								wheel[i] = rsLinkbot::WHEEL;
+						}
+						// tilt for wheels
+						double p2;
+						q.multiply(robot->tiltForWheels(wheel[0], 1, p2));
+						p[2] += p2;
+						q.multiply(robot->tiltForWheels(wheel[1], 3, p2));
+						p[2] += p2;
 						// adjust height to be above zero
 						if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
 							p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
 						}
 						// draw linkbot
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
-						// draw wheels
-						if (wheelID == 1)
-							wheel = rsLinkbot::TINYWHEEL;
-						else if (wheelID == 2)
-							wheel = rsLinkbot::SMALLWHEEL;
-						else if (wheelID == 3)
-							wheel = rsLinkbot::BIGWHEEL;
-						else if (wheelID == 4)
-							wheel = rsLinkbot::WHEEL;
-						if (wheelID) {
+						// left wheel
+						if (wheelID[0]) {
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, radius, 2, wheel);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, radius, 2, wheel[0]);
+						}
+						// caster
+						if (wheelID[0] || wheelID[1]) {
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
+						}
+						// right wheel
+						if (wheelID[1]) {
 							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel[1]);
 						}
 						// end
 						delete robot;
@@ -321,38 +330,12 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTL);
 				robot->setID(id);
 				robot->setName(name);
-				// move up by wheel heights
-				if (wheelID == 1)
-					p[2] += robot->riseByWheels(rsLinkbot::TINYWHEEL);
-				else if (wheelID == 2)
-					p[2] += robot->riseByWheels(rsLinkbot::SMALLWHEEL);
-				else if (wheelID == 3)
-					p[2] += robot->riseByWheels(rsLinkbot::BIGWHEEL);
-				else if (wheelID == 4)
-					p[2] += robot->riseByWheels(rsLinkbot::WHEEL, radius);
 				// adjust height to be above zero
 				if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
 					p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
 				}
 				// draw linkbot
-				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
-				// draw wheels
-				if (wheelID == 1)
-					wheel = rsLinkbot::TINYWHEEL;
-				else if (wheelID == 2)
-					wheel = rsLinkbot::SMALLWHEEL;
-				else if (wheelID == 3)
-					wheel = rsLinkbot::BIGWHEEL;
-				else if (wheelID == 4)
-					wheel = rsLinkbot::WHEEL;
-				if (wheelID) {
-					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
-					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, radius, 2, wheel);
-					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
-					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
-					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
-					_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel);
-				}
+				_scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
 				// end
 				delete robot;
 				break;
@@ -370,9 +353,9 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setID(id);
 				robot->setName(name);
 				// move up by wheel heights
-				if (wheelID == 1)
+				if (wheelID[0] == 1)
 					p[2] += robot->riseByWheels(rsMindstorms::SMALL);
-				else if (wheelID == 2)
+				else if (wheelID[0] == 2)
 					p[2] += robot->riseByWheels(rsMindstorms::BIG);
 				// adjust height to be above zero
 				if (fabs(p[2]) < (robot->getWheelRadius() - rs::EPSILON)) {
@@ -381,12 +364,14 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				// draw mindstorms
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				// draw wheels
-				if (wheelID == 1)
-					wheel = rsMindstorms::SMALL;
-				else if (wheelID == 2)
-					wheel = rsMindstorms::BIG;
-				_scene->drawWheel(robot, sceneRobot, wheel, rsMindstorms::WHEEL1);
-				_scene->drawWheel(robot, sceneRobot, wheel, rsMindstorms::WHEEL2);
+				for (int i = 0; i < 2; i++) {
+					if (wheelID[i] == 1)
+						wheel[i] = rsMindstorms::SMALL;
+					else if (wheelID[i] == 2)
+						wheel[i] = rsMindstorms::BIG;
+				}
+				if (wheel[0]) _scene->drawWheel(robot, sceneRobot, wheel[0], rsMindstorms::WHEEL1);
+				if (wheel[1]) _scene->drawWheel(robot, sceneRobot, wheel[1], rsMindstorms::WHEEL2);
 				// end
 				delete robot;
 				break;
