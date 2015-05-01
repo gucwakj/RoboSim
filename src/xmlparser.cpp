@@ -120,9 +120,9 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				  _r_model->data(_r_model->index(i, rsRobotModel::P_Z)).toDouble());
 
 		// get euler angles
-		double r[3] = {DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_PHI)).toDouble()),
-					   DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_THETA)).toDouble()),
-					   DEG2RAD(_r_model->data(_r_model->index(i, rsRobotModel::R_PSI)).toDouble())};
+		double r[3] = {rs::D2R(_r_model->data(_r_model->index(i, rsRobotModel::R_PHI)).toDouble()),
+					   rs::D2R(_r_model->data(_r_model->index(i, rsRobotModel::R_THETA)).toDouble()),
+					   rs::D2R(_r_model->data(_r_model->index(i, rsRobotModel::R_PSI)).toDouble())};
 
 		// calculate quaternion
 		rs::Quat q(sin(0.5*r[0]), 0, 0, cos(0.5*r[0]));
