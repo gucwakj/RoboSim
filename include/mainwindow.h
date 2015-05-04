@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow {
 
 	protected slots:
 		void changeIndices(int);
+		void closeEvent(QCloseEvent*);
 		void grid_defaults(void);
 		void set_units(bool);
 		void grid(std::vector<double>);
@@ -31,9 +32,12 @@ class MainWindow : public QMainWindow {
 
 	private:
 		void build_selector(QListWidget*, QStringList&, QStringList&);
+		void load_settings(void);
+		void save_settings(void);
 
 	private:
 		Ui::MainWindow *ui;
+		QString _settings;
 		std::vector<double> _us;
 		std::vector<double> _si;
 		xmlParser *_xml;

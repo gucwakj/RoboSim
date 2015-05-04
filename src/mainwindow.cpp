@@ -1,6 +1,7 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QSettings>
 
 #include "mainwindow.h"
 #include "obstacleeditor.h"
@@ -18,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up UI from forms file
 	ui = new Ui::MainWindow;
 	ui->setupUi(this);
+
+	// load settings
+	QCoreApplication::setOrganizationName("C-STEM");
+	QCoreApplication::setApplicationName("RoboSim");
+	this->load_settings();
 
 	// insert platform selector
 	ui->layout_lhs->insertWidget(0, new platformSelector(this));
@@ -355,5 +361,28 @@ bool MainWindow::saveAs(void) {
 	bool retval = _xml->saveFile(files.at(0));
 	ui->statusBar->showMessage(tr("Saved %1").arg(files.at(0)), 2000);
 	return retval;
+}
+
+void MainWindow::load_settings(void) {
+	QSettings settings;
+
+	settings.beginGroup("mainwindow");
+	this->resize(settings.value("size", QSize(400, 400)).toSize());
+	this->move(settings.value("pos", QPoint(200, 200)).toPoint());
+	settings.endGroup();
+}
+
+void MainWindow::save_settings(void) {
+	QSettings settings;
+
+	settings.beginGroup("mainwindow");
+	settings.setValue("size", size());
+	settings.setValue("pos", pos());
+	settings.endGroup();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+	save_settings();
+	event->accept();
 }
 
