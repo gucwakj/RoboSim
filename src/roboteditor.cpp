@@ -24,9 +24,10 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	// set up editor pages
 	_pages = new QStackedWidget;
 	_pages->addWidget(new linkbotEditor(_mapper));
-	_pages->addWidget(new mindstormsEditor(_mapper));
+	_pages->addWidget(new linkbotLEditor(_mapper));
 	_pages->addWidget(new customEditor(_mapper));
 	_pages->addWidget(new preconfigEditor(_mapper));
+	_pages->addWidget(new mindstormsEditor(_mapper));
 
 	// set up buttons
 	_deleteButton = new QPushButton(tr("Delete"));
@@ -64,7 +65,8 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
-	if (bottomRight.row() != _row)
+	int form = _model->data(_model->index(bottomRight.row(), rsRobotModel::FORM)).toInt();
+	if (bottomRight.row() != _row || _form != form)
 		this->setCurrentIndex(bottomRight);
 }
 
@@ -78,8 +80,9 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 
 		// load appropriate page
 		int form = _model->data(_model->index(index.row(), rsRobotModel::FORM)).toInt();
+		_form = form;
 		if (form == rs::EV3 || form == rs::NXT) {
-			_pages->setCurrentIndex(1);	// mindstorms
+			_pages->setCurrentIndex(4);	// mindstorms
 			this->setUnits(_units);
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->nullIndex(false);
 		}
@@ -90,13 +93,18 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(false);
 			}
 			else {
-				if (_model->data(_model->index(index.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4) {
-					_pages->setCurrentIndex(2);	// custom
+				if (form == rs::LINKBOTL) {
+					_pages->setCurrentIndex(1);	// Linkbot-L
+					this->setUnits(_units);
+					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(false);
+				}
+				else if (_model->data(_model->index(index.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4) {
+					_pages->setCurrentIndex(2);	// custom wheeled Linkbot-I
 					this->setUnits(_units);
 					dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
 				else {
-					_pages->setCurrentIndex(0);	// linkbot
+					_pages->setCurrentIndex(0);	// Linkbot-I
 					this->setUnits(_units);
 					dynamic_cast<linkbotEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
@@ -115,6 +123,8 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		// disable current page
 		if (dynamic_cast<linkbotEditor *>(_pages->currentWidget()))
 			dynamic_cast<linkbotEditor *>(_pages->currentWidget())->nullIndex(true);
+		else if (dynamic_cast<linkbotLEditor *>(_pages->currentWidget()))
+			dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<mindstormsEditor *>(_pages->currentWidget()))
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->nullIndex(true);
 		else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
@@ -165,6 +175,8 @@ void robotEditor::setUnits(bool si) {
 	// set units labels for editors
 	if (dynamic_cast<linkbotEditor *>(_pages->currentWidget()))
 		dynamic_cast<linkbotEditor *>(_pages->currentWidget())->setUnits(si);
+	else if (dynamic_cast<linkbotLEditor *>(_pages->currentWidget()))
+		dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<mindstormsEditor *>(_pages->currentWidget()))
 		dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
@@ -393,6 +405,175 @@ void linkbotEditor::setUnits(bool si) {
 	_wheelRBox->setModel(wheelRModel);
 	_wheelRBox->setCurrentIndex(row);
 }
+
+/*!
+ *
+ *
+ *	linkbotLEditor
+ *
+ *
+ */
+
+/*!	\brief linkbot Robot Editor.
+ *
+ *	Build linkbot robot editor with relevant pieces of information.
+ *
+ *	\param		mapper data mapper from robotEditor model.
+ */
+linkbotLEditor::linkbotLEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
+	// save mapper
+	_mapper = mapper;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
+
+	// form list
+	QLabel *formLabel = new QLabel(tr("Form: "));
+	QStringList formItems;
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
+	QStringListModel *formModel = new QStringListModel(formItems, this);
+	QComboBox *formBox = new QComboBox();
+	formBox->setObjectName("form");
+	formBox->setModel(formModel);
+	formLabel->setBuddy(formBox);
+	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+
+	// name
+	QLabel *nameLabel = new QLabel(tr("Name:"));
+	QLineEdit *nameEdit = new QLineEdit;
+	nameEdit->setObjectName("name");
+	nameLabel->setBuddy(nameEdit);
+	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("rz");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
+
+	// color
+	_colorPicker = new ledColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox1 = new QHBoxLayout();
+	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
+	hbox1->addWidget(formBox, 5);
+	hbox1->addStretch(1);
+	layout->addLayout(hbox1);
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->addWidget(nameLabel, 2, Qt::AlignRight);
+	hbox->addWidget(nameEdit, 5);
+	hbox->addStretch(1);
+	layout->addLayout(hbox);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(_rZBox, 5);
+	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+/*!	\brief Slot to keep rotations between
+ *		   -360 and 360 degrees.
+ *
+ *	\param		value Current value of the spinbox.
+ */
+void linkbotLEditor::rotate(double value) {
+	_rZBox->setValue(value - static_cast<int>(value/360)*360);
+	_mapper->submit();
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void linkbotLEditor::nullIndex(bool nullify) {
+	// nullify (or not) input boxes
+	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
+	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
+	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
+	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
+
+	// dim color button
+	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
+	if (nullify) color.setAlpha(50);
+	else color.setAlpha(255);
+	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
+
+	// re-enable mapping
+	if (!nullify) {
+		_mapper->addMapping(this->findChild<QComboBox *>("form"), rsRobotModel::FORM);
+		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsRobotModel::NAME);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
+		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
+		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
+	}
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void linkbotLEditor::setUnits(bool si) {
+	// update unit labels
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+}
+
 
 /*!
  *

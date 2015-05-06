@@ -78,6 +78,7 @@ class robotEditor : public QWidget {
 		QPushButton *_previousButton;
 		bool _units;
 		int _row;
+		int _form;
 };
 
 class linkbotEditor : public QWidget {
@@ -99,6 +100,24 @@ class linkbotEditor : public QWidget {
 		QLabel *_wheelRUnits;
 		QComboBox *_wheelLBox;
 		QComboBox *_wheelRBox;
+		ledColorPicker *_colorPicker;
+};
+
+class linkbotLEditor : public QWidget {
+		Q_OBJECT
+	public:
+		linkbotLEditor(QDataWidgetMapper*, QWidget* = 0);
+		void nullIndex(bool);
+		void setUnits(bool);
+
+	protected slots:
+		void rotate(double);
+
+	private:
+		QDataWidgetMapper *_mapper;
+		QDoubleSpinBox *_rZBox;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
 		ledColorPicker *_colorPicker;
 };
 
