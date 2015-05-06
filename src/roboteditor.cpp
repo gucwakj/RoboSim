@@ -648,12 +648,24 @@ mindstormsEditor::mindstormsEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(rotate(double)));
 
 	// left wheel list
-	QLabel *wheelLabel = new QLabel(tr("Wheel:"));
-	_wheelUnits = new QLabel(tr("cm"));
-	_wheelBox = new QComboBox();
-	_wheelBox->setObjectName("wheels");
-	wheelLabel->setBuddy(_wheelBox);
-	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
+	QStringList wheelLItems;
+	wheelLItems << "None" << "4.13" << "4.45" << "5.08";
+	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
+	_wheelLUnits = new QLabel(tr("cm"));
+	_wheelLBox = new QComboBox();
+	_wheelLBox->setObjectName("wheelLeft");
+	_wheelLBox->setModel(wheelLModel);
+	wheelLLabel->setBuddy(_wheelLBox);
+	QWidget::connect(_wheelLBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+
+	// right wheel list
+	QLabel *wheelRLabel = new QLabel(tr("Right Wheel:"));
+	_wheelRUnits = new QLabel(tr("cm"));
+	_wheelRBox = new QComboBox();
+	_wheelRBox->setObjectName("wheelRight");
+	wheelRLabel->setBuddy(_wheelRBox);
+	QWidget::connect(_wheelRBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
 
 	// color
 	_colorPicker = new ledColorPicker();
@@ -692,9 +704,12 @@ mindstormsEditor::mindstormsEditor(QDataWidgetMapper *mapper, QWidget *parent) :
 	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
 	QHBoxLayout *hbox5 = new QHBoxLayout();
-	hbox5->addWidget(wheelLabel, 2, Qt::AlignRight);
-	hbox5->addWidget(_wheelBox, 5);
-	hbox5->addWidget(_wheelUnits, 1, Qt::AlignLeft);
+	hbox5->addWidget(wheelLLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(_wheelLBox, 5);
+	hbox5->addWidget(_wheelLUnits, 1, Qt::AlignLeft);
+	hbox5->addWidget(wheelRLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(_wheelRBox, 5);
+	hbox5->addWidget(_wheelRUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
@@ -724,7 +739,8 @@ void mindstormsEditor::nullIndex(bool nullify) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
+	(this->findChild<QComboBox *>("wheelLeft"))->setDisabled(nullify);
+	(this->findChild<QComboBox *>("wheelRight"))->setDisabled(nullify);
 	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
 
 	// dim color button
@@ -740,7 +756,8 @@ void mindstormsEditor::nullIndex(bool nullify) {
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsRobotModel::P_X);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsRobotModel::P_Y);
 		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("rz"), rsRobotModel::R_PSI);
-		_mapper->addMapping(this->findChild<QComboBox *>("wheels"), rsRobotModel::WHEELLEFT);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheelLeft"), rsRobotModel::WHEELLEFT);
+		_mapper->addMapping(this->findChild<QComboBox *>("wheelRight"), rsRobotModel::WHEELRIGHT);
 		_mapper->addMapping(this->findChild<ledColorPicker *>("color"), rsRobotModel::COLOR, "color");
 	}
 }
@@ -756,18 +773,27 @@ void mindstormsEditor::setUnits(bool si) {
 	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
-	_wheelUnits->setText(text);
+	_wheelLUnits->setText(text);
+	_wheelRUnits->setText(text);
 
 	// set wheel list to new values
-	QStringList wheelItems;
-	if (si)
-		wheelItems << "None" << "4.13" << "4.45";
-	else
-		wheelItems << "None" << "1.625" << "1.75";
-	QStringListModel *wheelModel = new QStringListModel(wheelItems, this);
-	int row = _wheelBox->currentIndex();
-	_wheelBox->setModel(wheelModel);
-	_wheelBox->setCurrentIndex(row);
+	QStringList wheelLItems, wheelRItems;
+	if (si) {
+		wheelLItems << "None" << "4.13" << "4.45";
+		wheelRItems << "None" << "4.13" << "4.45";
+	}
+	else {
+		wheelLItems << "None" << "1.625" << "1.75";
+		wheelRItems << "None" << "1.625" << "1.75";
+	}
+	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
+	QStringListModel *wheelRModel = new QStringListModel(wheelRItems, this);
+	int row = _wheelLBox->currentIndex();
+	_wheelLBox->setModel(wheelLModel);
+	_wheelLBox->setCurrentIndex(row);
+	row = _wheelRBox->currentIndex();
+	_wheelRBox->setModel(wheelRModel);
+	_wheelRBox->setCurrentIndex(row);
 }
 
 /*!
