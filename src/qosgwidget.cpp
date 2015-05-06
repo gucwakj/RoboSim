@@ -297,7 +297,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						p[2] += p2;
 						// adjust height to be above zero
 						if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
-							p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
+							p.add(0, 0, robot->getBodyHeight()/2);
 						}
 						// draw linkbot
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
