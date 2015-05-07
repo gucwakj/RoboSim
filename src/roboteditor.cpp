@@ -574,7 +574,6 @@ void linkbotLEditor::setUnits(bool si) {
 	_pYUnits->setText(text);
 }
 
-
 /*!
  *
  *
