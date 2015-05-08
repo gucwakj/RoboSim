@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up background view
 	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("None")));
 	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Outdoors")));
-	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Board")));
+	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("2014 RoboPlay Competition Board")));
 	ui->backgroundListWidget->setCurrentRow(1);
 
 	// set up osg view
