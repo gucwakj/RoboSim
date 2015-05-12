@@ -14,6 +14,8 @@
 #include "obstaclemodel.h"
 #include "robotmodel.h"
 
+class QListWidgetItem;
+
 class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		Q_OBJECT
 	public:
@@ -43,10 +45,12 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void gridTics(double);
 		void obstacleDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
+		void setBackgroundImage(int, std::string);
 		void setCurrentBackground(int);
 		void setCurrentIndex(int);
 		void setCurrentObstacleIndex(const QModelIndex&);
 		void setCurrentRobotIndex(const QModelIndex&);
+		void setNewBackground(QListWidgetItem*, QListWidgetItem*);
 		void setUnits(bool);
 
 	protected:

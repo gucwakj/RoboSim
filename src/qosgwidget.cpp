@@ -1,9 +1,12 @@
 #include "qosgwidget.h"
 
+#include <QListWidgetItem>
+
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/ViewerEventHandlers>
 
 #include <rs/Macros>
+#include <rsXML/BackgroundReader>
 
 /*!
  *
@@ -378,7 +381,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 			}
 		}
 		// add new robot
-		_scene->addChildren();
+		_scene->addAndRemoveChildren();
 	}
 	// set current robot
 	this->setCurrentRobotIndex(bottomRight);
@@ -444,10 +447,14 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		}
 
 		// add new obstacle to scene
-		_scene->addChildren();
+		_scene->addAndRemoveChildren();
 	}
 	// set current robot
 	this->setCurrentObstacleIndex(bottomRight);
+}
+
+void QOsgWidget::setBackgroundImage(int pos, std::string name) {
+	_scene->setBackgroundImage(pos, name);
 }
 
 void QOsgWidget::setCurrentBackground(int ind) {
@@ -499,6 +506,15 @@ void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
 
 	// highlight robots
 	this->highlight_robots(index);
+}
+
+void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *previous) {
+	rsXML::BackgroundReader background(current->data(Qt::UserRole).toString().toStdString());
+	
+	for (int i = 0; i < 7; i++) {
+		_scene->setBackgroundImage(i, background.getBackgroundImage(i));
+	}
+	_scene->setLevel(background.getLevel());
 }
 
 void QOsgWidget::setObstacleModel(obstacleModel *model) {

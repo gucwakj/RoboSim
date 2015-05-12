@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QListWidgetItem>
 
 #include <rs/Macros>
 #include <rs/Pos>
@@ -41,6 +42,13 @@ void xmlParser::parse(const char *name) {
 	for (int i = 0; i < 6; i++)
 		_grid[i] = ((_units) ? _grid[i]*100 : _grid[i]*39.37);
 	emit grid(_grid);
+
+	// set background
+	for (int i = 0; i < 7; i++) {
+		emit backgroundImage(i, reader.getBackgroundImage(i));
+	}
+	emit backgroundName(reader.getName());
+	emit level(reader.getLevel());
 
 	// add all robots
 	rsXML::Robot *xmlbot = reader.getNextRobot(-1);
@@ -253,6 +261,10 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 
 	// save
 	Writer::save();
+}
+
+void xmlParser::setBackground(QListWidgetItem *current, QListWidgetItem *previous) {
+	Writer::setBackground(current->data(Qt::UserRole).toString().toStdString());
 }
 
 void xmlParser::setGridEnabled(bool enabled) {

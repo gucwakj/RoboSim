@@ -1,3 +1,5 @@
+#include <QDirIterator>
+#include <QFileInfo>
 #include <QFileDialog>
 
 #include "mainwindow.h"
@@ -9,6 +11,8 @@
 #include "robotmodel.h"
 #include "robotview.h"
 #include "ui_mainwindow.h"
+
+#include <rsXML/BackgroundReader>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	// set up UI from forms file
@@ -78,10 +82,35 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->layout_obstacles->addWidget(o_editor);
 
 	// set up background view
+	QStringList parents, dirs, files;
+	parents << "/home/kgucwa/projects/librs/resources/background" << "/home/kgucwa/downloads";
+	for (int i = 0; i < parents.size(); i++) {
+		QDirIterator directories(parents[i], QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+		while (directories.hasNext()) {
+			directories.next();
+			dirs << directories.filePath();
+		}
+	}
+	// look for background.xml files in all folders
+	for (int i = 0; i < dirs.size(); i++) {
+		//dirs[i].append("/background.xml");
+		QString file(dirs[i]);
+		//QFileInfo checkFile(dirs[i]);
+		QFileInfo checkFile(file.append("/background.xml"));
+		if (checkFile.exists() && checkFile.isFile())
+			files << dirs[i];
+	}
+	// add items to view
 	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("None")));
-	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("Outdoors")));
-	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("2014 RoboPlay Competition Board")));
-	ui->backgroundListWidget->setCurrentRow(1);
+	for (int i = 0; i < files.size(); i++) {
+		// parse rsXML::backgroundreader
+		rsXML::BackgroundReader background(files[i].toStdString());
+		// make item
+		QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
+		//item->setIcon(QIcon(background.getScreenshot()));
+		item->setText(background.getName().c_str());
+		item->setData(Qt::UserRole, files[i]);
+	}
 
 	// set up osg view
 	ui->osgWidget->setRobotModel(model);
@@ -129,7 +158,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), this, SLOT(changeIndices(int)));
-	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentRowChanged(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
+	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), ui->osgWidget, SLOT(setNewBackground(QListWidgetItem*, QListWidgetItem*)));
+	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), _xml, SLOT(setBackground(QListWidgetItem*, QListWidgetItem*)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
 
 	// menu actions
@@ -141,12 +171,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->action_Quit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	// connect xml parser to gui elements
-	QWidget::connect(_xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
-	QWidget::connect(_xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
+	QWidget::connect(_xml, SIGNAL(backgroundImage(int, std::string)), ui->osgWidget, SLOT(setBackgroundImage(int, std::string)));
 	QWidget::connect(_xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
+	QWidget::connect(_xml, SIGNAL(level(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
+	QWidget::connect(_xml, SIGNAL(backgroundName(std::string)), this, SLOT(setCurrentBackground(std::string)));
 	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)));
 	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)), o_model, SLOT(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)));
 	QWidget::connect(_xml, SIGNAL(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)), o_model, SLOT(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)));
+	QWidget::connect(_xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
+	QWidget::connect(_xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
 
 	// connect robot pieces together
 	QWidget::connect(view, SIGNAL(clicked(const QModelIndex&)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -271,6 +304,16 @@ void MainWindow::grid(std::vector<double> v) {
 	ui->spin_grid_x_max->setValue(v[3]);
 	ui->spin_grid_y_min->setValue(v[4]);
 	ui->spin_grid_y_max->setValue(v[5]);
+}
+
+void MainWindow::setCurrentBackground(std::string name) {
+	for (int i = 0; ui->backgroundListWidget->count(); i++) {
+		QListWidgetItem *item = ui->backgroundListWidget->item(i);
+		if ( !item->text().compare(name.c_str()) ) {
+			ui->backgroundListWidget->setCurrentRow(i);
+			break;
+		}
+	}
 }
 
 void MainWindow::about(void) {
