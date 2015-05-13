@@ -117,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 		rsXML::BackgroundReader background(_background[i].toStdString());
 		// make item
 		QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
-		//item->setIcon(QIcon(background.getScreenshot()));
+		item->setIcon(QIcon(background.getScreenshot().c_str()));
 		item->setText(background.getName().c_str());
 		item->setData(Qt::UserRole, _background[i]);
 	}
