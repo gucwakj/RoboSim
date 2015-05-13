@@ -41,6 +41,7 @@ class MainWindow : public QMainWindow {
 		std::vector<double> _us;
 		std::vector<double> _si;
 		xmlParser *_xml;
+		QStringList _background;
 };
 
 #endif // MAINWINDOW_H

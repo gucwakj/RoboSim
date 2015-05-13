@@ -88,10 +88,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->layout_obstacles->addWidget(o_editor);
 
 	// set up background view
-	QStringList parents, dirs, files;
-	parents << "/home/kgucwa/projects/librs/resources/background" << "/home/kgucwa/downloads";
-	for (int i = 0; i < parents.size(); i++) {
-		QDirIterator directories(parents[i], QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+	if (_background.empty()) _background << QString(rsXML::getDefaultBackgroundPath().c_str());
+	QStringList dirs, files;
+	for (int i = 0; i < _background.size(); i++) {
+		QDirIterator directories(_background[i], QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 		while (directories.hasNext()) {
 			directories.next();
 			dirs << directories.filePath();
@@ -99,9 +99,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	}
 	// look for background.xml files in all folders
 	for (int i = 0; i < dirs.size(); i++) {
-		//dirs[i].append("/background.xml");
 		QString file(dirs[i]);
-		//QFileInfo checkFile(dirs[i]);
 		QFileInfo checkFile(file.append("/background.xml"));
 		if (checkFile.exists() && checkFile.isFile())
 			files << dirs[i];
@@ -370,6 +368,15 @@ void MainWindow::load_settings(void) {
 	this->resize(settings.value("size", QSize(400, 400)).toSize());
 	this->move(settings.value("pos", QPoint(200, 200)).toPoint());
 	settings.endGroup();
+
+	settings.beginGroup("background");
+	int size = settings.beginReadArray("directories");
+	for (int i = 0; i < size; ++i) {
+		settings.setArrayIndex(i);
+		_background << settings.value("path").toString();
+	}
+	settings.endArray();
+	settings.endGroup();
 }
 
 void MainWindow::save_settings(void) {
@@ -378,6 +385,15 @@ void MainWindow::save_settings(void) {
 	settings.beginGroup("mainwindow");
 	settings.setValue("size", size());
 	settings.setValue("pos", pos());
+	settings.endGroup();
+
+	settings.beginGroup("background");
+	settings.beginWriteArray("directories");
+	for (int i = 0; i < _background.size(); ++i) {
+		settings.setArrayIndex(i);
+		settings.setValue("path", _background[i]);
+	}
+	settings.endArray();
 	settings.endGroup();
 }
 
