@@ -111,7 +111,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 		if (!checkFile.exists()) _background.removeAt(1);
 	}
 	// create view list
-	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("None")));
 	for (int i = 0; i < _background.size(); i++) {
 		// parse rsXML::BackgroundReader
 		rsXML::BackgroundReader background(_background[i].toStdString());
