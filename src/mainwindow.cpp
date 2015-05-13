@@ -88,32 +88,38 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	ui->layout_obstacles->addWidget(o_editor);
 
 	// set up background view
-	if (_background.empty()) _background << QString(rsXML::getDefaultBackgroundPath().c_str());
-	QStringList dirs, files;
-	for (int i = 0; i < _background.size(); i++) {
-		QDirIterator directories(_background[i], QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+	// parse default path
+	if (_background.empty()) {
+		QString parent(rsXML::getDefaultBackgroundPath().c_str());
+		QStringList dirs;
+		QDirIterator directories(parent, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 		while (directories.hasNext()) {
 			directories.next();
 			dirs << directories.filePath();
 		}
+		for (int i = 0; i < dirs.size(); i++) {
+			QString file(dirs[i]);
+			QFileInfo checkFile(file.append("/background.xml"));
+			if (checkFile.exists() && checkFile.isFile())
+				_background << dirs[i];
+		}
 	}
-	// look for background.xml files in all folders
-	for (int i = 0; i < dirs.size(); i++) {
-		QString file(dirs[i]);
+	// remove any stale directories
+	for (int i = 0; i < _background.size(); i++) {
+		QString file(_background[i]);
 		QFileInfo checkFile(file.append("/background.xml"));
-		if (checkFile.exists() && checkFile.isFile())
-			files << dirs[i];
+		if (!checkFile.exists()) _background.removeAt(1);
 	}
-	// add items to view
+	// create view list
 	ui->backgroundListWidget->addItem(new QListWidgetItem(tr("None")));
-	for (int i = 0; i < files.size(); i++) {
-		// parse rsXML::backgroundreader
-		rsXML::BackgroundReader background(files[i].toStdString());
+	for (int i = 0; i < _background.size(); i++) {
+		// parse rsXML::BackgroundReader
+		rsXML::BackgroundReader background(_background[i].toStdString());
 		// make item
 		QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
 		//item->setIcon(QIcon(background.getScreenshot()));
 		item->setText(background.getName().c_str());
-		item->setData(Qt::UserRole, files[i]);
+		item->setData(Qt::UserRole, _background[i]);
 	}
 
 	// set up osg view
@@ -164,6 +170,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), this, SLOT(changeIndices(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), ui->osgWidget, SLOT(setNewBackground(QListWidgetItem*, QListWidgetItem*)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), _xml, SLOT(setBackground(QListWidgetItem*, QListWidgetItem*)));
+	QWidget::connect(ui->add_background, SIGNAL(clicked(void)), this, SLOT(addBackground(void)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
 
 	// menu actions
@@ -229,6 +236,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 MainWindow::~MainWindow(void) {
 	delete _xml;
 	delete ui;
+}
+
+void MainWindow::addBackground(void) {
+	// get directory from user
+	QString dir = QFileDialog::getExistingDirectory(this, tr("Add Background Directory"),
+					"/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+	// check for existance of xml file
+	QString xml(dir);
+	QFileInfo checkFile(xml.append("/background.xml"));
+	if (checkFile.exists()) {
+		_background << dir;
+	}
+	else {
+		QMessageBox msgBox;
+		msgBox.setText(QString("%1 does not contain a valid RoboSim Background XML File.").arg(dir));
+		msgBox.exec();
+	}
 }
 
 void MainWindow::build_selector(QListWidget *widget, QStringList &names, QStringList &icons) {

@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow {
 		~MainWindow(void);
 
 	protected slots:
+		void addBackground(void);
 		void changeIndices(int);
 		void closeEvent(QCloseEvent*);
 		void grid_defaults(void);
