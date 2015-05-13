@@ -1,6 +1,6 @@
 #include <QDirIterator>
-#include <QFileInfo>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QSettings>
 
 #include "mainwindow.h"
@@ -119,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 		item->setIcon(QIcon(background.getScreenshot().c_str()));
 		item->setText(background.getName().c_str());
 		item->setData(Qt::UserRole, _background[i]);
+		// add to watched paths
+		_watcher.addPath(_background[i]);
 	}
 
 	// set up osg view
@@ -171,6 +173,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), _xml, SLOT(setBackground(QListWidgetItem*, QListWidgetItem*)));
 	QWidget::connect(ui->add_background, SIGNAL(clicked(void)), this, SLOT(addBackground(void)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
+
+	// file watcher of background files
+	QWidget::connect(&_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(updateBackgroundList(QString)));
 
 	// menu actions
 	QWidget::connect(ui->action_About, SIGNAL(triggered()), this, SLOT(about()));
@@ -335,10 +340,25 @@ void MainWindow::grid(std::vector<double> v) {
 }
 
 void MainWindow::setCurrentBackground(std::string name) {
-	for (int i = 0; ui->backgroundListWidget->count(); i++) {
+	for (int i = 0; i < ui->backgroundListWidget->count(); i++) {
 		QListWidgetItem *item = ui->backgroundListWidget->item(i);
 		if ( !item->text().compare(name.c_str()) ) {
 			ui->backgroundListWidget->setCurrentRow(i);
+			break;
+		}
+	}
+}
+
+void MainWindow::updateBackgroundList(const QString &str) {
+	for (int i = 0; i < ui->backgroundListWidget->count(); i++) {
+		QListWidgetItem *item = ui->backgroundListWidget->item(i);
+		if ( !item->data(Qt::UserRole).toString().compare(str) ) {
+			rsXML::BackgroundReader background(str.toStdString());
+			item->setIcon(QIcon(background.getScreenshot().c_str()));
+			item->setText(background.getName().c_str());
+			if (i == ui->backgroundListWidget->currentRow()) {
+				ui->osgWidget->setNewBackground(item, item);
+			}
 			break;
 		}
 	}

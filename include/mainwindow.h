@@ -1,10 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QMessageBox>
+#include <QFileSystemWatcher>
 #include <QListView>
 #include <QListWidget>
+#include <QMainWindow>
+#include <QMessageBox>
 
 #include "xmlparser.h"
 
@@ -26,6 +27,7 @@ class MainWindow : public QMainWindow {
 		void set_units(bool);
 		void grid(std::vector<double>);
 		void setCurrentBackground(std::string);
+		void updateBackgroundList(const QString&);
 		void about(void);
 		void load(void);
 		void save(void);
@@ -43,6 +45,7 @@ class MainWindow : public QMainWindow {
 		std::vector<double> _si;
 		xmlParser *_xml;
 		QStringList _background;
+		QFileSystemWatcher _watcher;
 };
 
 #endif // MAINWINDOW_H
