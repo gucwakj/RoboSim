@@ -7,6 +7,8 @@
 
 #include <rs/Macros>
 #include <rsXML/BackgroundReader>
+#include <rsXML/Marker>
+#include <rsXML/Obstacle>
 
 /*!
  *
@@ -509,12 +511,30 @@ void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
 }
 
 void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *previous) {
+	// read background xml file
 	rsXML::BackgroundReader background(current->data(Qt::UserRole).toString().toStdString());
-	
+
+	// load background images	
 	for (int i = 0; i < 7; i++) {
 		_scene->setBackgroundImage(i, background.getBackgroundImage(i));
 	}
+
+	// set level after images are set
 	_scene->setLevel(background.getLevel());
+
+	// draw obstacle objects
+	for (int i = 0; i < background.getNumObstacles(); i++) {
+		rsXML::Obstacle *obstacle = background.getObstacle(i);
+		_scene->drawObstacle(0, obstacle->getForm(), obstacle->getPosition(), obstacle->getColor(), obstacle->getDimensions(), obstacle->getQuaternion());
+	}
+	// draw marker objects
+	for (int i = 0; i < background.getNumMarkers(); i++) {
+		rsXML::Marker *marker = background.getMarker(i);
+		_scene->drawMarker(0, marker->getForm(), marker->getStart(), marker->getEnd(), marker->getColor(), marker->getSize(), marker->getLabel());
+	}
+
+	// add children to background after level is set
+	_scene->addChildrenToBackground();
 }
 
 void QOsgWidget::setObstacleModel(obstacleModel *model) {
