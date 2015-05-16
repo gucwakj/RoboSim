@@ -70,12 +70,11 @@ set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsXML debug rsXMLd)
 
 # add source files
 set (SRCS ${SRCS}
-	src/main.cpp
-	src/mainwindow.cpp
 	src/obstacleeditor.cpp
 	src/obstaclemodel.cpp
 	src/obstacleview.cpp
 	src/platformselector.cpp
+	src/robosimwidget.cpp
 	src/roboteditor.cpp
 	src/robotmodel.cpp
 	src/robotview.cpp
@@ -85,11 +84,11 @@ set (SRCS ${SRCS}
 
 # add headers
 set (HEADERS
-	include/mainwindow.h
 	include/obstacleeditor.h
 	include/obstaclemodel.h
 	include/obstacleview.h
 	include/platformselector.h
+	include/robosimwidget.h
 	include/roboteditor.h
 	include/robotmodel.h
 	include/robotview.h
@@ -99,12 +98,35 @@ set (HEADERS
 qt4_wrap_cpp (HEADERS_MOC ${HEADERS})
 
 # set gui form
+set (FORMS forms/robosimwidget.ui)
+qt4_wrap_ui (FORMS_HEADERS ${FORMS})
+
+# create library
+add_library (robosimwidget SHARED ${SRCS} ${HEADERS_MOC} ${FORMS_HEADERS})
+target_link_libraries (robosimwidget ${EXTRA_LIBS})
+
+#
+# demo app for project
+#
+
+# wrap headers for qt
+qt4_wrap_cpp (HEADERS_MOC "include/mainwindow.h")
+
+# add project library into standalone app
+include_directories ("${PROJECT_SOURCE_DIR}/include")
+link_directories ("${PROJECT_SOURCE_DIR}/src")
+set (EXTRA_LIBS ${EXTRA_LIBS} robosimwidget)
+
+# set gui form
 set (FORMS forms/mainwindow.ui)
 qt4_wrap_ui (FORMS_HEADERS ${FORMS})
 
-# add executable
-add_executable (RoboSim ${SRCS} ${HEADERS_MOC} ${FORMS_HEADERS})
-
-# link against dependencies
+# create standalone app
+add_executable (RoboSim
+    src/main.cpp
+    src/mainwindow.cpp
+    ${HEADERS_MOC}
+    ${FORMS_HEADERS}
+)
 target_link_libraries (RoboSim ${EXTRA_LIBS})
 
