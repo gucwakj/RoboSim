@@ -181,7 +181,7 @@
            <item>
             <widget class="QGroupBox" name="group_obstacles">
              <property name="title">
-              <string>Obstacles</string>
+              <string>Obstacles (with mass)</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
               <property name="spacing">
@@ -269,7 +269,7 @@
            <item>
             <widget class="QGroupBox" name="group_drawings">
              <property name="title">
-              <string>Drawings</string>
+              <string>Drawings (no mass)</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
               <property name="spacing">
@@ -401,14 +401,14 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>3</number>
        </property>
        <property name="movable">
         <bool>true</bool>
        </property>
        <widget class="QWidget" name="tab_config">
         <attribute name="title">
-         <string>Configuration</string>
+         <string>Settings</string>
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <property name="spacing">
@@ -766,7 +766,7 @@
        </widget>
        <widget class="QWidget" name="tab_obstacles">
         <attribute name="title">
-         <string>Objects</string>
+         <string>Obstacles And Drawings</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_14">
          <property name="spacing">
