@@ -9,11 +9,19 @@
 
 #include "xmlparser.h"
 
+#if defined(ROBOSIMWIDGET_DLL) && defined(_WIN32)
+	#define ROBOSIMWIDGET_EXPORT Q_DECL_EXPORT
+#elif defined(_WIN32)
+	#define ROBOSIMWIDGET_EXPORT Q_DECL_IMPORT
+#else
+	#define ROBOSIMWIDGET_EXPORT
+#endif
+
 namespace Ui {
 	class RoboSimWidget;
 }
 
-class roboSimWidget : public QWidget {
+class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		Q_OBJECT
 	public:
 		explicit roboSimWidget(QWidget* = 0);
