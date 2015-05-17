@@ -8,8 +8,18 @@ cmake_minimum_required (VERSION 2.8)
 set (CMAKE_VERBOSE_MAKEFILE off)
 
 # set the build postfix extension
-if (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set (CMAKE_DEBUG_POSTFIX "d")
+set (CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add build postfix type")
+set (CMAKE_RELEASE_POSTFIX "" CACHE STRING "add build postfix type")
+set (CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add build postfix type")
+set (CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add build postfix type")
+if (CMAKE_BUILD_TYPE MATCHES "Release")
+	set (CMAKE_BUILD_POSTFIX "")
+elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
+	set (CMAKE_BUILD_POSTFIX "d")
+elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+	set (CMAKE_BUILD_POSTFIX "s")
+elseif (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+	set (CMAKE_BUILD_POSTFIX "rd")
 endif ()
 
 # suppress developer warnings
@@ -28,12 +38,20 @@ include_directories (
 	"${PROJECT_BINARY_DIR}"
 )
 
-# set output directory for executables
-set (OUTPUT_BINDIR "${PROJECT_BINARY_DIR}/bin")
+# set output directory for shared objects
+set (OUTPUT_LIBDIR "${RoboSim_BINARY_DIR}/lib")
+set (OUTPUT_BINDIR "${RoboSim_BINARY_DIR}/bin")
 foreach (CONF ${CMAKE_CONFIGURATION_TYPES})
 	string (TOUPPER "${CONF}" CONF)
+	set ("CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
 	set ("CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
+	if (WIN32)
+		set ("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
+	else ()
+		set ("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
+	endif ()
 endforeach ()
+make_directory (${OUTPUT_LIBDIR})
 make_directory (${OUTPUT_BINDIR})
 
 # add Qt
@@ -47,12 +65,16 @@ set (QT_USE_QTOPENGL TRUE)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 add_definitions (${QT_DEFINITIONS})
+include_directories (${Qt5Core_INCLUDE_DIRS})
+include_directories (${Qt5Gui_INCLUDE_DIRS})
+include_directories (${Qt5OpenGL_INCLUDE_DIRS})
+include_directories (${Qt5Widgets_INCLUDE_DIRS})
 if (WIN32)
 	link_directories ("C:/Qt/5.4.1/5.4/msvc2013_64_opengl/lib")
-	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5::Core debug Qt5::Cored)
-	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5::Gui debug Qt5::Guid)
-	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5::OpenGL debug Qt5::OpenGLd)
-	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5::Widgets debug Qt5::Widgetsd)
+	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5Core debug Qt5Cored)
+	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5Gui debug Qt5Guid)
+	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5OpenGL debug Qt5OpenGLd)
+	set (EXTRA_LIBS ${EXTRA_LIBS} optimized Qt5Widgets debug Qt5Widgetsd)
 else ()
 	set (EXTRA_LIBS ${EXTRA_LIBS} QtCore)
 	set (EXTRA_LIBS ${EXTRA_LIBS} QtGui)
@@ -144,8 +166,8 @@ set_target_properties (robosimwidget PROPERTIES COMPILE_DEFINITIONS "ROBOSIMWIDG
 
 # add project library into standalone app
 include_directories ("${RoboSim_SOURCE_DIR}/include")
-link_directories ("${RoboSim_SOURCE_DIR}/build/Release")
-set (EXTRA_LIBS ${EXTRA_LIBS} robosimwidget)
+link_directories ("${RoboSim_BINARY_DIR}/lib")
+set (EXTRA_LIBS ${EXTRA_LIBS} optimized robosimwidget debug robosimwidgetd)
 
 # set gui form
 qt5_wrap_ui (APP_FORMS_HEADERS forms/mainwindow.ui)

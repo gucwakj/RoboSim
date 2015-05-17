@@ -79,9 +79,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 }
 
 QOsgWidget::~QOsgWidget(void) {
-	//this->unref();
-	//_scene->setMouseHandler(NULL);
-	delete _scene;
+	_scene->setMouseHandler(NULL);
 }
 
 void QOsgWidget::clickedObstacleIndex(int id) {

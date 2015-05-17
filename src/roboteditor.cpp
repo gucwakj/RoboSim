@@ -73,7 +73,7 @@ void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
 void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid()) {
 		// disable current mappings
-		_mapper->clearMapping();
+		//_mapper->clearMapping();
 
 		// set new curent model row
 		_row = index.row();
@@ -95,6 +95,7 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 			else {
 				if (form == rs::LINKBOTL) {
 					_pages->setCurrentIndex(1);	// Linkbot-L
+					qDebug() << "hi";
 					this->setUnits(_units);
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
@@ -140,10 +141,11 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 }
 
 void robotEditor::buttonPressed(void) {
-	// enable appropriate buttons
+	// get new index
 	QModelIndex index = _mapper->model()->index(_mapper->currentIndex(), 0);
-	_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
-	_previousButton->setEnabled(index.row() > 0);
+
+	// set editor to new values
+	this->setCurrentIndex(index);
 
 	// signal other views that index has changed
 	emit indexChanged(index);
@@ -1243,15 +1245,15 @@ void robotEditorDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
 				model->setData(index, QVariant(rs::EV3));
 			else if (value == NXT)
 				model->setData(index, QVariant(rs::NXT));
-			return;
 		}
+		return;
 	}
 	else if (!strcmp(editor->metaObject()->className(), "QComboBox")) {
 		QVariant value = editor->property("currentIndex");
 		if (value.isValid()) {
 			model->setData(index, value);
-			return;
 		}
+		return;
 	}
 	QItemDelegate::setModelData(editor, model, index);
 }

@@ -215,7 +215,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
 
 	// parse xml file
-	//_xml->parse("");
+	_xml->parse("");
 
 	// if no robots were added, add a token Linkbot-I now
 	if (!model->rowCount())
