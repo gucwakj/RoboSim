@@ -1,6 +1,11 @@
 #include "platformselector.h"
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#endif
+
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QGroupBox>
@@ -31,7 +36,7 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_simulated, SIGNAL(toggled(bool)), this, SLOT(simulated(bool)));
 
 	// get CHHOME directory
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     DWORD size;
     HKEY key;
 #if defined(_WIN64)
@@ -53,26 +58,21 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 #endif
 
 	// get chrc filepath
-	QStringList env_list(QProcess::systemEnvironment());
-	int idx = env_list.indexOf(QRegExp("^HOME=.*", Qt::CaseInsensitive));
-	if (idx > -1) {
-		QStringList dir = env_list[idx].split('=');
-		_chrcPath.append(dir[1]);
-#ifdef Q_WS_WIN
-		_chrcPath.append("\\_chrc");
+	_chrcPath = QDir::homePath();
+#ifdef Q_OS_WIN
+	_chrcPath.append("/_chrc");
 #else
-		_chrcPath.append("/.chrc");
+	_chrcPath.append("/.chrc");
 #endif
-		QFileInfo checkFile(_chrcPath);
-		if (!checkFile.exists()) {
-			QString source(_chhome);
-#ifdef Q_WS_WIN
-			source.append("\\config\\chrc");
+	QFileInfo checkFile(_chrcPath);
+	if (!checkFile.exists()) {
+		QString source(_chhome);
+#ifdef Q_OS_WIN
+		source.append("\\config\\chrc");
 #else
-			source.append("/config/chrc");
+		source.append("/config/chrc");
 #endif
-			QFile::copy(source, _chrcPath);
-		}
+		QFile::copy(source, _chrcPath);
 	}
 
 	// open chrc

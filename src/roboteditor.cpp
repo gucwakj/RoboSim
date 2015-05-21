@@ -95,7 +95,6 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 			else {
 				if (form == rs::LINKBOTL) {
 					_pages->setCurrentIndex(1);	// Linkbot-L
-					qDebug() << "hi";
 					this->setUnits(_units);
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
