@@ -39,9 +39,15 @@ void xmlParser::parse(const char *name) {
 
 	// grid
 	_grid = reader.getGrid();
-	for (int i = 0; i < 6; i++)
-		_grid[i] = ((_units) ? _grid[i]*100 : _grid[i]*39.37);
-	emit grid(_grid);
+	if (_grid[6] == -1) {
+		_grid[6] = 1;
+		emit gridDefaults();
+	}
+	else {
+		for (int i = 0; i < 6; i++)
+			_grid[i] = ((_units) ? _grid[i] * 100 : _grid[i] * 39.37);
+		emit grid(_grid);
+	}
 
 	// set background
 	for (int i = 0; i < 7; i++) {
@@ -244,6 +250,7 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				if (form == rs::CYLINDER) dims[2] = axis;
 				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;

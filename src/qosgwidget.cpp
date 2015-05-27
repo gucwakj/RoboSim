@@ -135,12 +135,14 @@ void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
 	_scene->deleteObstacle(id);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
 	_scene->deleteRobot(id);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridDefaults(void) {
@@ -424,6 +426,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 
 		// delete old obstacle
 		_scene->deleteObstacle(id);
+		_scene->deleteMarker(id);
 
 		// draw new obstacle
 		switch (form) {

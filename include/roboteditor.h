@@ -79,6 +79,7 @@ class robotEditor : public QWidget {
 		bool _units;
 		int _row;
 		int _form;
+		int _setting;
 };
 
 class linkbotEditor : public QWidget {

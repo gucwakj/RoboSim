@@ -69,6 +69,9 @@ class obstacleEditor : public QWidget {
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
 		bool _units;
+		int _row;
+		int _form;
+		int _setting;
 };
 
 class boxEditor : public QWidget {

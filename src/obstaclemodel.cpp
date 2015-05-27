@@ -20,12 +20,15 @@ bool obstacleModel::addObstacle(int form, int role) {
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		_list[row][P_Y] = QVariant(0).toString();
+		_list[row][P_Z] = QVariant(0).toString();
 		_list[row][L_1] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
-		_list[row][AXIS] = QVariant(2).toString();
-		_list[row][MASS] = QVariant(5).toString();
 		_list[row][COLOR] = QString("#00ff00");	// green
+		_list[row][MASS] = QVariant(5).toString();
+		_list[row][AXIS] = QVariant(2).toString();
+		_list[row][TEXT] = QString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -44,12 +47,13 @@ bool obstacleModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos
 		_list[row][P_X] = QVariant(p1[0]).toString();
 		_list[row][P_Y] = QVariant(p1[1]).toString();
 		_list[row][P_Z] = QVariant(p1[2]).toString();
-		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
-		_list[row][COLOR] = QString(qtc.name());
 		_list[row][L_1] = QVariant(p2[0]).toString();
 		_list[row][L_2] = QVariant(p2[1]).toString();
 		_list[row][L_3] = QVariant(p2[2]).toString();
+		QColor qtc(c[0] * 255, c[1] * 255, c[2] * 255, c[3] * 255);
+		_list[row][COLOR] = QString(qtc.name());
 		_list[row][MASS] = QVariant(size).toString();
+		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString(name.c_str());
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -69,12 +73,14 @@ bool obstacleModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Qu
 		_list[row][P_X] = QVariant(p[0]).toString();
 		_list[row][P_Y] = QVariant(p[1]).toString();
 		_list[row][P_Z] = QVariant(p[2]).toString();
-		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
-		_list[row][COLOR] = QString(qtc.name());
 		_list[row][L_1] = QVariant(l[0]).toString();
 		_list[row][L_2] = QVariant(l[1]).toString();
 		_list[row][L_3] = QVariant(l[2]).toString();
+		QColor qtc(c[0] * 255, c[1] * 255, c[2] * 255, c[3] * 255);
+		_list[row][COLOR] = QString(qtc.name());
 		_list[row][MASS] = QVariant(mass).toString();
+		_list[row][AXIS] = QVariant(2).toString();
+		_list[row][TEXT] = QString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}

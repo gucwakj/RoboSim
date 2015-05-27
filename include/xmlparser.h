@@ -26,6 +26,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 	signals:
 		void backgroundImage(int, std::string);
 		void grid(std::vector<double>);
+		void gridDefaults(void);
 		void level(int);
 		void backgroundName(std::string);
 		void newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string);

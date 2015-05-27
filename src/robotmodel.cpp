@@ -30,16 +30,25 @@ bool robotModel::addRobot(int form, int role) {
 		this->insertRows(row, 1);
 
 		// new robot data
-		if (row && this->data(createIndex(row-1, PRECONFIG), Qt::EditRole).toInt()) {
-			_list[row][ID] = QVariant(this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 + _l_preconfig[this->data(createIndex(row-1, PRECONFIG), Qt::EditRole).toInt()]).toString();
+		if (row && this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()) {
+			_list[row][ID] = QVariant(this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()]).toString();
 		}
 		else {
-			_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
+			_list[row][ID] = QVariant((row) ? this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		}
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
-		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row - 1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		_list[row][P_Y] = QVariant(0).toString();
+		_list[row][P_Z] = QVariant(0).toString();
+		_list[row][R_PHI] = QVariant(0).toString();
+		_list[row][R_THETA] = QVariant(0).toString();
+		_list[row][R_PSI] = QVariant(0).toString();
 		_list[row][COLOR] = QString("#00ff00");
+		_list[row][RADIUS] = QVariant(0).toString();
+		_list[row][WHEELLEFT] = QVariant(0).toString();
+		_list[row][WHEELRIGHT] = QVariant(0).toString();
+		_list[row][PRECONFIG] = QVariant(0).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -59,10 +68,15 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 		_list[row][P_X] = QVariant(p[0]).toString();
 		_list[row][P_Y] = QVariant(p[1]).toString();
 		_list[row][P_Z] = QVariant(p[2]).toString();
+		_list[row][R_PHI] = QVariant(0).toString();
+		_list[row][R_THETA] = QVariant(0).toString();
+		_list[row][R_PSI] = QVariant(asin(q[2]) * 180 * 2 / rs::PI).toString();
 		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
 		_list[row][COLOR] = QString(qtc.name());
+		_list[row][RADIUS] = QVariant(0).toString();
 		_list[row][WHEELLEFT] = QVariant(wheels[0]).toString();
 		_list[row][WHEELRIGHT] = QVariant(wheels[1]).toString();
+		_list[row][PRECONFIG] = QVariant(0).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -197,34 +211,32 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
 			case rs::LINKBOTI: {
 				switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
-					case rsLinkbot::BOW:				image.load("monkey_off_32x32.png"); break;
-					case rsLinkbot::EXPLORER:			image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::FOURBOTDRIVE:		image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::FOURWHEELDRIVE:		image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::FOURWHEELEXPLORER:	image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::GROUPBOW:			image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::INCHWORM:			image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::LIFT:				image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::OMNIDRIVE:			image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::SNAKE:				image.load("monkey_on_32x32.png"); break;
-					case rsLinkbot::STAND:				image.load("monkey_on_32x32.png"); break;
-					default: 							image.load("linkbotI.png"); break;
+					case rsLinkbot::BOW:				image.load("icons/bow32.png"); break;
+					case rsLinkbot::EXPLORER:			image.load("icons/explorer32.png"); break;
+					case rsLinkbot::FOURBOTDRIVE:		image.load("icons/fourbotexplorer32.png"); break;
+					case rsLinkbot::FOURWHEELDRIVE:		image.load("icons/fourwheeldrive32.png"); break;
+					case rsLinkbot::FOURWHEELEXPLORER:	image.load("icons/fourwheelexplorer32.png"); break;
+					case rsLinkbot::GROUPBOW:			image.load("icons/groupbow32.png"); break;
+					case rsLinkbot::INCHWORM:			image.load("icons/inchworm32.png"); break;
+					case rsLinkbot::LIFT:				image.load("icons/lift32.png"); break;
+					case rsLinkbot::OMNIDRIVE:			image.load("icons/omnidrive32.png"); break;
+					case rsLinkbot::SNAKE:				image.load("icons/snake32.png"); break;
+					case rsLinkbot::STAND:				image.load("icons/stand32.png"); break;
+					default: 							image.load("icons/linkbotI32.png"); break;
 				}
+				break;
 			}
 			case rs::LINKBOTL:
-				image.load("linkbotI.jpg");
-				break;
-			case rs::LINKBOTT:
-				image.load("linkbotL.jpg");
+				image.load("icons/linkbotL32.png");
 				break;
 			case rs::EV3:
-				image.load("mobot.jpg");
+				image.load("icons/mindstormsEV332.png");
 				break;
 			case rs::NXT:
-				image.load("mobot.jpg");
+				image.load("icons/mindstormsNXT32.png");
 				break;
 			default:
-				image.load("monkey_on_32x32.png");
+				image.load("icons/monkey32.png");
 				break;
 		}
 		return image;

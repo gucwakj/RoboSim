@@ -27,7 +27,7 @@ obstacleView::obstacleView(obstacleModel *model, QWidget *parent) : QListView(pa
 	this->setSpacing(12);
 	this->setCurrentIndex(model->index(0, 0));
 	this->setModelColumn(rsObstacleModel::ID);
-	this->setUniformItemSizes(true);
+	this->setUniformItemSizes(false);
 	this->installEventFilter(this);
 
 	// drag-drop

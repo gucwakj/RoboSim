@@ -21,8 +21,6 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->setupUi(this);
 
 	// load settings
-	QCoreApplication::setOrganizationName("C-STEM");
-	QCoreApplication::setApplicationName("RoboSim");
 	this->load_settings();
 
 	// insert platform selector
@@ -31,17 +29,17 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build robot selector
 	QStringList names, icons;
 	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
-	icons << "linkbotI.jpg" << "linkbotL.jpg" << "mobot.jpg" << "mobot.jpg";
+	icons << "icons/linkbotI128.png" << "icons/linkbotL128.png" << "icons/mindstormsEV3128.png" << "icons/mindstormsNXT128.png";
 	this->build_selector(ui->list_robots, names, icons);
 	ui->list_robots->setDragEnabled(true);
 
 	// build preconfig selector
-	/*names.clear();
-	icons.clear();
-	names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
-	icons << "bow.jpg" <<  "explorer.jpg" << "fourbotdrive.jpg" << "fourwheeldrive.jpg" << "fourwheelexplorer.jpg" << "groupbow.jpg" << "inchworm.jpg" << "lift.jpg" << "omnidrive.jpg" << "snake.jpg" << "stand.jpg";
-	this->build_selector(ui->list_preconfig, names, icons);
-	ui->list_preconfig->setDragEnabled(true);*/
+	//names.clear();
+	//icons.clear();
+	//names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
+	//icons << "bow.jpg" <<  "explorer.jpg" << "fourbotdrive.jpg" << "fourwheeldrive.jpg" << "fourwheelexplorer.jpg" << "groupbow.jpg" << "inchworm.jpg" << "lift.jpg" << "omnidrive.jpg" << "snake.jpg" << "stand.jpg";
+	//this->build_selector(ui->list_preconfig, names, icons);
+	//ui->list_preconfig->setDragEnabled(true);
 
 	// build obstacles selector
 	names.clear();
@@ -165,6 +163,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), ui->osgWidget, SLOT(gridMaxY(double)));
 	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), _xml, SLOT(setGridMaxY(double)));
 	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(gridEnabled(bool)));
+	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), _xml, SLOT(setGridEnabled(bool)));
 	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
@@ -180,6 +179,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// connect xml parser to gui elements
 	QWidget::connect(_xml, SIGNAL(backgroundImage(int, std::string)), ui->osgWidget, SLOT(setBackgroundImage(int, std::string)));
 	QWidget::connect(_xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
+	QWidget::connect(_xml, SIGNAL(gridDefaults()), this, SLOT(grid_defaults()));
 	QWidget::connect(_xml, SIGNAL(level(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(_xml, SIGNAL(backgroundName(std::string)), this, SLOT(setCurrentBackground(std::string)));
 	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)));
@@ -195,7 +195,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentRobotIndex(const QModelIndex&)));
 	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), view, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	//QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
@@ -208,7 +209,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
 	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_view, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	//QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
@@ -230,6 +232,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 }
 
 roboSimWidget::~roboSimWidget(void) {
+	this->save_settings();
 	delete _xml;
 	delete ui;
 }
@@ -270,6 +273,7 @@ void roboSimWidget::changeIndices(int ind) {
 void roboSimWidget::grid_defaults(void) {
 	// reset to proper units
 	if (ui->si->isDown()) {
+		ui->grid_on->setChecked(true);
 		ui->spin_grid_tics->setValue(5);
 		ui->spin_grid_hash->setValue(50);
 		ui->spin_grid_x_min->setValue(-200);
@@ -278,6 +282,7 @@ void roboSimWidget::grid_defaults(void) {
 		ui->spin_grid_y_max->setValue(200);
 	}
 	else {
+		ui->grid_on->setChecked(true);
 		ui->spin_grid_tics->setValue(1);
 		ui->spin_grid_hash->setValue(12);
 		ui->spin_grid_x_min->setValue(-48);
@@ -322,7 +327,7 @@ void roboSimWidget::set_units(bool si) {
 }
 
 void roboSimWidget::grid(std::vector<double> v) {
-	ui->grid_on->setChecked(static_cast<bool>(v[6]));
+	ui->grid_off->setChecked(!(static_cast<bool>(v[6])));
 	ui->spin_grid_tics->setValue(v[0]);
 	ui->spin_grid_hash->setValue(v[1]);
 	ui->spin_grid_x_min->setValue(v[2]);
@@ -397,12 +402,12 @@ bool roboSimWidget::saveAs(void) {
 }
 
 void roboSimWidget::load_settings(void) {
-	QSettings settings;
+	QSettings settings(tr("UC Davis C-STEM Center"), tr("RoboSim"));
 
-	settings.beginGroup("mainwindow");
-	this->resize(settings.value("size", QSize(400, 400)).toSize());
-	this->move(settings.value("pos", QPoint(200, 200)).toPoint());
-	settings.endGroup();
+	//settings.beginGroup("mainwindow");
+	//this->resize(settings.value("size", QSize(400, 400)).toSize());
+	//this->move(settings.value("pos", QPoint(200, 200)).toPoint());
+	//settings.endGroup();
 
 	settings.beginGroup("background");
 	int size = settings.beginReadArray("directories");
@@ -415,12 +420,12 @@ void roboSimWidget::load_settings(void) {
 }
 
 void roboSimWidget::save_settings(void) {
-	QSettings settings;
+	QSettings settings(tr("UC Davis C-STEM Center"), tr("RoboSim"));
 
-	settings.beginGroup("mainwindow");
-	settings.setValue("size", size());
-	settings.setValue("pos", pos());
-	settings.endGroup();
+	//settings.beginGroup("mainwindow");
+	//settings.setValue("size", size());
+	//settings.setValue("pos", pos());
+	//settings.endGroup();
 
 	settings.beginGroup("background");
 	settings.beginWriteArray("directories");

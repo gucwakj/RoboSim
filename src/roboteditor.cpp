@@ -60,8 +60,10 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	vbox->addLayout(hbox7);
 	this->setLayout(vbox);
 
-	// go to first item
-	this->setCurrentIndex(_mapper->model()->index(0,0));
+	// set variables for tracking editor
+	_row = -1;
+	_form = -1;
+	_setting = 0;
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
@@ -71,9 +73,13 @@ void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
 }
 
 void robotEditor::setCurrentIndex(const QModelIndex &index) {
+	// prevent two items from writing simultaneously
+	if (_setting == 1) return;
+	_setting = 1;
+
 	if (index.isValid()) {
 		// disable current mappings
-		//_mapper->clearMapping();
+		_mapper->clearMapping();
 
 		// set new curent model row
 		_row = index.row();
@@ -83,29 +89,29 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		_form = form;
 		if (form == rs::EV3 || form == rs::NXT) {
 			_pages->setCurrentIndex(4);	// mindstorms
-			this->setUnits(_units);
+			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setUnits(_units);
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->nullIndex(false);
 		}
 		else {
 			if (_model->data(_model->index(index.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt()) {
 				_pages->setCurrentIndex(3);	// preconfig
-				this->setUnits(_units);
+				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(false);
 			}
 			else {
 				if (form == rs::LINKBOTL) {
 					_pages->setCurrentIndex(1);	// Linkbot-L
-					this->setUnits(_units);
+					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setUnits(_units);
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
 				else if (_model->data(_model->index(index.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4) {
 					_pages->setCurrentIndex(2);	// custom wheeled Linkbot-I
-					this->setUnits(_units);
+					dynamic_cast<customEditor *>(_pages->currentWidget())->setUnits(_units);
 					dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
 				else {
 					_pages->setCurrentIndex(0);	// Linkbot-I
-					this->setUnits(_units);
+					dynamic_cast<linkbotEditor *>(_pages->currentWidget())->setUnits(_units);
 					dynamic_cast<linkbotEditor *>(_pages->currentWidget())->nullIndex(false);
 				}
 			}
@@ -137,6 +143,9 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		_nextButton->setDisabled(true);
 		_previousButton->setDisabled(true);
 	}
+
+	// mapper can change now
+	_setting = 0;
 }
 
 void robotEditor::buttonPressed(void) {
@@ -1171,7 +1180,8 @@ ledColorPicker::ledColorPicker(QWidget *parent) : QWidget(parent) {
 
 	_button = new QPushButton(this);
 	_button->setObjectName("colorbutton");
-	_button->setPalette(QPalette(_color));
+	QString s = "background-color: ";
+	_button->setStyleSheet(s + _color.name());
 	hbox->addWidget(_button, 5);
 	hbox->addStretch(1);
 
@@ -1188,7 +1198,8 @@ void ledColorPicker::setColor(const QColor color) {
 		return;
 
 	_color = color;
-	_button->setPalette(QPalette(_color));
+	QString s = "background-color: ";
+	_button->setStyleSheet(s + _color.name());
 	emit colorChanged(_color);
 }
 

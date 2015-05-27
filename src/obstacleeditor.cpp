@@ -61,50 +61,62 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	vbox->addLayout(hbox7);
 	this->setLayout(vbox);
 
-	// go to first item
-	this->setCurrentIndex(_mapper->model()->index(0,0));
+	// set variables for tracking editor
+	_row = -1;
+	_form = -1;
+	_setting = 0;
 }
 
 void obstacleEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
-	this->setCurrentIndex(bottomRight);
+	int form = _model->data(_model->index(bottomRight.row(), rsObstacleModel::FORM)).toInt();
+	if (bottomRight.row() != _row || _form != form)
+		this->setCurrentIndex(bottomRight);
 }
 
 void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
+	// prevent two items from writing simultaneously
+	if (_setting == 1) return;
+	_setting = 1;
+
 	if (index.isValid()) {
 		// disable current mappings
 		_mapper->clearMapping();
 
+		// set new curent model row
+		_row = index.row();
+
 		// load appropriate page
 		int form = _model->data(_model->index(index.row(), rsObstacleModel::FORM), Qt::EditRole).toInt();
+		_form = form;
 		switch (form) {
 			case rs::BOX:
 				_pages->setCurrentIndex(0);
-				this->setUnits(_units);
+				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 			case rs::CYLINDER:
 				_pages->setCurrentIndex(1);
-				this->setUnits(_units);
+				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 			case rs::DOT:
 				_pages->setCurrentIndex(2);
-				this->setUnits(_units);
+				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 			case rs::LINE:
 				_pages->setCurrentIndex(3);
-				this->setUnits(_units);
+				dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 			case rs::SPHERE:
 				_pages->setCurrentIndex(4);
-				this->setUnits(_units);
+				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 			case rs::TEXT:
 				_pages->setCurrentIndex(5);
-				this->setUnits(_units);
+				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->nullIndex(false);
 				break;
 		}
@@ -137,6 +149,9 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 		_nextButton->setDisabled(true);
 		_previousButton->setDisabled(true);
 	}
+
+	// mapper can change now
+	_setting = 0;
 }
 
 void obstacleEditor::buttonPressed(void) {
@@ -1257,7 +1272,8 @@ bodyColorPicker::bodyColorPicker(QWidget *parent) : QWidget(parent) {
 
 	_button = new QPushButton(this);
 	_button->setObjectName("colorbutton");
-	_button->setPalette(QPalette(_color));
+	QString s = "background-color: ";
+	_button->setStyleSheet(s + _color.name());
 	hbox->addWidget(_button, 5);
 	hbox->addStretch(1);
 
@@ -1274,7 +1290,8 @@ void bodyColorPicker::setColor(const QColor color) {
 		return;
 
 	_color = color;
-	_button->setPalette(QPalette(_color));
+	QString s = "background-color: ";
+	_button->setStyleSheet(s + _color.name());
 	emit colorChanged(color);
 }
 
