@@ -3,20 +3,18 @@
 
 #include <iostream>
 
-#include <QLabel>
-#include <QDataWidgetMapper>
-#include <QLineEdit>
-#include <QDoubleSpinBox>
-#include <QWidget>
 #include <QColorDialog>
+#include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QItemDelegate>
-#include <QComboBox>
-#include <QStringListModel>
-#include <QStackedWidget>
-#include <QPushButton>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMetaProperty>
+#include <QPushButton>
+#include <QStackedWidget>
+#include <QStringListModel>
+#include <QWidget>
 
 #include "obstaclemodel.h"
 
@@ -57,32 +55,40 @@ class obstacleEditor : public QWidget {
 		void setCurrentIndex(const QModelIndex&);
 
 	protected slots:
-		void buttonPressed(void);
+		void nextButtonPressed(void);
+		void prevButtonPressed(void);
 		void deleteCurrentIndex(void);
 		void setUnits(bool);
 
 	private:
 		obstacleModel *_model;
-		QDataWidgetMapper *_mapper;
 		QStackedWidget *_pages;
 		QPushButton *_deleteButton;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
 		bool _units;
 		int _row;
-		int _form;
-		int _setting;
 };
 
 class boxEditor : public QWidget {
 		Q_OBJECT
 	public:
-		boxEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		boxEditor(obstacleModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitL1(double);
+		void submitL2(double);
+		void submitL3(double);
+		void submitMass(double);
+		void submitColor(QColor);
+
 	private:
-		QDataWidgetMapper *_mapper;
+		obstacleModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -91,17 +97,28 @@ class boxEditor : public QWidget {
 		QLabel *_lZUnits;
 		QLabel *_massUnits;
 		bodyColorPicker *_colorPicker;
+		int _row;
 };
 
 class cylinderEditor : public QWidget {
 		Q_OBJECT
 	public:
-		cylinderEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		cylinderEditor(obstacleModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitL1(double);
+		void submitL2(double);
+		void submitAxis(int);
+		void submitMass(double);
+		void submitColor(QColor);
+
 	private:
-		QDataWidgetMapper *_mapper;
+		obstacleModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -109,32 +126,51 @@ class cylinderEditor : public QWidget {
 		QLabel *_lYUnits;
 		QLabel *_massUnits;
 		bodyColorPicker *_colorPicker;
+		int _row;
 };
 
 class dotEditor : public QWidget {
 		Q_OBJECT
 	public:
-		dotEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		dotEditor(obstacleModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitMass(double);
+		void submitColor(QColor);
+
 	private:
-		QDataWidgetMapper *_mapper;
+		obstacleModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
 		bodyColorPicker *_colorPicker;
+		int _row;
 };
 
 class lineEditor : public QWidget {
 		Q_OBJECT
 	public:
-		lineEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		lineEditor(obstacleModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitL1(double);
+		void submitL2(double);
+		void submitL3(double);
+		void submitMass(double);
+		void submitColor(QColor);
+
 	private:
-		QDataWidgetMapper *_mapper;
+		obstacleModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -143,46 +179,57 @@ class lineEditor : public QWidget {
 		QLabel *_lZUnits;
 		QLabel *_widthUnits;
 		bodyColorPicker *_colorPicker;
+		int _row;
 };
 
 class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:
-		sphereEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		sphereEditor(obstacleModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitL1(double);
+		void submitMass(double);
+		void submitColor(QColor);
+
 	private:
-		QDataWidgetMapper *_mapper;
+		obstacleModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
 		QLabel *_lXUnits;
 		QLabel *_massUnits;
 		bodyColorPicker *_colorPicker;
+		int _row;
 };
 
 class textEditor : public QWidget {
 		Q_OBJECT
 	public:
-		textEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		textEditor(obstacleModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
+	protected slots:
+		void submitName(QString);
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitMass(double);
+		void submitColor(QColor);
+
 	private:
-		QDataWidgetMapper *_mapper;
+		obstacleModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
 		bodyColorPicker *_colorPicker;
-};
-
-class obstacleEditorDelegate : public QItemDelegate {
-		Q_OBJECT
-	public:
-		obstacleEditorDelegate(QObject* = 0);
-		void setEditorData(QWidget*, const QModelIndex&) const;
-		void setModelData(QWidget*, QAbstractItemModel*, const QModelIndex&) const;
+		int _row;
 };
 
 #endif // OBSTACLEEDITOR_H_

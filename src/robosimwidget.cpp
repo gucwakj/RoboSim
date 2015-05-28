@@ -210,7 +210,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_view, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	//QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));

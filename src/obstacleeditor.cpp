@@ -15,20 +15,14 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	// set size properties
 	this->setFixedWidth(256);
 
-	// set up mapper
-	_mapper = new QDataWidgetMapper(this);
-	_mapper->setModel(_model);
-	_mapper->setItemDelegate(new obstacleEditorDelegate(this));
-	_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-
 	// set up editor pages
 	_pages = new QStackedWidget;
-	_pages->addWidget(new boxEditor(_mapper));
-	_pages->addWidget(new cylinderEditor(_mapper));
-	_pages->addWidget(new dotEditor(_mapper));
-	_pages->addWidget(new lineEditor(_mapper));
-	_pages->addWidget(new sphereEditor(_mapper));
-	_pages->addWidget(new textEditor(_mapper));
+	_pages->addWidget(new boxEditor(_model));
+	_pages->addWidget(new cylinderEditor(_model));
+	_pages->addWidget(new dotEditor(_model));
+	_pages->addWidget(new lineEditor(_model));
+	_pages->addWidget(new sphereEditor(_model));
+	_pages->addWidget(new textEditor(_model));
 
 	// set up buttons
 	_deleteButton = new QPushButton(tr("Delete"));
@@ -43,10 +37,8 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 
 	// create signal connections
 	QWidget::connect(_deleteButton, SIGNAL(clicked()), this, SLOT(deleteCurrentIndex()));
-	QWidget::connect(_nextButton, SIGNAL(clicked()), _mapper, SLOT(toNext()));
-	QWidget::connect(_nextButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
-	QWidget::connect(_previousButton, SIGNAL(clicked()), _mapper, SLOT(toPrevious()));
-	QWidget::connect(_previousButton, SIGNAL(clicked()), this, SLOT(buttonPressed()));
+	QWidget::connect(_nextButton, SIGNAL(clicked()), this, SLOT(nextButtonPressed()));
+	QWidget::connect(_previousButton, SIGNAL(clicked()), this, SLOT(prevButtonPressed()));
 
 	// set default units
 	_units = false;	// us
@@ -63,102 +55,93 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 
 	// set variables for tracking editor
 	_row = -1;
-	_form = -1;
-	_setting = 0;
 }
 
 void obstacleEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
-	int form = _model->data(_model->index(bottomRight.row(), rsObstacleModel::FORM)).toInt();
-	if (bottomRight.row() != _row || _form != form)
+	if (bottomRight.row() != _row)
 		this->setCurrentIndex(bottomRight);
 }
 
 void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
-	// prevent two items from writing simultaneously
-	if (_setting == 1) return;
-	_setting = 1;
-
 	if (index.isValid()) {
-		// disable current mappings
-		_mapper->clearMapping();
-
 		// set new curent model row
 		_row = index.row();
 
 		// load appropriate page
 		int form = _model->data(_model->index(index.row(), rsObstacleModel::FORM), Qt::EditRole).toInt();
-		_form = form;
 		switch (form) {
 			case rs::BOX:
 				_pages->setCurrentIndex(0);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(false, _row);
 				break;
 			case rs::CYLINDER:
 				_pages->setCurrentIndex(1);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(false, _row);
 				break;
 			case rs::DOT:
 				_pages->setCurrentIndex(2);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(false, _row);
 				break;
 			case rs::LINE:
 				_pages->setCurrentIndex(3);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(false, _row);
 				break;
 			case rs::SPHERE:
 				_pages->setCurrentIndex(4);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<sphereEditor *>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<sphereEditor *>(_pages->currentWidget())->nullIndex(false, _row);
 				break;
 			case rs::TEXT:
 				_pages->setCurrentIndex(5);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<textEditor *>(_pages->currentWidget())->nullIndex(false);
+				dynamic_cast<textEditor *>(_pages->currentWidget())->nullIndex(false, _row);
 				break;
 		}
 
-		// set new index for mapper
-		_mapper->setCurrentIndex(index.row());
-
 		// update button states
 		_deleteButton->setEnabled(true);
-		_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
+		_nextButton->setEnabled(index.row() < _model->rowCount() - 1);
 		_previousButton->setEnabled(index.row() > 0);
 	}
 	else {
 		// disable current page
 		if (dynamic_cast<boxEditor *>(_pages->currentWidget()))
-			dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(true);
+			dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(true, _row);
 		else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
-			dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(true);
+			dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(true, _row);
 		else if (dynamic_cast<dotEditor *>(_pages->currentWidget()))
-			dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(true);
+			dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(true, _row);
 		else if (dynamic_cast<lineEditor *>(_pages->currentWidget()))
-			dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(true);
+			dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(true, _row);
 		else if (dynamic_cast<sphereEditor*>(_pages->currentWidget()))
-			dynamic_cast<sphereEditor*>(_pages->currentWidget())->nullIndex(true);
+			dynamic_cast<sphereEditor*>(_pages->currentWidget())->nullIndex(true, _row);
 		else if (dynamic_cast<textEditor*>(_pages->currentWidget()))
-			dynamic_cast<textEditor*>(_pages->currentWidget())->nullIndex(true);
+			dynamic_cast<textEditor*>(_pages->currentWidget())->nullIndex(true, _row);
 
 		// disable all buttons
 		_deleteButton->setDisabled(true);
 		_nextButton->setDisabled(true);
 		_previousButton->setDisabled(true);
 	}
-
-	// mapper can change now
-	_setting = 0;
 }
 
-void obstacleEditor::buttonPressed(void) {
-	// enable appropriate buttons
-	QModelIndex index = _mapper->model()->index(_mapper->currentIndex(), 0);
-	_nextButton->setEnabled(index.row() < _mapper->model()->rowCount() - 1);
-	_previousButton->setEnabled(index.row() > 0);
+void obstacleEditor::nextButtonPressed(void) {
+	// set new index
+	QModelIndex index = _model->index(_row + 1, 0);
+	this->setCurrentIndex(index);
+
+	// signal other views that index has changed
+	emit indexChanged(index);
+}
+
+void obstacleEditor::prevButtonPressed(void) {
+	// set new index
+	QModelIndex index = _model->index(_row - 1, 0);
+	this->setCurrentIndex(index);
 
 	// signal other views that index has changed
 	emit indexChanged(index);
@@ -166,21 +149,20 @@ void obstacleEditor::buttonPressed(void) {
 
 void obstacleEditor::deleteCurrentIndex(void) {
 	// save current index
-	int index = _mapper->currentIndex();
+	int row = _row;
 
 	// remove current obstacle from model
-	_mapper->model()->removeRows(_mapper->currentIndex(), 1);
-
-	// new index is same row as last one
-	_mapper->setCurrentIndex(index);
+	_model->removeRows(row, 1);
 
 	// if it is invalid, then set the last row in the model
-	if (_mapper->currentIndex() == -1) {
-		this->setCurrentIndex(_mapper->model()->index(_mapper->model()->rowCount()-1, rsObstacleModel::ID));
-	}
+	if (row >= _model->rowCount())
+		row = _model->rowCount() - 1;
+
+	// set new index
+	this->setCurrentIndex(_model->index(row, rsObstacleModel::ID));
 
 	// signal a change in current obstacle
-	emit indexChanged(_mapper->model()->index(_mapper->currentIndex(), rsObstacleModel::ID));
+	emit indexChanged(_model->index(row, rsObstacleModel::ID));
 }
 
 void obstacleEditor::setUnits(bool si) {
@@ -210,11 +192,11 @@ void obstacleEditor::setUnits(bool si) {
  *
  *	Build individual box editor with relevant pieces of information.
  *
- *	\param		mapper data mapper from obstacleEditor model.
+ *	\param		model data model from obstacleEditor model.
  */
-boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
-	// save mapper
-	_mapper = mapper;
+boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Box Editor</span>"));
@@ -228,7 +210,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -239,7 +221,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -250,7 +232,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
 
 	// length x
 	QLabel *lXLabel = new QLabel(tr("Length X:"));
@@ -261,7 +243,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lXBox->setMaximum(100);
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
-	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
 
 	// length y
 	QLabel *lYLabel = new QLabel(tr("Length Y:"));
@@ -272,7 +254,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lYBox->setMaximum(100);
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
-	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
 
 	// length z
 	QLabel *lZLabel = new QLabel(tr("Length Z:"));
@@ -283,7 +265,7 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	lZBox->setMaximum(100);
 	lZBox->setSingleStep(0.5);
 	lZLabel->setBuddy(lZBox);
-	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
 
 	// mass
 	QLabel *massLabel = new QLabel(tr("Mass:"));
@@ -294,12 +276,12 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	massBox->setMaximum(100);
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
-	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
-	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -343,11 +325,43 @@ boxEditor::boxEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	this->setLayout(layout);
 }
 
+void boxEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void boxEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+}
+
+void boxEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+}
+
+void boxEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+}
+
+void boxEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_2), value);
+}
+
+void boxEditor::submitL3(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_3), value);
+}
+
+void boxEditor::submitMass(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+}
+
+void boxEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-void boxEditor::nullIndex(bool nullify) {
+void boxEditor::nullIndex(bool nullify, int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
@@ -365,14 +379,16 @@ void boxEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lx"), rsObstacleModel::L_1);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("ly"), rsObstacleModel::L_2);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("lz"), rsObstacleModel::L_3);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
+		_row = row;
+		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 	}
 }
 
@@ -410,11 +426,11 @@ void boxEditor::setUnits(bool si) {
  *
  *	Build individual cylinder editor with relevant pieces of information.
  *
- *	\param		mapper data mapper from obstacleEditor model.
+ *	\param		model data model from obstacleEditor model.
  */
-cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
-	// save mapper
-	_mapper = mapper;
+cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Cylinder Editor</span>"));
@@ -428,7 +444,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -439,7 +455,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -450,7 +466,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
 
 	// radius
 	QLabel *lXLabel = new QLabel(tr("Radius:"));
@@ -461,7 +477,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	lXBox->setMaximum(100);
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
-	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
 
 	// length
 	QLabel *lYLabel = new QLabel(tr("Length:"));
@@ -472,7 +488,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	lYBox->setMaximum(100);
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
-	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
 
 	// mass
 	QLabel *massLabel = new QLabel(tr("Mass:"));
@@ -483,7 +499,7 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	massBox->setMaximum(100);
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
-	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
 
 	// axis
 	QLabel *axisLabel = new QLabel(tr("Axis: "));
@@ -494,12 +510,12 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	axisBox->setObjectName("axis");
 	axisBox->setModel(axisModel);
 	axisLabel->setBuddy(axisBox);
-	QWidget::connect(axisBox, SIGNAL(currentIndexChanged(int)), _mapper, SLOT(submit()));
+	QWidget::connect(axisBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitAxis(int)));
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
-	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -543,11 +559,43 @@ cylinderEditor::cylinderEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWi
 	this->setLayout(layout);
 }
 
+void cylinderEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void cylinderEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+}
+
+void cylinderEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+}
+
+void cylinderEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+}
+
+void cylinderEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_2), value);
+}
+
+void cylinderEditor::submitAxis(int value) {
+	_model->setData(_model->index(_row, rsObstacleModel::AXIS), value);
+}
+
+void cylinderEditor::submitMass(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+}
+
+void cylinderEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-void cylinderEditor::nullIndex(bool nullify) {
+void cylinderEditor::nullIndex(bool nullify, int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
@@ -565,14 +613,16 @@ void cylinderEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("length"), rsObstacleModel::L_2);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<QComboBox *>("axis"), rsObstacleModel::AXIS);
-		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
+		_row = row;
+		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+		(this->findChild<QComboBox *>("axis"))->setCurrentIndex(_model->data(_model->index(row, rsObstacleModel::AXIS), Qt::EditRole).toInt());
+		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 	}
 }
 
@@ -609,11 +659,11 @@ void cylinderEditor::setUnits(bool si) {
  *
  *	Build individual dot editor with relevant pieces of information.
  *
- *	\param		mapper data mapper from obstacleEditor model.
+ *	\param		model data model from obstacleEditor model.
  */
-dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
-	// save mapper
-	_mapper = mapper;
+dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Dot Editor</span>"));
@@ -627,7 +677,7 @@ dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -638,7 +688,7 @@ dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -649,7 +699,7 @@ dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
 
 	// size
 	QLabel *sizeLabel = new QLabel(tr("Size:"));
@@ -659,12 +709,12 @@ dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	sizeBox->setMaximum(100);
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
-	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
-	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -698,11 +748,31 @@ dotEditor::dotEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(paren
 	this->setLayout(layout);
 }
 
+void dotEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void dotEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+}
+
+void dotEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+}
+
+void dotEditor::submitMass(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+}
+
+void dotEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-void dotEditor::nullIndex(bool nullify) {
+void dotEditor::nullIndex(bool nullify, int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
@@ -717,11 +787,13 @@ void dotEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("size"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
+		_row = row;
+		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 	}
 }
 
@@ -750,11 +822,11 @@ void dotEditor::setUnits(bool si) {
  *
  *	Build individual line editor with relevant pieces of information.
  *
- *	\param		mapper data mapper from obstacleEditor model.
+ *	\param		model data model from obstacleEditor model.
  */
-lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
-	// save mapper
-	_mapper = mapper;
+lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Line Editor</span>"));
@@ -768,7 +840,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
 
 	// position y1
 	QLabel *pYLabel = new QLabel(tr("Start Y:"));
@@ -779,7 +851,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
 
 	// position z1
 	QLabel *pZLabel = new QLabel(tr("Start Z:"));
@@ -790,7 +862,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
 
 	// position x2
 	QLabel *lXLabel = new QLabel(tr("End X:"));
@@ -801,7 +873,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	lXBox->setMaximum(1000000);
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
-	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
 
 	// position y2
 	QLabel *lYLabel = new QLabel(tr("End Y:"));
@@ -812,7 +884,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	lYBox->setMaximum(1000000);
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
-	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
 
 	// position z2
 	QLabel *lZLabel = new QLabel(tr("End Z:"));
@@ -823,7 +895,7 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	lZBox->setMaximum(1000000);
 	lZBox->setSingleStep(0.5);
 	lZLabel->setBuddy(lZBox);
-	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
 
 	// width
 	QLabel *widthLabel = new QLabel(tr("Width:"));
@@ -834,12 +906,12 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	widthBox->setMaximum(100);
 	widthBox->setSingleStep(1);
 	widthLabel->setBuddy(widthBox);
-	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
-	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -883,11 +955,44 @@ lineEditor::lineEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	this->setLayout(layout);
 }
 
+
+void lineEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void lineEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+}
+
+void lineEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+}
+
+void lineEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+}
+
+void lineEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_2), value);
+}
+
+void lineEditor::submitL3(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_3), value);
+}
+
+void lineEditor::submitMass(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+}
+
+void lineEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-void lineEditor::nullIndex(bool nullify) {
+void lineEditor::nullIndex(bool nullify, int row) {
 	(this->findChild<QDoubleSpinBox *>("px1"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py1"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("pz1"))->setDisabled(nullify);
@@ -905,14 +1010,16 @@ void lineEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px1"), rsObstacleModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py1"), rsObstacleModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz1"), rsObstacleModel::P_Z);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px2"), rsObstacleModel::L_1);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py2"), rsObstacleModel::L_2);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz2"), rsObstacleModel::L_3);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("width"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
+		_row = row;
+		(this->findChild<QDoubleSpinBox *>("px1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 	}
 }
 
@@ -945,11 +1052,11 @@ void lineEditor::setUnits(bool si) {
  *
  *	Build individual sphere editor with relevant pieces of information.
  *
- *	\param		mapper data mapper from obstacleEditor model.
+ *	\param		model data model from obstacleEditor model.
  */
-sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
-	// save mapper
-	_mapper = mapper;
+sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Sphere Editor</span>"));
@@ -963,7 +1070,7 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -974,7 +1081,7 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -985,7 +1092,7 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
 
 	// radius
 	QLabel *lXLabel = new QLabel(tr("Radius:"));
@@ -996,7 +1103,7 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	lXBox->setMaximum(100);
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
-	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
 
 	// mass
 	QLabel *massLabel = new QLabel(tr("Mass:"));
@@ -1007,12 +1114,12 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	massBox->setMaximum(100);
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
-	QWidget::connect(massBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
-	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -1050,11 +1157,35 @@ sphereEditor::sphereEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget
 	this->setLayout(layout);
 }
 
+void sphereEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void sphereEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+}
+
+void sphereEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+}
+
+void sphereEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+}
+
+void sphereEditor::submitMass(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+}
+
+void sphereEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-void sphereEditor::nullIndex(bool nullify) {
+void sphereEditor::nullIndex(bool nullify, int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
@@ -1070,12 +1201,14 @@ void sphereEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("radius"), rsObstacleModel::L_1);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("mass"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
+		_row = row;
+		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 	}
 }
 
@@ -1111,11 +1244,11 @@ void sphereEditor::setUnits(bool si) {
  *
  *	Build individual text editor with relevant pieces of information.
  *
- *	\param		mapper data mapper from obstacleEditor model.
+ *	\param		model data model from obstacleEditor model.
  */
-textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(parent) {
-	// save mapper
-	_mapper = mapper;
+textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
 
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Text Editor</span>"));
@@ -1125,7 +1258,7 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	QLineEdit *nameEdit = new QLineEdit;
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
-	QWidget::connect(nameEdit, SIGNAL(editingFinished()), _mapper, SLOT(submit()));
+	QWidget::connect(nameEdit, SIGNAL(textEdited(QString)), this, SLOT(submitName(QString)));
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -1136,7 +1269,7 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	pXBox->setMaximum(1000000);
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
-	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -1147,7 +1280,7 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	pYBox->setMaximum(1000000);
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
-	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -1158,7 +1291,7 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	pZBox->setMaximum(1000000);
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
-	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
 
 	// size
 	QLabel *sizeLabel = new QLabel(tr("Size:"));
@@ -1168,12 +1301,12 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	sizeBox->setMaximum(100);
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
-	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), _mapper, SLOT(submit()));
+	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
-	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), _mapper, SLOT(submit()));
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -1212,11 +1345,35 @@ textEditor::textEditor(QDataWidgetMapper *mapper, QWidget *parent) : QWidget(par
 	this->setLayout(layout);
 }
 
+void textEditor::submitName(QString value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void textEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+}
+
+void textEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+}
+
+void textEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+}
+
+void textEditor::submitMass(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+}
+
+void textEditor::submitColor(QColor value) {
+	_model->setData(_model->index(_row, rsObstacleModel::COLOR), value);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
  */
-void textEditor::nullIndex(bool nullify) {
+void textEditor::nullIndex(bool nullify, int row) {
 	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
 	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
@@ -1232,12 +1389,14 @@ void textEditor::nullIndex(bool nullify) {
 
 	// re-enable mapping
 	if (!nullify) {
-		_mapper->addMapping(this->findChild<QLineEdit *>("name"), rsObstacleModel::TEXT);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("px"), rsObstacleModel::P_X);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("py"), rsObstacleModel::P_Y);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("pz"), rsObstacleModel::P_Z);
-		_mapper->addMapping(this->findChild<QDoubleSpinBox *>("size"), rsObstacleModel::MASS);
-		_mapper->addMapping(this->findChild<bodyColorPicker *>("color"), rsObstacleModel::COLOR, "color");
+		_row = row;
+		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsObstacleModel::TEXT), Qt::EditRole).toString());
+		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+		(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 	}
 }
 
@@ -1261,7 +1420,6 @@ void textEditor::setUnits(bool si) {
  *
  *
  */
-
 bodyColorPicker::bodyColorPicker(QWidget *parent) : QWidget(parent) {
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 
@@ -1301,33 +1459,5 @@ void bodyColorPicker::onButtonClicked(void) {
 		return;
 
 	this->setColor(color);
-}
-
-/*!
- *
- *
- *	obstacleEditorDelegate
- *
- *
- */
-obstacleEditorDelegate::obstacleEditorDelegate(QObject *parent) : QItemDelegate(parent) { }
-
-void obstacleEditorDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
-	if (!strcmp(editor->metaObject()->className(), "QComboBox")) {
-		editor->setProperty("currentIndex", index.data());
-		return;
-	}
-	QItemDelegate::setEditorData(editor, index);
-}
-
-void obstacleEditorDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
-	if (!strcmp(editor->metaObject()->className(), "QComboBox")) {
-		QVariant value = editor->property("currentIndex");
-		if (value.isValid()) {
-			model->setData(index, value);
-			return;
-		}
-	}
-	QItemDelegate::setModelData(editor, model, index);
 }
 
