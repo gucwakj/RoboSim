@@ -3,20 +3,18 @@
 
 #include <iostream>
 
-#include <QLabel>
-#include <QDataWidgetMapper>
-#include <QLineEdit>
-#include <QDoubleSpinBox>
-#include <QWidget>
 #include <QColorDialog>
+#include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QItemDelegate>
-#include <QComboBox>
-#include <QStringListModel>
-#include <QStackedWidget>
-#include <QPushButton>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMetaProperty>
+#include <QPushButton>
+#include <QStackedWidget>
+#include <QStringListModel>
+#include <QWidget>
 
 #include "robotmodel.h"
 
@@ -65,35 +63,40 @@ class robotEditor : public QWidget {
 		void setCurrentIndex(const QModelIndex&);
 
 	protected slots:
-		void buttonPressed(void);
+		void nextButtonPressed(void);
+		void prevButtonPressed(void);
 		void deleteCurrentIndex(void);
 		void setUnits(bool);
 
 	private:
 		robotModel *_model;
-		QDataWidgetMapper *_mapper;
 		QStackedWidget *_pages;
 		QPushButton *_deleteButton;
 		QPushButton *_nextButton;
 		QPushButton *_previousButton;
 		bool _units;
 		int _row;
-		int _form;
-		int _setting;
 };
 
-class linkbotEditor : public QWidget {
+class linkbotIEditor : public QWidget {
 		Q_OBJECT
 	public:
-		linkbotEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		linkbotIEditor(robotModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
 	protected slots:
-		void rotate(double);
+		void submitForm(int);
+		void submitName(QString);
+		void submitPX(double);
+		void submitPY(double);
+		void submitRZ(double);
+		void submitLeftWheel(int);
+		void submitRightWheel(int);
+		void submitColor(QColor);
 
 	private:
-		QDataWidgetMapper *_mapper;
+		robotModel *_model;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
@@ -102,38 +105,52 @@ class linkbotEditor : public QWidget {
 		QComboBox *_wheelLBox;
 		QComboBox *_wheelRBox;
 		ledColorPicker *_colorPicker;
+		int _row;
 };
 
 class linkbotLEditor : public QWidget {
 		Q_OBJECT
 	public:
-		linkbotLEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		linkbotLEditor(robotModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
 	protected slots:
-		void rotate(double);
+		void submitForm(int);
+		void submitName(QString);
+		void submitPX(double);
+		void submitPY(double);
+		void submitRZ(double);
+		void submitColor(QColor);
 
 	private:
-		QDataWidgetMapper *_mapper;
+		robotModel *_model;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		ledColorPicker *_colorPicker;
+		int _row;
 };
 
 class mindstormsEditor : public QWidget {
 		Q_OBJECT
 	public:
-		mindstormsEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		mindstormsEditor(robotModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
 	protected slots:
-		void rotate(double);
+		void submitForm(int);
+		void submitName(QString);
+		void submitPX(double);
+		void submitPY(double);
+		void submitRZ(double);
+		void submitLeftWheel(int);
+		void submitRightWheel(int);
+		void submitColor(QColor);
 
 	private:
-		QDataWidgetMapper *_mapper;
+		robotModel *_model;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
@@ -142,20 +159,28 @@ class mindstormsEditor : public QWidget {
 		QComboBox *_wheelLBox;
 		QComboBox *_wheelRBox;
 		ledColorPicker *_colorPicker;
+		int _row;
 };
 
 class customEditor : public QWidget {
 		Q_OBJECT
 	public:
-		customEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		customEditor(robotModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
 	protected slots:
-		void rotate(double);
+		void submitForm(int);
+		void submitName(QString);
+		void submitPX(double);
+		void submitPY(double);
+		void submitRZ(double);
+		void submitLeftWheel(int);
+		void submitRadius(QString);
+		void submitColor(QColor);
 
 	private:
-		QDataWidgetMapper *_mapper;
+		robotModel *_model;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
@@ -163,32 +188,30 @@ class customEditor : public QWidget {
 		QComboBox *_wheelBox;
 		QLabel *_radiusUnits;
 		ledColorPicker *_colorPicker;
+		int _row;
 };
 
 class preconfigEditor : public QWidget {
 		Q_OBJECT
 	public:
-		preconfigEditor(QDataWidgetMapper*, QWidget* = 0);
-		void nullIndex(bool);
+		preconfigEditor(robotModel*, QWidget* = 0);
+		void nullIndex(bool, int);
 		void setUnits(bool);
 
 	protected slots:
-		void rotate(double);
+		void submitName(QString);
+		void submitPX(double);
+		void submitPY(double);
+		void submitRZ(double);
+		void submitColor(QColor);
 
 	private:
-		QDataWidgetMapper *_mapper;
+		robotModel *_model;
 		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		ledColorPicker *_colorPicker;
-};
-
-class robotEditorDelegate : public QItemDelegate {
-		Q_OBJECT
-	public:
-		robotEditorDelegate(QObject* = 0);
-		void setEditorData(QWidget*, const QModelIndex&) const;
-		void setModelData(QWidget*, QAbstractItemModel*, const QModelIndex&) const;
+		int _row;
 };
 
 #endif // ROBOTEDITOR_H_

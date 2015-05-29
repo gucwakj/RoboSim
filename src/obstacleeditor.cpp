@@ -1346,7 +1346,7 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 }
 
 void textEditor::submitName(QString value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObstacleModel::TEXT), value);
 }
 
 void textEditor::submitPX(double value) {
