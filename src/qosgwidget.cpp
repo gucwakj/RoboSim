@@ -358,24 +358,24 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 					robot = new rsRobots::Mindstorms(rs::NXT);
 				robot->setID(id);
 				robot->setName(name);
-				// move up by wheel heights
-				if (wheelID[0] == 1)
-					p[2] += robot->riseByWheels(rsMindstorms::SMALL);
-				else if (wheelID[0] == 2)
-					p[2] += robot->riseByWheels(rsMindstorms::BIG);
+				// get wheels
+				for (int i = 0; i < 2; i++) {
+					if (wheelID[i] == 0)
+						wheel[i] = rsMindstorms::SMALL;
+					else if (wheelID[i] == 1)
+						wheel[i] = rsMindstorms::BIG;
+				}
+				// tilt for wheels
+				double p2;
+				q.multiply(robot->tiltForWheels(wheel[0], wheel[1], p2));
+				p[2] += p2;
 				// adjust height to be above zero
-				if (fabs(p[2]) < (robot->getWheelRadius() - rs::EPSILON)) {
-					p.add(q.multiply(0, 0, robot->getWheelRadius()));
+				if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
+					p.add(0, 0, robot->getWheelRadius());
 				}
 				// draw mindstorms
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				// draw wheels
-				for (int i = 0; i < 2; i++) {
-					if (wheelID[i] == 1)
-						wheel[i] = rsMindstorms::SMALL;
-					else if (wheelID[i] == 2)
-						wheel[i] = rsMindstorms::BIG;
-				}
 				if (wheel[0]) _scene->drawWheel(robot, sceneRobot, wheel[0], rsMindstorms::WHEEL1);
 				if (wheel[1]) _scene->drawWheel(robot, sceneRobot, wheel[1], rsMindstorms::WHEEL2);
 				// end

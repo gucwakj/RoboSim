@@ -709,7 +709,7 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	// left wheel list
 	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
 	QStringList wheelLItems;
-	wheelLItems << "None" << "4.13" << "4.45" << "5.08";
+	wheelLItems << "2.80" << "4.10";
 	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
 	_wheelLUnits = new QLabel(tr("cm"));
 	_wheelLBox = new QComboBox();
@@ -878,12 +878,12 @@ void mindstormsEditor::setUnits(bool si) {
 	// set wheel list to new values
 	QStringList wheelLItems, wheelRItems;
 	if (si) {
-		wheelLItems << "None" << "4.13" << "4.45";
-		wheelRItems << "None" << "4.13" << "4.45";
+		wheelLItems << "2.80" << "4.10";
+		wheelRItems << "2.80" << "4.10";
 	}
 	else {
-		wheelLItems << "None" << "1.625" << "1.75";
-		wheelRItems << "None" << "1.625" << "1.75";
+		wheelLItems << "1.10" << "1.61";
+		wheelRItems << "1.10" << "1.61";
 	}
 	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
 	QStringListModel *wheelRModel = new QStringListModel(wheelRItems, this);
