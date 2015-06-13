@@ -369,10 +369,6 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				double p2;
 				q.multiply(robot->tiltForWheels(wheel[0], wheel[1], p2));
 				p[2] += p2;
-				// adjust height to be above zero
-				if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
-					p.add(0, 0, robot->getWheelRadius());
-				}
 				// draw mindstorms
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				// draw wheels
