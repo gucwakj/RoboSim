@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>912</width>
-    <height>781</height>
+    <width>734</width>
+    <height>659</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="robots">
           <property name="enabled">
@@ -50,7 +50,7 @@
             <x>0</x>
             <y>0</y>
             <width>274</width>
-            <height>707</height>
+            <height>585</height>
            </rect>
           </property>
           <attribute name="label">
@@ -60,16 +60,7 @@
            <property name="spacing">
             <number>10</number>
            </property>
-           <property name="leftMargin">
-            <number>4</number>
-           </property>
-           <property name="topMargin">
-            <number>4</number>
-           </property>
-           <property name="rightMargin">
-            <number>4</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>4</number>
            </property>
            <item>
@@ -81,16 +72,7 @@
               <property name="spacing">
                <number>4</number>
               </property>
-              <property name="leftMargin">
-               <number>4</number>
-              </property>
-              <property name="topMargin">
-               <number>4</number>
-              </property>
-              <property name="rightMargin">
-               <number>4</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>4</number>
               </property>
               <item>
@@ -182,8 +164,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>247</width>
-            <height>707</height>
+            <width>274</width>
+            <height>585</height>
            </rect>
           </property>
           <attribute name="label">
@@ -193,16 +175,7 @@
            <property name="spacing">
             <number>10</number>
            </property>
-           <property name="leftMargin">
-            <number>4</number>
-           </property>
-           <property name="topMargin">
-            <number>4</number>
-           </property>
-           <property name="rightMargin">
-            <number>4</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>4</number>
            </property>
            <item>
@@ -214,16 +187,7 @@
               <property name="spacing">
                <number>10</number>
               </property>
-              <property name="leftMargin">
-               <number>4</number>
-              </property>
-              <property name="topMargin">
-               <number>4</number>
-              </property>
-              <property name="rightMargin">
-               <number>4</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>4</number>
               </property>
               <item>
@@ -311,16 +275,7 @@
               <property name="spacing">
                <number>10</number>
               </property>
-              <property name="leftMargin">
-               <number>4</number>
-              </property>
-              <property name="topMargin">
-               <number>4</number>
-              </property>
-              <property name="rightMargin">
-               <number>4</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>4</number>
               </property>
               <item>
@@ -407,7 +362,7 @@
      </widget>
      <widget class="QSplitter" name="splitter">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
         <horstretch>2</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -417,15 +372,15 @@
       </property>
       <widget class="QOsgWidget" name="osgWidget" native="true">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
-         <verstretch>2</verstretch>
+         <verstretch>3</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>640</width>
-         <height>360</height>
+         <width>426</width>
+         <height>240</height>
         </size>
        </property>
        <property name="sizeIncrement">
@@ -436,6 +391,24 @@
        </property>
       </widget>
       <widget class="QTabWidget" name="tab_scene">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="acceptDrops">
         <bool>false</bool>
        </property>
@@ -452,6 +425,12 @@
         <bool>true</bool>
        </property>
        <widget class="QWidget" name="tab_config">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <attribute name="title">
          <string>Settings</string>
         </attribute>
@@ -459,16 +438,7 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="leftMargin">
-          <number>4</number>
-         </property>
-         <property name="topMargin">
-          <number>4</number>
-         </property>
-         <property name="rightMargin">
-          <number>4</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>4</number>
          </property>
          <item>
@@ -484,16 +454,7 @@
                 <property name="spacing">
                  <number>6</number>
                 </property>
-                <property name="leftMargin">
-                 <number>4</number>
-                </property>
-                <property name="topMargin">
-                 <number>4</number>
-                </property>
-                <property name="rightMargin">
-                 <number>4</number>
-                </property>
-                <property name="bottomMargin">
+                <property name="margin">
                  <number>4</number>
                 </property>
                 <item>
@@ -528,16 +489,7 @@
                 <property name="spacing">
                  <number>6</number>
                 </property>
-                <property name="leftMargin">
-                 <number>4</number>
-                </property>
-                <property name="topMargin">
-                 <number>4</number>
-                </property>
-                <property name="rightMargin">
-                 <number>4</number>
-                </property>
-                <property name="bottomMargin">
+                <property name="margin">
                  <number>4</number>
                 </property>
                 <item>
@@ -554,6 +506,15 @@
            </item>
            <item>
             <widget class="QGroupBox" name="group_grid">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
               <string>Grid</string>
              </property>
@@ -562,24 +523,27 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0,0,0,0,0,0,0">
               <property name="spacing">
-               <number>6</number>
+               <number>2</number>
               </property>
-              <property name="leftMargin">
-               <number>4</number>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMinimumSize</enum>
               </property>
-              <property name="topMargin">
-               <number>4</number>
-              </property>
-              <property name="rightMargin">
-               <number>4</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
+              <property name="margin">
+               <number>2</number>
               </property>
               <item>
                <layout class="QHBoxLayout" name="layout_grid_toggle">
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <item>
                  <widget class="QRadioButton" name="grid_on">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Grid On</string>
                   </property>
@@ -590,6 +554,12 @@
                 </item>
                 <item>
                  <widget class="QRadioButton" name="grid_off">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Grid Off</string>
                   </property>
@@ -604,6 +574,12 @@
                <layout class="QHBoxLayout" name="layout_grid_x_min">
                 <item>
                  <widget class="QLabel" name="label_grid_x_min">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Min X:</string>
                   </property>
@@ -614,6 +590,12 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="spin_grid_x_min">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
                   </property>
@@ -641,6 +623,12 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="spin_grid_x_max">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
                   </property>
@@ -668,6 +656,12 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="spin_grid_y_min">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
                   </property>
@@ -722,6 +716,12 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="spin_grid_hash">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="maximum">
                    <double>1000.000000000000000</double>
                   </property>
@@ -734,6 +734,9 @@
               </item>
               <item>
                <layout class="QHBoxLayout" name="layout_grid_tics">
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="label_grid_tics">
                   <property name="text">
@@ -778,6 +781,12 @@
          <string>Background</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_8">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <property name="margin">
+          <number>4</number>
+         </property>
          <item>
           <widget class="QListWidget" name="backgroundListWidget">
            <property name="iconSize">
@@ -837,16 +846,7 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="leftMargin">
-          <number>4</number>
-         </property>
-         <property name="topMargin">
-          <number>4</number>
-         </property>
-         <property name="rightMargin">
-          <number>4</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>4</number>
          </property>
          <item>
@@ -861,6 +861,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_14">
          <property name="spacing">
           <number>10</number>
+         </property>
+         <property name="margin">
+          <number>4</number>
          </property>
          <item>
           <layout class="QHBoxLayout" name="layout_obstacles"/>

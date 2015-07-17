@@ -13,7 +13,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_model = model;
 
 	// set size properties
-	this->setFixedWidth(256);
+	//this->setFixedWidth(256);
 
 	// set up editor pages
 	_pages = new QStackedWidget;

@@ -13,7 +13,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	_model = model;
 
 	// set size properties
-	this->setFixedWidth(256);
+	//this->setFixedWidth(256);
 
 	// set up editor pages
 	_pages = new QStackedWidget;
