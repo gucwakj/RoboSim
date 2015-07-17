@@ -48,14 +48,22 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
     RegQueryValueEx(key, TEXT("CHHOME"), NULL, NULL, (LPBYTE)path, &size);
     path[size] = '\0';
     if (path[0] == '\0') {
-		_chhome.append("C:/Ch");
+		_chhome = "C:/Ch";
     }
     else {
-		_chhome.append(path);
+		_chhome = path;
     }
 #else
-	_chhome.append("/usr/local/ch");
+	_chhome = "/usr/local/ch";
 #endif
+
+	// check if CHHOME path is good
+	QString dlpath(_chhome);
+	dlpath.append("/package/chrobosim/dl/robosim.dl");
+	QFileInfo checkDL(dlpath);
+	if (!checkDL.exists()) {
+		qDebug() << "Error: ChRoboSim package not installed correctly";
+	}
 
 	// get chrc filepath
 	_chrcPath = QDir::homePath();
@@ -64,8 +72,8 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 #else
 	_chrcPath.append("/.chrc");
 #endif
-	QFileInfo checkFile(_chrcPath);
-	if (!checkFile.exists()) {
+	QFileInfo checkCHRC(_chrcPath);
+	if (!checkCHRC.exists()) {
 		QString source(_chhome);
 #ifdef Q_OS_WIN
 		source.append("\\config\\chrc");
