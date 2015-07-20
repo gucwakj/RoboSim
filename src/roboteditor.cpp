@@ -17,6 +17,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 
 	// set up editor pages
 	_pages = new QStackedWidget;
+	_pages->addWidget(new blankEditor());
 	_pages->addWidget(new linkbotIEditor(_model));
 	_pages->addWidget(new linkbotLEditor(_model));
 	_pages->addWidget(new customEditor(_model));
@@ -59,7 +60,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	this->setLayout(vbox);
 
 	// set variables for tracking editor
-	_row = -1;
+	_row = 0;
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
@@ -75,30 +76,30 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		// load appropriate page
 		int form = _model->data(_model->index(index.row(), rsRobotModel::FORM)).toInt();
 		if (form == rs::EV3 || form == rs::NXT) {
-			_pages->setCurrentIndex(4);	// mindstorms
-			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+			_pages->setCurrentIndex(5);	// mindstorms
+			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setIndex(_row);
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setUnits(_units);
 		}
 		else {
 			if (_model->data(_model->index(index.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt()) {
-				_pages->setCurrentIndex(3);	// preconfig
-				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				_pages->setCurrentIndex(4);	// preconfig
+				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setIndex(_row);
 				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(_units);
 			}
 			else {
 				if (form == rs::LINKBOTL) {
-					_pages->setCurrentIndex(1);	// Linkbot-L
-					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+					_pages->setCurrentIndex(2);	// Linkbot-L
+					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setIndex(_row);
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setUnits(_units);
 				}
 				else if (_model->data(_model->index(index.row(), rsRobotModel::WHEELLEFT), Qt::EditRole).toInt() == 4) {
-					_pages->setCurrentIndex(2);	// custom wheeled Linkbot-I
-					dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+					_pages->setCurrentIndex(3);	// custom wheeled Linkbot-I
+					dynamic_cast<customEditor *>(_pages->currentWidget())->setIndex(_row);
 					dynamic_cast<customEditor *>(_pages->currentWidget())->setUnits(_units);
 				}
 				else {
-					_pages->setCurrentIndex(0);	// Linkbot-I
-					dynamic_cast<linkbotIEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+					_pages->setCurrentIndex(1);	// Linkbot-I
+					dynamic_cast<linkbotIEditor *>(_pages->currentWidget())->setIndex(_row);
 					dynamic_cast<linkbotIEditor *>(_pages->currentWidget())->setUnits(_units);
 				}
 			}
@@ -110,17 +111,8 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		_previousButton->setEnabled(index.row() > 0);
 	}
 	else {
-		// disable current page
-		if (dynamic_cast<linkbotIEditor *>(_pages->currentWidget()))
-			dynamic_cast<linkbotIEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<linkbotLEditor *>(_pages->currentWidget()))
-			dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<mindstormsEditor *>(_pages->currentWidget()))
-			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
-			dynamic_cast<preconfigEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<customEditor *>(_pages->currentWidget()))
-			dynamic_cast<customEditor *>(_pages->currentWidget())->nullIndex(true, _row);
+		// show blank editor page
+		_pages->setCurrentIndex(0);
 
 		// disable all buttons
 		_deleteButton->setDisabled(true);
@@ -166,6 +158,9 @@ void robotEditor::deleteCurrentIndex(void) {
 }
 
 void robotEditor::setUnits(bool si) {
+	// do nothing if units don't change
+	if (_units == si) return;
+
 	// save units
 	_units = si;
 
@@ -180,6 +175,26 @@ void robotEditor::setUnits(bool si) {
 		dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<customEditor *>(_pages->currentWidget()))
 		dynamic_cast<customEditor *>(_pages->currentWidget())->setUnits(si);
+}
+
+/*!
+*
+*
+*	Empty Editor
+*
+*
+*/
+blankEditor::blankEditor(QWidget *parent) : QWidget(parent) {
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
+
+	// display title
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox);
+	layout->addStretch(1);
+	this->setLayout(layout);
 }
 
 /*!
@@ -201,7 +216,7 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_model = model;
 
 	// set title
-	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Linkbot-I Editor</span>"));
 
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
@@ -387,42 +402,23 @@ void linkbotIEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void linkbotIEditor::nullIndex(bool nullify, int row) {
-	// nullify (or not) input boxes
-	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheelLeft"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheelRight"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
-		int ind = -1;
-		if (form == rs::LINKBOTI) ind = LINKBOTI;
-		else if (form == rs::LINKBOTL) ind = LINKBOTL;
-		else if (form == rs::EV3) ind = EV3;
-		else if (form == rs::NXT) ind = NXT;
-		(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
-		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
-		(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
-		(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
-		QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<ledColorPicker *>("color"))->setColor(color);
-	}
+void linkbotIEditor::setIndex(int row) {
+	_row = row;
+	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	int ind = -1;
+	if (form == rs::LINKBOTI) ind = LINKBOTI;
+	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	else if (form == rs::EV3) ind = EV3;
+	else if (form == rs::NXT) ind = NXT;
+	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
+	(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
+	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -478,7 +474,7 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_model = model;
 
 	// set title
-	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Linkbot-L Editor</span>"));
 
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
@@ -620,38 +616,21 @@ void linkbotLEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void linkbotLEditor::nullIndex(bool nullify, int row) {
-	// nullify (or not) input boxes
-	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
-		int ind = -1;
-		if (form == rs::LINKBOTI) ind = LINKBOTI;
-		else if (form == rs::LINKBOTL) ind = LINKBOTL;
-		else if (form == rs::EV3) ind = EV3;
-		else if (form == rs::NXT) ind = NXT;
-		(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
-		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<ledColorPicker *>("color"))->setColor(color);
-	}
+void linkbotLEditor::setIndex(int row) {
+	_row = row;
+	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	int ind = -1;
+	if (form == rs::LINKBOTI) ind = LINKBOTI;
+	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	else if (form == rs::EV3) ind = EV3;
+	else if (form == rs::NXT) ind = NXT;
+	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -686,7 +665,7 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	_model = model;
 
 	// set title
-	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Mindstorms Editor</span>"));
 
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form: "));
@@ -872,42 +851,23 @@ void mindstormsEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void mindstormsEditor::nullIndex(bool nullify, int row) {
-	// nullify (or not) input boxes
-	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheelLeft"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheelRight"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
-		int ind = -1;
-		if (form == rs::LINKBOTI) ind = LINKBOTI;
-		else if (form == rs::LINKBOTL) ind = LINKBOTL;
-		else if (form == rs::EV3) ind = EV3;
-		else if (form == rs::NXT) ind = NXT;
-		(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
-		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
-		(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
-		(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
-		QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<ledColorPicker *>("color"))->setColor(color);
-	}
+void mindstormsEditor::setIndex(int row) {
+	_row = row;
+	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	int ind = -1;
+	if (form == rs::LINKBOTI) ind = LINKBOTI;
+	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	else if (form == rs::EV3) ind = EV3;
+	else if (form == rs::NXT) ind = NXT;
+	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
+	(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
+	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -1143,42 +1103,23 @@ void customEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void customEditor::nullIndex(bool nullify, int row) {
-	// nullify (or not) input boxes
-	(this->findChild<QComboBox *>("form"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("wheels"))->setDisabled(nullify);
-	(this->findChild<QLineEdit *>("radius"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
-		int ind = -1;
-		if (form == rs::LINKBOTI) ind = LINKBOTI;
-		else if (form == rs::LINKBOTL) ind = LINKBOTL;
-		else if (form == rs::EV3) ind = EV3;
-		else if (form == rs::NXT) ind = NXT;
-		(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
-		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
-		(this->findChild<QComboBox *>("wheels"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
-		(this->findChild<QComboBox *>("radius"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::RADIUS), Qt::EditRole).toInt());
-		QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<ledColorPicker *>("color"))->setColor(color);
-	}
+void customEditor::setIndex(int row) {
+	_row = row;
+	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	int ind = -1;
+	if (form == rs::LINKBOTI) ind = LINKBOTI;
+	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	else if (form == rs::EV3) ind = EV3;
+	else if (form == rs::NXT) ind = NXT;
+	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QComboBox *>("wheels"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
+	(this->findChild<QComboBox *>("radius"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::RADIUS), Qt::EditRole).toInt());
+	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -1337,30 +1278,14 @@ void preconfigEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void preconfigEditor::nullIndex(bool nullify, int row) {
-	// nullify (or not) input boxes
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("rz"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<ledColorPicker *>("color"))->setColor(color);
-	}
+void preconfigEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.

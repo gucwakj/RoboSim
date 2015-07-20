@@ -17,6 +17,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 
 	// set up editor pages
 	_pages = new QStackedWidget;
+	_pages->addWidget(new emptyEditor());
 	_pages->addWidget(new boxEditor(_model));
 	_pages->addWidget(new cylinderEditor(_model));
 	_pages->addWidget(new dotEditor(_model));
@@ -60,7 +61,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	this->setLayout(vbox);
 
 	// set variables for tracking editor
-	_row = -1;
+	_row = 0;
 }
 
 void obstacleEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
@@ -77,34 +78,34 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 		int form = _model->data(_model->index(index.row(), rsObstacleModel::FORM), Qt::EditRole).toInt();
 		switch (form) {
 			case rs::BOX:
-				_pages->setCurrentIndex(0);
+				_pages->setCurrentIndex(1);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				dynamic_cast<boxEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::CYLINDER:
-				_pages->setCurrentIndex(1);
+				_pages->setCurrentIndex(2);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::DOT:
-				_pages->setCurrentIndex(2);
+				_pages->setCurrentIndex(3);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				dynamic_cast<dotEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::LINE:
-				_pages->setCurrentIndex(3);
+				_pages->setCurrentIndex(4);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				dynamic_cast<lineEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::SPHERE:
-				_pages->setCurrentIndex(4);
+				_pages->setCurrentIndex(5);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<sphereEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::TEXT:
-				_pages->setCurrentIndex(5);
+				_pages->setCurrentIndex(6);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
-				dynamic_cast<textEditor *>(_pages->currentWidget())->nullIndex(false, _row);
+				dynamic_cast<textEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 		}
 
@@ -114,19 +115,8 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 		_previousButton->setEnabled(index.row() > 0);
 	}
 	else {
-		// disable current page
-		if (dynamic_cast<boxEditor *>(_pages->currentWidget()))
-			dynamic_cast<boxEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
-			dynamic_cast<cylinderEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<dotEditor *>(_pages->currentWidget()))
-			dynamic_cast<dotEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<lineEditor *>(_pages->currentWidget()))
-			dynamic_cast<lineEditor *>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<sphereEditor*>(_pages->currentWidget()))
-			dynamic_cast<sphereEditor*>(_pages->currentWidget())->nullIndex(true, _row);
-		else if (dynamic_cast<textEditor*>(_pages->currentWidget()))
-			dynamic_cast<textEditor*>(_pages->currentWidget())->nullIndex(true, _row);
+		// show blank editor page
+		_pages->setCurrentIndex(0);
 
 		// disable all buttons
 		_deleteButton->setDisabled(true);
@@ -172,6 +162,12 @@ void obstacleEditor::deleteCurrentIndex(void) {
 }
 
 void obstacleEditor::setUnits(bool si) {
+	// do nothing if units don't change
+	if (_units == si) return;
+
+	// save units
+	_units = si;
+
 	if (dynamic_cast<boxEditor *>(_pages->currentWidget()))
 		dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(si);
 	else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
@@ -379,39 +375,21 @@ void boxEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
 }
 
-/*!	\brief Slot to nullify all inputs.
+/*!	\brief Slot to re-enable all inputs.
  *
- *	\param		nullify To nullify inputs or not.
+ *	\param		row Row of the model to load.
  */
-void boxEditor::nullIndex(bool nullify, int row) {
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("lx"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("ly"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("lz"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
-	}
+void boxEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -633,35 +611,17 @@ void cylinderEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void cylinderEditor::nullIndex(bool nullify, int row) {
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("length"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
-	(this->findChild<QComboBox *>("axis"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-		(this->findChild<QComboBox *>("axis"))->setCurrentIndex(_model->data(_model->index(row, rsObstacleModel::AXIS), Qt::EditRole).toInt());
-		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
-	}
+void cylinderEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	(this->findChild<QComboBox *>("axis"))->setCurrentIndex(_model->data(_model->index(row, rsObstacleModel::AXIS), Qt::EditRole).toInt());
+	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -820,29 +780,14 @@ void dotEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void dotEditor::nullIndex(bool nullify, int row) {
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("size"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
-	}
+void dotEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -856,6 +801,26 @@ void dotEditor::setUnits(bool si) {
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
+}
+
+/*!
+*
+*
+*	Empty Editor
+*
+*
+*/
+emptyEditor::emptyEditor(QWidget *parent) : QWidget(parent) {
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Obstacles and Drawings Editor</span>"));
+
+	// display title
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox);
+	layout->addStretch(1);
+	this->setLayout(layout);
 }
 
 /*!
@@ -1055,35 +1020,17 @@ void lineEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void lineEditor::nullIndex(bool nullify, int row) {
-	(this->findChild<QDoubleSpinBox *>("px1"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py1"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz1"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px2"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py2"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz2"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("width"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QDoubleSpinBox *>("px1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
-	}
+void lineEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -1101,7 +1048,6 @@ void lineEditor::setUnits(bool si) {
 	_lYUnits->setText(text);
 	_lZUnits->setText(text);
 }
-
 
 /*!
  *
@@ -1260,31 +1206,15 @@ void sphereEditor::submitColor(QColor color) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void sphereEditor::nullIndex(bool nullify, int row) {
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("radius"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("mass"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
-	}
+void sphereEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.
@@ -1460,31 +1390,15 @@ void textEditor::submitColor(QColor value) {
  *
  *	\param		nullify To nullify inputs or not.
  */
-void textEditor::nullIndex(bool nullify, int row) {
-	(this->findChild<QLineEdit *>("name"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("px"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("py"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("pz"))->setDisabled(nullify);
-	(this->findChild<QDoubleSpinBox *>("size"))->setDisabled(nullify);
-	(this->findChild<QPushButton *>("colorbutton"))->setDisabled(nullify);
-
-	// dim color button
-	QColor color = (this->findChild<QPushButton *>("colorbutton"))->palette().color(QPalette::Button);
-	if (nullify) color.setAlpha(50);
-	else color.setAlpha(255);
-	(this->findChild<QPushButton *>("colorbutton"))->setPalette(color);
-
-	// re-enable mapping
-	if (!nullify) {
-		_row = row;
-		(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsObstacleModel::TEXT), Qt::EditRole).toString());
-		(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-		(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-		QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
-		(this->findChild<bodyColorPicker *>("color"))->setColor(color);
-	}
+void textEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsObstacleModel::TEXT), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
 /*!	\brief Slot to set units labels.

@@ -78,11 +78,17 @@ class robotEditor : public QWidget {
 		int _row;
 };
 
+class blankEditor : public QWidget {
+	Q_OBJECT
+public:
+	blankEditor(QWidget* = 0);
+};
+
 class linkbotIEditor : public QWidget {
 		Q_OBJECT
 	public:
 		linkbotIEditor(robotModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -112,7 +118,7 @@ class linkbotLEditor : public QWidget {
 		Q_OBJECT
 	public:
 		linkbotLEditor(robotModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -136,7 +142,7 @@ class mindstormsEditor : public QWidget {
 		Q_OBJECT
 	public:
 		mindstormsEditor(robotModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -166,7 +172,7 @@ class customEditor : public QWidget {
 		Q_OBJECT
 	public:
 		customEditor(robotModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -195,7 +201,7 @@ class preconfigEditor : public QWidget {
 		Q_OBJECT
 	public:
 		preconfigEditor(robotModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:

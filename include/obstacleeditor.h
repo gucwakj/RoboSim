@@ -74,7 +74,7 @@ class boxEditor : public QWidget {
 		Q_OBJECT
 	public:
 		boxEditor(obstacleModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -104,7 +104,7 @@ class cylinderEditor : public QWidget {
 		Q_OBJECT
 	public:
 		cylinderEditor(obstacleModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -133,7 +133,7 @@ class dotEditor : public QWidget {
 		Q_OBJECT
 	public:
 		dotEditor(obstacleModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -152,11 +152,17 @@ class dotEditor : public QWidget {
 		int _row;
 };
 
+class emptyEditor : public QWidget {
+		Q_OBJECT
+	public:
+		emptyEditor(QWidget* = 0);
+};
+
 class lineEditor : public QWidget {
 		Q_OBJECT
 	public:
 		lineEditor(obstacleModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -186,7 +192,7 @@ class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:
 		sphereEditor(obstacleModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
@@ -212,7 +218,7 @@ class textEditor : public QWidget {
 		Q_OBJECT
 	public:
 		textEditor(obstacleModel*, QWidget* = 0);
-		void nullIndex(bool, int);
+		void setIndex(int);
 		void setUnits(bool);
 
 	protected slots:
