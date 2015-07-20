@@ -29,6 +29,8 @@ robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 	this->setModelColumn(rsRobotModel::ID);
 	this->setUniformItemSizes(true);
 	this->installEventFilter(this);
+	this->setToolTip("Robot List\nThe robots within the RoboSim Scene");
+	this->setToolTipDuration(-1);
 
 	// drag-drop
 	this->viewport()->setAcceptDrops(true);

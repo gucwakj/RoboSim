@@ -17,7 +17,13 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	QGroupBox *groupbox = new QGroupBox(tr("Platform"), this);
 	groupbox->setAlignment(Qt::AlignCenter);
 	_hardware = new QRadioButton(tr("Hardware Robots"));
+	_hardware->setToolTip("Use hardware robots");
+	_hardware->setToolTipDuration(-1);
 	_simulated = new QRadioButton(tr("Virtual Robots"));
+	_simulated->setToolTip("Use virtual robots");
+	_simulated->setToolTipDuration(-1);
+	this->setToolTip("Select the output platform for the robots");
+	this->setToolTipDuration(-1);
 
 	// simulated on by default
 	_simulated->setChecked(true);

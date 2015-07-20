@@ -74,6 +74,9 @@
            </property>
            <item>
             <widget class="QGroupBox" name="group_robots">
+             <property name="toolTip">
+              <string>Robots for the Scene</string>
+             </property>
              <property name="title">
               <string>Individual Robots</string>
              </property>
@@ -100,6 +103,12 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Drag Robots to the Robot List to add to Scene</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>-1</number>
                 </property>
                 <property name="horizontalScrollBarPolicy">
                  <enum>Qt::ScrollBarAsNeeded</enum>
@@ -207,6 +216,9 @@
            </property>
            <item>
             <widget class="QGroupBox" name="group_obstacles">
+             <property name="toolTip">
+              <string>Obstacles for the Scene.  These interact with the robots.</string>
+             </property>
              <property name="title">
               <string>Obstacles (with mass)</string>
              </property>
@@ -233,6 +245,9 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Drag Obstacles to the Obstacles and Drawings List to add to Scene</string>
                 </property>
                 <property name="horizontalScrollBarPolicy">
                  <enum>Qt::ScrollBarAsNeeded</enum>
@@ -304,6 +319,9 @@
            </item>
            <item>
             <widget class="QGroupBox" name="group_drawings">
+             <property name="toolTip">
+              <string>Drawings for the Scene.  These do not interact with the robots.</string>
+             </property>
              <property name="title">
               <string>Drawings (no mass)</string>
              </property>
@@ -330,6 +348,9 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Drag Drawings to the Obstacles and Drawings List to add to Scene</string>
                 </property>
                 <property name="horizontalScrollBarPolicy">
                  <enum>Qt::ScrollBarAsNeeded</enum>
@@ -467,7 +488,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="movable">
         <bool>true</bool>
@@ -504,6 +525,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
               <widget class="QGroupBox" name="group_units">
+               <property name="toolTip">
+                <string>Change Units for the Scene</string>
+               </property>
                <property name="title">
                 <string>Units</string>
                </property>
@@ -525,6 +549,9 @@
                 </property>
                 <item>
                  <widget class="QRadioButton" name="si">
+                  <property name="toolTip">
+                   <string>Use Metric Units</string>
+                  </property>
                   <property name="text">
                    <string>Metric</string>
                   </property>
@@ -535,6 +562,9 @@
                 </item>
                 <item>
                  <widget class="QRadioButton" name="us">
+                  <property name="toolTip">
+                   <string>Use US Customary Units</string>
+                  </property>
                   <property name="text">
                    <string>US Customary</string>
                   </property>
@@ -548,6 +578,9 @@
              </item>
              <item>
               <widget class="QGroupBox" name="group_tracing">
+               <property name="toolTip">
+                <string>Enable Tracing for all Robots</string>
+               </property>
                <property name="title">
                 <string>Tracing</string>
                </property>
@@ -569,6 +602,9 @@
                 </property>
                 <item>
                  <widget class="QCheckBox" name="tracing">
+                  <property name="toolTip">
+                   <string/>
+                  </property>
                   <property name="text">
                    <string>Enable Robot Tracing</string>
                   </property>
@@ -628,6 +664,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="toolTip">
+                   <string>Enable the Grid</string>
+                  </property>
                   <property name="text">
                    <string>Grid On</string>
                   </property>
@@ -643,6 +682,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>Disable the Grid</string>
                   </property>
                   <property name="text">
                    <string>Grid Off</string>
@@ -680,6 +722,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="toolTip">
+                   <string>Minimum X value of grid lines</string>
+                  </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
                   </property>
@@ -712,6 +757,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>Maximum X value of grid lines</string>
                   </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
@@ -746,6 +794,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="toolTip">
+                   <string>Minimum Y value of grid lines</string>
+                  </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
                   </property>
@@ -773,6 +824,9 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="spin_grid_y_max">
+                  <property name="toolTip">
+                   <string>Maximum Y value of grid lines</string>
+                  </property>
                   <property name="minimum">
                    <double>-1000.000000000000000</double>
                   </property>
@@ -806,6 +860,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="toolTip">
+                   <string>Units between Hash Lines (red)</string>
+                  </property>
                   <property name="maximum">
                    <double>1000.000000000000000</double>
                   </property>
@@ -833,6 +890,9 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="spin_grid_tics">
+                  <property name="toolTip">
+                   <string>Distance between Tic Lines (white)</string>
+                  </property>
                   <property name="minimum">
                    <double>0.000000000000000</double>
                   </property>
@@ -848,6 +908,9 @@
               </item>
               <item>
                <widget class="QPushButton" name="button_grid_defaults">
+                <property name="toolTip">
+                 <string>Reset all grid values to defaults</string>
+                </property>
                 <property name="text">
                  <string>Reset to Defaults</string>
                 </property>
@@ -882,6 +945,9 @@
          </property>
          <item>
           <widget class="QListWidget" name="backgroundListWidget">
+           <property name="toolTip">
+            <string>Pick a RoboSim Background for the Scene</string>
+           </property>
            <property name="iconSize">
             <size>
              <width>128</width>
@@ -919,6 +985,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="add_background">
+             <property name="toolTip">
+              <string>Add new RoboSim Background</string>
+             </property>
              <property name="text">
               <string>Add Background</string>
              </property>

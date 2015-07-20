@@ -29,6 +29,8 @@ obstacleView::obstacleView(obstacleModel *model, QWidget *parent) : QListView(pa
 	this->setModelColumn(rsObstacleModel::ID);
 	this->setUniformItemSizes(false);
 	this->installEventFilter(this);
+	this->setToolTip("Obstacle and Drawings List\nThe obstacles and drawings within the RoboSim Scene");
+	this->setToolTipDuration(-1);
 
 	// drag-drop
 	this->viewport()->setAcceptDrops(true);
