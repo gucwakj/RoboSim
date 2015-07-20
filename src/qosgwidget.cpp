@@ -22,7 +22,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// create new scene
 	_scene = new rsScene::Scene();
 
-	// privide reference count
+	// provide reference count
 	this->ref();
 
 	// handle event inputs
@@ -66,16 +66,18 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_current[1] = -1;
 	_current[2] = -1;
 
-	// set highlighting of click
+	// set highlight on click
 	_scene->setHighlight(true);
-	// set global hud
+	// hide global hud
 	_scene->setHUD(false);
 	// set level to display
 	_level = 1;
 	_scene->setLevel(_level);
+	// hide robot popup labels
 	_scene->setLabel(false);
 
 	// draw viewer
+	this->setRunMaxFrameRate(30);
 	osgQt::setViewer(this);
 }
 

@@ -60,7 +60,16 @@
            <property name="spacing">
             <number>10</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>4</number>
+           </property>
+           <property name="topMargin">
+            <number>4</number>
+           </property>
+           <property name="rightMargin">
+            <number>4</number>
+           </property>
+           <property name="bottomMargin">
             <number>4</number>
            </property>
            <item>
@@ -72,7 +81,16 @@
               <property name="spacing">
                <number>4</number>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>4</number>
+              </property>
+              <property name="topMargin">
+               <number>4</number>
+              </property>
+              <property name="rightMargin">
+               <number>4</number>
+              </property>
+              <property name="bottomMargin">
                <number>4</number>
               </property>
               <item>
@@ -175,7 +193,16 @@
            <property name="spacing">
             <number>10</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>4</number>
+           </property>
+           <property name="topMargin">
+            <number>4</number>
+           </property>
+           <property name="rightMargin">
+            <number>4</number>
+           </property>
+           <property name="bottomMargin">
             <number>4</number>
            </property>
            <item>
@@ -187,7 +214,16 @@
               <property name="spacing">
                <number>10</number>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>4</number>
+              </property>
+              <property name="topMargin">
+               <number>4</number>
+              </property>
+              <property name="rightMargin">
+               <number>4</number>
+              </property>
+              <property name="bottomMargin">
                <number>4</number>
               </property>
               <item>
@@ -275,7 +311,16 @@
               <property name="spacing">
                <number>10</number>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>4</number>
+              </property>
+              <property name="topMargin">
+               <number>4</number>
+              </property>
+              <property name="rightMargin">
+               <number>4</number>
+              </property>
+              <property name="bottomMargin">
                <number>4</number>
               </property>
               <item>
@@ -371,6 +416,9 @@
        <enum>Qt::Vertical</enum>
       </property>
       <widget class="QOsgWidget" name="osgWidget" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -438,7 +486,16 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
           <number>4</number>
          </property>
          <item>
@@ -454,7 +511,16 @@
                 <property name="spacing">
                  <number>6</number>
                 </property>
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
                  <number>4</number>
                 </property>
                 <item>
@@ -489,7 +555,16 @@
                 <property name="spacing">
                  <number>6</number>
                 </property>
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
                  <number>4</number>
                 </property>
                 <item>
@@ -528,7 +603,16 @@
               <property name="sizeConstraint">
                <enum>QLayout::SetMinimumSize</enum>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
                <number>2</number>
               </property>
               <item>
@@ -784,7 +868,16 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
           <number>4</number>
          </property>
          <item>
@@ -846,7 +939,16 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
           <number>4</number>
          </property>
          <item>
@@ -862,7 +964,16 @@
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
           <number>4</number>
          </property>
          <item>
