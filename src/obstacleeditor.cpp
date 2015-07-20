@@ -28,12 +28,18 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	_deleteButton = new QPushButton(tr("Delete"));
 	_deleteButton->setEnabled(true);
 	_deleteButton->setFixedWidth(75);
+	_deleteButton->setToolTip("Delete the robot");
+	_deleteButton->setToolTipDuration(-1);
 	_nextButton = new QPushButton(tr("Next"));
 	_nextButton->setEnabled(false);
 	_nextButton->setFixedWidth(75);
+	_nextButton->setToolTip("Edit the next robot in the list");
+	_nextButton->setToolTipDuration(-1);
 	_previousButton = new QPushButton(tr("Previous"));
 	_previousButton->setEnabled(false);
 	_previousButton->setFixedWidth(75);
+	_previousButton->setToolTip("Edit the previous robot in the list");
+	_previousButton->setToolTipDuration(-1);
 
 	// create signal connections
 	QWidget::connect(_deleteButton, SIGNAL(clicked()), this, SLOT(deleteCurrentIndex()));
@@ -211,6 +217,8 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the box");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -222,6 +230,8 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the box");
+	pYBox->setToolTipDuration(-1);
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -233,6 +243,8 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the Z position of the box");
+	pZBox->setToolTipDuration(-1);
 
 	// length x
 	QLabel *lXLabel = new QLabel(tr("Length X:"));
@@ -244,6 +256,8 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the X length of the box");
+	lXBox->setToolTipDuration(-1);
 
 	// length y
 	QLabel *lYLabel = new QLabel(tr("Length Y:"));
@@ -255,6 +269,8 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the Y length of the box");
+	lYBox->setToolTipDuration(-1);
 
 	// length z
 	QLabel *lZLabel = new QLabel(tr("Length Z:"));
@@ -266,6 +282,8 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	lZBox->setSingleStep(0.5);
 	lZLabel->setBuddy(lZBox);
 	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
+	lZBox->setToolTip("Set the Z length of the box");
+	lZBox->setToolTipDuration(-1);
 
 	// mass
 	QLabel *massLabel = new QLabel(tr("Mass:"));
@@ -277,11 +295,15 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	massBox->setToolTip("Set the mass of the box");
+	massBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the box");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -445,6 +467,8 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the cylinder");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -456,6 +480,8 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the cylinder");
+	pYBox->setToolTipDuration(-1);
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -467,6 +493,8 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the Z position of the cylinder");
+	pZBox->setToolTipDuration(-1);
 
 	// radius
 	QLabel *lXLabel = new QLabel(tr("Radius:"));
@@ -478,6 +506,8 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the radius of the cylinder");
+	lXBox->setToolTipDuration(-1);
 
 	// length
 	QLabel *lYLabel = new QLabel(tr("Length:"));
@@ -489,6 +519,8 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the length of the cylinder");
+	lYBox->setToolTipDuration(-1);
 
 	// mass
 	QLabel *massLabel = new QLabel(tr("Mass:"));
@@ -500,6 +532,8 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	massBox->setToolTip("Set the mass of the cylinder");
+	massBox->setToolTipDuration(-1);
 
 	// axis
 	QLabel *axisLabel = new QLabel(tr("Axis: "));
@@ -511,11 +545,15 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	axisBox->setModel(axisModel);
 	axisLabel->setBuddy(axisBox);
 	QWidget::connect(axisBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitAxis(int)));
+	axisBox->setToolTip("Pick the major axis of the cylinder");
+	axisBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the cylinder");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -678,6 +716,8 @@ dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the dot");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -689,6 +729,8 @@ dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the dot");
+	pYBox->setToolTipDuration(-1);
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -700,6 +742,8 @@ dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the Z position of the dot");
+	pZBox->setToolTipDuration(-1);
 
 	// size
 	QLabel *sizeLabel = new QLabel(tr("Size:"));
@@ -710,11 +754,15 @@ dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
 	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	sizeBox->setToolTip("Set the size of the dot");
+	sizeBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the dot");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -841,6 +889,8 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the starting X position of the line");
+	pXBox->setToolTipDuration(-1);
 
 	// position y1
 	QLabel *pYLabel = new QLabel(tr("Start Y:"));
@@ -852,6 +902,8 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pXBox->setToolTip("Set the starting Y position of the line");
+	pXBox->setToolTipDuration(-1);
 
 	// position z1
 	QLabel *pZLabel = new QLabel(tr("Start Z:"));
@@ -863,6 +915,8 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pXBox->setToolTip("Set the starting Z position of the line");
+	pXBox->setToolTipDuration(-1);
 
 	// position x2
 	QLabel *lXLabel = new QLabel(tr("End X:"));
@@ -874,6 +928,8 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	pXBox->setToolTip("Set the ending X position of the line");
+	pXBox->setToolTipDuration(-1);
 
 	// position y2
 	QLabel *lYLabel = new QLabel(tr("End Y:"));
@@ -885,6 +941,8 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	pXBox->setToolTip("Set the ending Y position of the line");
+	pXBox->setToolTipDuration(-1);
 
 	// position z2
 	QLabel *lZLabel = new QLabel(tr("End Z:"));
@@ -896,6 +954,8 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	lZBox->setSingleStep(0.5);
 	lZLabel->setBuddy(lZBox);
 	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
+	pXBox->setToolTip("Set the ending Z position of the line");
+	pXBox->setToolTipDuration(-1);
 
 	// width
 	QLabel *widthLabel = new QLabel(tr("Width:"));
@@ -907,11 +967,15 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	widthBox->setSingleStep(1);
 	widthLabel->setBuddy(widthBox);
 	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	widthBox->setToolTip("Set the width of the line");
+	widthBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -954,7 +1018,6 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
-
 
 void lineEditor::submitPX(double value) {
 	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
@@ -1071,6 +1134,8 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the sphere");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -1082,6 +1147,8 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the sphere");
+	pYBox->setToolTipDuration(-1);
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -1093,6 +1160,8 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the Z position of the sphere");
+	pZBox->setToolTipDuration(-1);
 
 	// radius
 	QLabel *lXLabel = new QLabel(tr("Radius:"));
@@ -1104,6 +1173,8 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the radius of the sphere");
+	lXBox->setToolTipDuration(-1);
 
 	// mass
 	QLabel *massLabel = new QLabel(tr("Mass:"));
@@ -1115,11 +1186,15 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	massBox->setToolTip("Set the mass of the sphere");
+	massBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the sphere");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -1259,6 +1334,8 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
 	QWidget::connect(nameEdit, SIGNAL(textEdited(QString)), this, SLOT(submitName(QString)));
+	nameEdit->setToolTip("Set the text to display");
+	nameEdit->setToolTipDuration(-1);
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -1270,6 +1347,8 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the text");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -1281,6 +1360,8 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the text");
+	pYBox->setToolTipDuration(-1);
 
 	// position z
 	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
@@ -1292,6 +1373,8 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the Z position of the text");
+	pZBox->setToolTipDuration(-1);
 
 	// size
 	QLabel *sizeLabel = new QLabel(tr("Size:"));
@@ -1302,11 +1385,15 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
 	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	sizeBox->setToolTip("Set the size of the text");
+	sizeBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the box");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);

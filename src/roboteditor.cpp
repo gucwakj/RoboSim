@@ -27,12 +27,18 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_deleteButton = new QPushButton(tr("Delete"));
 	_deleteButton->setEnabled(true);
 	_deleteButton->setFixedWidth(75);
+	_deleteButton->setToolTip("Delete the robot");
+	_deleteButton->setToolTipDuration(-1);
 	_nextButton = new QPushButton(tr("Next"));
 	_nextButton->setEnabled(false);
 	_nextButton->setFixedWidth(75);
+	_nextButton->setToolTip("Edit the next robot in the list");
+	_nextButton->setToolTipDuration(-1);
 	_previousButton = new QPushButton(tr("Previous"));
 	_previousButton->setEnabled(false);
 	_previousButton->setFixedWidth(75);
+	_previousButton->setToolTip("Edit the previous robot in the list");
+	_previousButton->setToolTipDuration(-1);
 
 	// create signal connections
 	QWidget::connect(_deleteButton, SIGNAL(clicked()), this, SLOT(deleteCurrentIndex()));
@@ -207,6 +213,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
 	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitForm(int)));
+	formBox->setToolTip("Pick the type of robot");
+	formBox->setToolTipDuration(-1);
 
 	// name
 	QLabel *nameLabel = new QLabel(tr("Name:"));
@@ -214,6 +222,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
 	QWidget::connect(nameEdit, SIGNAL(textEdited(QString)), this, SLOT(submitName(QString)));
+	nameEdit->setToolTip("Set a name for the robot");
+	nameEdit->setToolTipDuration(-1);
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -225,6 +235,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the robot");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -236,6 +248,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the robot");
+	pYBox->setToolTipDuration(-1);
 
 	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
@@ -247,6 +261,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the robot");
+	_rZBox->setToolTipDuration(-1);
 
 	// left wheel list
 	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
@@ -259,6 +275,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_wheelLBox->setModel(wheelLModel);
 	wheelLLabel->setBuddy(_wheelLBox);
 	QWidget::connect(_wheelLBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitLeftWheel(int)));
+	_wheelLBox->setToolTip("Pick the left wheel of the robot");
+	_wheelLBox->setToolTipDuration(-1);
 
 	// right wheel list
 	QLabel *wheelRLabel = new QLabel(tr("Right Wheel:"));
@@ -271,11 +289,15 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_wheelRBox->setModel(wheelRModel);
 	wheelRLabel->setBuddy(_wheelRBox);
 	QWidget::connect(_wheelRBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitRightWheel(int)));
+	_wheelRBox->setToolTip("Pick the right wheel of the robot");
+	_wheelRBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new ledColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the robot's LED");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -468,6 +490,8 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
 	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitForm(int)));
+	formBox->setToolTip("Pick the type of robot");
+	formBox->setToolTipDuration(-1);
 
 	// name
 	QLabel *nameLabel = new QLabel(tr("Name:"));
@@ -475,6 +499,8 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
 	QWidget::connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(submitName(QString)));
+	nameEdit->setToolTip("Set a name for the robot");
+	nameEdit->setToolTipDuration(-1);
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -486,6 +512,8 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the robot");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -497,6 +525,8 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the robot");
+	pYBox->setToolTipDuration(-1);
 
 	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
@@ -508,11 +538,15 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the robot");
+	_rZBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new ledColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the robot's LED");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -664,6 +698,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
 	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitForm(int)));
+	formBox->setToolTip("Pick the type of robot");
+	formBox->setToolTipDuration(-1);
 
 	// name
 	QLabel *nameLabel = new QLabel(tr("Name:"));
@@ -671,6 +707,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
 	QWidget::connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(submitName(QString)));
+	nameEdit->setToolTip("Set a name for the robot");
+	nameEdit->setToolTipDuration(-1);
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -682,6 +720,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the robot");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -693,6 +733,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the robot");
+	pYBox->setToolTipDuration(-1);
 
 	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
@@ -704,6 +746,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the robot");
+	_rZBox->setToolTipDuration(-1);
 
 	// left wheel list
 	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
@@ -716,6 +760,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	_wheelLBox->setModel(wheelLModel);
 	wheelLLabel->setBuddy(_wheelLBox);
 	QWidget::connect(_wheelLBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitLeftWheel(int)));
+	_wheelLBox->setToolTip("Pick the left wheel of the robot");
+	_wheelLBox->setToolTipDuration(-1);
 
 	// right wheel list
 	QLabel *wheelRLabel = new QLabel(tr("Right Wheel:"));
@@ -728,11 +774,15 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	_wheelRBox->setModel(wheelRModel);
 	wheelRLabel->setBuddy(_wheelRBox);
 	QWidget::connect(_wheelRBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitRightWheel(int)));
+	_wheelRBox->setToolTip("Pick the right wheel of the robot");
+	_wheelRBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new ledColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the robot's LED");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -925,6 +975,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	formBox->setModel(formModel);
 	formLabel->setBuddy(formBox);
 	QWidget::connect(formBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitForm(int)));
+	formBox->setToolTip("Pick the type of robot");
+	formBox->setToolTipDuration(-1);
 
 	// name
 	QLabel *nameLabel = new QLabel(tr("Name:"));
@@ -932,6 +984,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
 	QWidget::connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(submitName(QString)));
+	nameEdit->setToolTip("Set a name for the robot");
+	nameEdit->setToolTipDuration(-1);
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -943,6 +997,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the robot");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -954,6 +1010,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the robot");
+	pYBox->setToolTipDuration(-1);
 
 	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
@@ -965,6 +1023,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the robot");
+	_rZBox->setToolTipDuration(-1);
 
 	// wheels list
 	QLabel *wheelLabel = new QLabel(tr("Wheels:"));
@@ -973,6 +1033,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	_wheelBox->setObjectName("wheels");
 	wheelLabel->setBuddy(_wheelBox);
 	QWidget::connect(_wheelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitLeftWheel(int)));
+	_wheelBox->setToolTip("Pick the wheels of the robot");
+	_wheelBox->setToolTipDuration(-1);
 
 	// radius of wheel
 	QLabel *radiusLabel = new QLabel(tr("Radius:"));
@@ -981,11 +1043,15 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	radiusEdit->setObjectName("radius");
 	radiusLabel->setBuddy(radiusEdit);
 	QWidget::connect(radiusEdit, SIGNAL(textChanged(QString)), this, SLOT(submitRadius(QString)));
+	radiusEdit->setToolTip("Set the wheel radii of the robot");
+	radiusEdit->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new ledColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the robot's LED");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -1164,6 +1230,8 @@ preconfigEditor::preconfigEditor(robotModel *model, QWidget *parent) : QWidget(p
 	nameEdit->setObjectName("name");
 	nameLabel->setBuddy(nameEdit);
 	QWidget::connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(submitName(QString)));
+	nameEdit->setToolTip("Set a name for the robot");
+	nameEdit->setToolTipDuration(-1);
 
 	// position x
 	QLabel *pXLabel = new QLabel(tr("Pos X:"));
@@ -1175,6 +1243,8 @@ preconfigEditor::preconfigEditor(robotModel *model, QWidget *parent) : QWidget(p
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the robot");
+	pXBox->setToolTipDuration(-1);
 
 	// position y
 	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
@@ -1186,6 +1256,8 @@ preconfigEditor::preconfigEditor(robotModel *model, QWidget *parent) : QWidget(p
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the robot");
+	pYBox->setToolTipDuration(-1);
 
 	// rotation psi
 	QLabel *rZLabel = new QLabel(tr("Angle:"));
@@ -1197,11 +1269,15 @@ preconfigEditor::preconfigEditor(robotModel *model, QWidget *parent) : QWidget(p
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
 	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the robot");
+	_rZBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new ledColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the robot's LED");
+	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
