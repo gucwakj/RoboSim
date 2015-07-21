@@ -353,10 +353,10 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				// remove old robot
 				_scene->deleteRobot(id);
 				// create new one
-				rsRobots::Mindstorms *robot;
+				rsRobots::Mindstorms *robot = NULL;
 				if (form == rs::EV3)
 					robot = new rsRobots::Mindstorms(rs::EV3);
-				else if (form == rs::NXT)
+				else
 					robot = new rsRobots::Mindstorms(rs::NXT);
 				robot->setID(id);
 				robot->setName(name);
