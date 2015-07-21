@@ -290,6 +290,7 @@ void roboSimWidget::grid_defaults(void) {
 		ui->spin_grid_y_min->setValue(-48);
 		ui->spin_grid_y_max->setValue(48);
 	}
+	this->grid_labels(ui->si->isDown());
 
 	// change osg grid lines
 	ui->osgWidget->gridDefaults();
@@ -324,6 +325,7 @@ void roboSimWidget::set_units(bool si) {
 			ui->spin_grid_y_min->setValue(_us[4]);
 			ui->spin_grid_y_max->setValue(_us[5]);
 	}
+	this->grid_labels(si);
 }
 
 void roboSimWidget::grid(std::vector<double> v) {
@@ -334,6 +336,22 @@ void roboSimWidget::grid(std::vector<double> v) {
 	ui->spin_grid_x_max->setValue(v[3]);
 	ui->spin_grid_y_min->setValue(v[4]);
 	ui->spin_grid_y_max->setValue(v[5]);
+	this->grid_labels(ui->si->isDown());
+}
+
+void roboSimWidget::grid_labels(bool si) {
+	if (si) {
+		ui->units_grid_x_min->setText(tr("cm"));
+		ui->units_grid_x_max->setText(tr("cm"));
+		ui->units_grid_y_min->setText(tr("cm"));
+		ui->units_grid_y_max->setText(tr("cm"));
+	}
+	else {
+		ui->units_grid_x_min->setText(tr("in"));
+		ui->units_grid_x_max->setText(tr("in"));
+		ui->units_grid_y_min->setText(tr("in"));
+		ui->units_grid_y_max->setText(tr("in"));
+	}
 }
 
 void roboSimWidget::setCurrentBackground(std::string name) {

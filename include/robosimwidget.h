@@ -48,6 +48,7 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		void build_selector(QListWidget*, QStringList&, QStringList&);
 		void load_settings(void);
 		void save_settings(void);
+		void grid_labels(bool);
 
 	private:
 		Ui::RoboSimWidget *ui;
