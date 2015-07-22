@@ -13,7 +13,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	_model = model;
 
 	// set size properties
-	//this->setFixedWidth(256);
+	this->setFixedWidth(350);
 
 	// set up editor pages
 	_pages = new QStackedWidget;
@@ -27,7 +27,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 
 	// set up buttons
 	_deleteButton = new QPushButton(tr("Delete"));
-	_deleteButton->setEnabled(true);
+	_deleteButton->setEnabled(false);
 	_deleteButton->setFixedWidth(75);
 	_deleteButton->setToolTip("Delete the robot");
 	_deleteButton->setToolTipDuration(-1);
@@ -61,7 +61,7 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	this->setLayout(vbox);
 
 	// set variables for tracking editor
-	_row = 0;
+	_row = -1;
 }
 
 void obstacleEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
@@ -117,6 +117,7 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 	else {
 		// show blank editor page
 		_pages->setCurrentIndex(0);
+		_row = -1;
 
 		// disable all buttons
 		_deleteButton->setDisabled(true);
@@ -814,11 +815,22 @@ emptyEditor::emptyEditor(QWidget *parent) : QWidget(parent) {
 	// set title
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Obstacles and Drawings Editor</span>"));
 
-	// display title
+	// set note to user
+	QLabel *note1 = new QLabel(tr("<span style=\"font-size:9pt;\">There are no obstacles or drawings in the Scene.</span>"));
+	QLabel *note2 = new QLabel(tr("<span style=\"font-size:9pt;\">Therefore nothing to edit here.</span>"));
+
+	// display info
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox = new QHBoxLayout();
-	hbox->addWidget(title, 5, Qt::AlignHCenter);
+	hbox->addWidget(title, 1, Qt::AlignHCenter);
 	layout->addLayout(hbox);
+	layout->addStretch(1);
+	QHBoxLayout *hbox1 = new QHBoxLayout();
+	hbox1->addWidget(note1, 3, Qt::AlignCenter);
+	layout->addLayout(hbox1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(note2, 3, Qt::AlignCenter);
+	layout->addLayout(hbox2);
 	layout->addStretch(1);
 	this->setLayout(layout);
 }
