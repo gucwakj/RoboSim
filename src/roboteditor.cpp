@@ -60,12 +60,16 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	this->setLayout(vbox);
 
 	// set variables for tracking editor
+	_form = -1;
 	_row = -1;
 }
 
 void robotEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
-	if (bottomRight.row() != _row)
+	int form = _model->data(_model->index(bottomRight.row(), rsRobotModel::FORM)).toInt();
+	if (bottomRight.row() != _row || form != _form) {
+		_form = form;
 		this->setCurrentIndex(bottomRight);
+	}
 }
 
 void robotEditor::setCurrentIndex(const QModelIndex &index) {
@@ -74,8 +78,7 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 		_row = index.row();
 
 		// load appropriate page
-		int form = _model->data(_model->index(index.row(), rsRobotModel::FORM)).toInt();
-		if (form == rs::EV3 || form == rs::NXT) {
+		if (_form == rs::EV3 || _form == rs::NXT) {
 			_pages->setCurrentIndex(5);	// mindstorms
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setIndex(_row);
 			dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setUnits(_units);
@@ -87,7 +90,7 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(_units);
 			}
 			else {
-				if (form == rs::LINKBOTL) {
+				if (_form == rs::LINKBOTL) {
 					_pages->setCurrentIndex(2);	// Linkbot-L
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setIndex(_row);
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setUnits(_units);
@@ -113,6 +116,7 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	else {
 		// show blank editor page
 		_pages->setCurrentIndex(0);
+		_form = -1;
 		_row = -1;
 
 		// disable all buttons
