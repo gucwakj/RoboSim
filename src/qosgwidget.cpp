@@ -284,29 +284,22 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						rsRobots::Linkbot *robot = new rsRobots::Linkbot(rs::LINKBOTI);
 						robot->setID(id);
 						robot->setName(name);
+						// adjust height to be above zero
+						if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
+							p.add(0, 0, robot->getBodyHeight() / 2);
+						}
 						// get wheels
 						for (int i = 0; i < 2; i++) {
-							if (wheelID[i] == 0)
-								wheel[i] = -1;
-							else if (wheelID[i] == 1)
-								wheel[i] = rsLinkbot::TINYWHEEL;
-							else if (wheelID[i] == 2)
-								wheel[i] = rsLinkbot::SMALLWHEEL;
-							else if (wheelID[i] == 3)
-								wheel[i] = rsLinkbot::BIGWHEEL;
-							else if (wheelID[i] == 4)
-								wheel[i] = rsLinkbot::WHEEL;
+							if (wheelID[i] == 0)		wheel[i] = rsLinkbot::NONE;
+							else if (wheelID[i] == 1)	wheel[i] = rsLinkbot::TINYWHEEL;
+							else if (wheelID[i] == 2)	wheel[i] = rsLinkbot::SMALLWHEEL;
+							else if (wheelID[i] == 3)	wheel[i] = rsLinkbot::BIGWHEEL;
+							else if (wheelID[i] == 4)	wheel[i] = rsLinkbot::WHEEL;
 						}
 						// tilt for wheels
 						double p2;
-						q.multiply(robot->tiltForWheels(wheel[0], 1, p2));
+						q.multiply(robot->tiltForWheels(wheel[0], wheel[1], p2));
 						p[2] += p2;
-						q.multiply(robot->tiltForWheels(wheel[1], 3, p2));
-						p[2] += p2;
-						// adjust height to be above zero
-						if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
-							p.add(0, 0, robot->getBodyHeight()/2);
-						}
 						// draw linkbot
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
 						// left wheel
@@ -362,10 +355,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setName(name);
 				// get wheels
 				for (int i = 0; i < 2; i++) {
-					if (wheelID[i] == 0)
-						wheel[i] = rsMindstorms::SMALL;
-					else if (wheelID[i] == 1)
-						wheel[i] = rsMindstorms::BIG;
+					if (wheelID[i] == 0)		wheel[i] = rsMindstorms::SMALL;
+					else if (wheelID[i] == 1)	wheel[i] = rsMindstorms::BIG;
 				}
 				// tilt for wheels
 				double p2;
