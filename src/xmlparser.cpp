@@ -81,11 +81,9 @@ void xmlParser::parse(const char *name) {
 				case rs::EV3:
 				case rs::NXT: {
 					if (xmlwheels[i] == rsMindstorms::SMALL)
-						wheels[i] = 1;
-					else if (xmlwheels[i] == rsMindstorms::BIG)
-						wheels[i] = 2;
-					else
 						wheels[i] = 0;
+					else if (xmlwheels[i] == rsMindstorms::BIG)
+						wheels[i] = 1;
 					break;
 				}
 			}
@@ -192,9 +190,9 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 
 				// set wheel sizes
 				for (int i = 0; i < 2; i++) {
-					if (wheelID[i] == 1)
+					if (wheelID[i] == 0)
 						wheel[i] = rsMindstorms::SMALL;
-					else if (wheelID[i] == 2)
+					else if (wheelID[i] == 1)
 						wheel[i] = rsMindstorms::BIG;
 				}
 
