@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "obstaclemodel.h"
 
 using namespace rsObstacleModel;
@@ -26,7 +28,8 @@ bool obstacleModel::addObstacle(int form, int role) {
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][COLOR] = QString("#00ff00");	// green
-		_list[row][MASS] = QVariant(5).toString();
+		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
+		_list[row][rsObstacleModel::SIZE] = QVariant(1).toString();		// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
@@ -52,10 +55,11 @@ bool obstacleModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos
 		_list[row][L_3] = QVariant(p2[2]).toString();
 		QColor qtc(c[0] * 255, c[1] * 255, c[2] * 255, c[3] * 255);
 		_list[row][COLOR] = QString(qtc.name());
-		_list[row][MASS] = QVariant(size).toString();
+		_list[row][rsObstacleModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString(name.c_str());
-		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
+		this->sort(ID);
+		emit dataChanged(createIndex(0, 0), createIndex(_list.size(), NUM_COLUMNS));
 		return true;
 	}
 	return false;
@@ -81,7 +85,8 @@ bool obstacleModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Qu
 		_list[row][MASS] = QVariant(mass).toString();
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString();
-		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
+		this->sort(ID);
+		emit dataChanged(createIndex(0, 0), createIndex(_list.size(), NUM_COLUMNS));
 		return true;
 	}
 	return false;
@@ -150,6 +155,9 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 		else if (index.column() == L_1 || index.column() == L_2 || index.column() == L_3) {
 			return this->convert(_list[index.row()][index.column()].toDouble(), false);
 		}
+		else if (index.column() == MASS) {
+			return this->convertMass(_list[index.row()][index.column()].toDouble(), false);
+		}
 		return _list[index.row()][index.column()];
 	}
 	else if (role == Qt::DecorationRole) {
@@ -189,6 +197,23 @@ QVariant obstacleModel::headerData(int section, Qt::Orientation orientation, int
 		return QString(tr("Column %1")).arg(section);
 	else
 		return QString(tr("Row %1")).arg(section);
+}
+
+void obstacleModel::sort(int column, Qt::SortOrder order) {
+	switch (column) {
+		case ID: {
+			for (int i = 0; i < _list.size() - 1; i++) {
+				if (_list[i][ID].toInt() > _list[i + 1][ID].toInt()) {
+					QStringList temp = _list.takeAt(i);
+					_list.insert(i+1, temp);
+				}
+			}
+			 break;
+		}
+		default:
+			break;
+	}
+	return;
 }
 
 Qt::ItemFlags obstacleModel::flags(const QModelIndex &index) const {
@@ -239,6 +264,10 @@ bool obstacleModel::setData(const QModelIndex &index, const QVariant &value, int
 			QVariant newValue = this->convert(value.toDouble(), true);
 			_list[index.row()][index.column()] = newValue.toString();
 		}
+		else if (index.column() == MASS) {
+			QVariant newValue = this->convertMass(value.toDouble(), true);
+			_list[index.row()][MASS] = newValue.toString();
+		}
 		else {
 			_list[index.row()][index.column()] = value.toString();
 		}
@@ -288,10 +317,23 @@ bool obstacleModel::removeRows(int row, int count, const QModelIndex &parent) {
 QVariant obstacleModel::convert(double value, bool store) const {
 	QVariant tmp;
 
+	// convert [cm/in] -> [m]
 	if (store)
 		tmp = ((_units) ? value/100 : value/39.37);
 	else
 		tmp = ((_units) ? value*100 : value*39.37);
+
+	return tmp;
+}
+
+QVariant obstacleModel::convertMass(double value, bool store) const {
+	QVariant tmp;
+
+	// convert [kg/lb] -> [g]
+	if (store)
+		tmp = ((_units) ? value / 1000 : value * 453.593);
+	else
+		tmp = ((_units) ? value * 1000 : value / 453.593);
 
 	return tmp;
 }

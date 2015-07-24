@@ -147,6 +147,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// connect designer elements to slots
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), model, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), editor, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), o_model, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), o_editor, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), this, SLOT(set_units(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), _xml, SLOT(setUnits(bool)));

@@ -137,6 +137,7 @@ void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
 	_scene->deleteObstacle(id);
+	_scene->deleteMarker(id);
 	_scene->addAndRemoveChildren();
 }
 
@@ -385,7 +386,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		// get form, id, and mass
 		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
 		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
-		int mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS), Qt::EditRole).toInt();
+		int size = _o_model->data(_o_model->index(i, rsObstacleModel::SIZE)).toInt();
 
 		// get name
 		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
@@ -434,7 +435,7 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 				rs::Pos dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
-				_scene->drawMarker(id, form, p, dims, led, mass, name);
+				_scene->drawMarker(id, form, p, dims, led, size, name);
 				break;
 			}
 		}
@@ -540,6 +541,7 @@ void QOsgWidget::setRobotModel(robotModel *model) {
 
 void QOsgWidget::setUnits(bool si) {
 	_units = si;
+	_scene->setUnits(si);
 }
 
 double QOsgWidget::convert(double value) {

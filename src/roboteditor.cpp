@@ -169,17 +169,8 @@ void robotEditor::setUnits(bool si) {
 	// save units
 	_units = si;
 
-	// set units labels for editors
-	if (dynamic_cast<linkbotIEditor *>(_pages->currentWidget()))
-		dynamic_cast<linkbotIEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<linkbotLEditor *>(_pages->currentWidget()))
-		dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<mindstormsEditor *>(_pages->currentWidget()))
-		dynamic_cast<mindstormsEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<preconfigEditor *>(_pages->currentWidget()))
-		dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<customEditor *>(_pages->currentWidget()))
-		dynamic_cast<customEditor *>(_pages->currentWidget())->setUnits(si);
+	// reload current editor
+	this->setCurrentIndex(_model->index(_row, rsRobotModel::FORM));
 }
 
 /*!

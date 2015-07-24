@@ -29,6 +29,7 @@ namespace rsObstacleModel {
 		L_3,
 		COLOR,
 		MASS,
+		SIZE,
 		AXIS,
 		TEXT,
 		NUM_COLUMNS
@@ -47,6 +48,7 @@ class obstacleModel : public QAbstractTableModel {
 		QVariant data(const QModelIndex&, int = Qt::DisplayRole) const;
 		QVariant headerData(int, Qt::Orientation, int = Qt::DisplayRole) const;
 		int rowCount(const QModelIndex& = QModelIndex()) const;
+		void sort(int, Qt::SortOrder = Qt::AscendingOrder);
 
 		// for editing
 		Qt::ItemFlags flags(const QModelIndex&) const;
@@ -72,6 +74,7 @@ class obstacleModel : public QAbstractTableModel {
 
 	private:
 		QVariant convert(double, bool) const;
+		QVariant convertMass(double, bool) const;
 
 	private:
 		QList<QStringList> _list;

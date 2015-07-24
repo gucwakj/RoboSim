@@ -29,17 +29,17 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	_deleteButton = new QPushButton(tr("Delete"));
 	_deleteButton->setEnabled(false);
 	_deleteButton->setFixedWidth(75);
-	_deleteButton->setToolTip("Delete the robot");
+	_deleteButton->setToolTip("Delete the object");
 	_deleteButton->setToolTipDuration(-1);
 	_nextButton = new QPushButton(tr("Next"));
 	_nextButton->setEnabled(false);
 	_nextButton->setFixedWidth(75);
-	_nextButton->setToolTip("Edit the next robot in the list");
+	_nextButton->setToolTip("Edit the next object in the list");
 	_nextButton->setToolTipDuration(-1);
 	_previousButton = new QPushButton(tr("Previous"));
 	_previousButton->setEnabled(false);
 	_previousButton->setFixedWidth(75);
-	_previousButton->setToolTip("Edit the previous robot in the list");
+	_previousButton->setToolTip("Edit the previous object in the list");
 	_previousButton->setToolTipDuration(-1);
 
 	// create signal connections
@@ -169,18 +169,8 @@ void obstacleEditor::setUnits(bool si) {
 	// save units
 	_units = si;
 
-	if (dynamic_cast<boxEditor *>(_pages->currentWidget()))
-		dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<cylinderEditor *>(_pages->currentWidget()))
-		dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<dotEditor *>(_pages->currentWidget()))
-		dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<lineEditor *>(_pages->currentWidget()))
-		dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<sphereEditor *>(_pages->currentWidget()))
-		dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(si);
-	else if (dynamic_cast<textEditor *>(_pages->currentWidget()))
-		dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(si);
+	// reload current editor
+	this->setCurrentIndex(_model->index(_row, rsObstacleModel::FORM));
 }
 
 /*!
@@ -288,7 +278,7 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	QDoubleSpinBox *massBox = new QDoubleSpinBox();
 	massBox->setObjectName("mass");
 	massBox->setMinimum(0);
-	massBox->setMaximum(100);
+	massBox->setMaximum(100000);
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
@@ -401,7 +391,7 @@ void boxEditor::setUnits(bool si) {
 	QString text;
 	if (si) {
 		text = tr("cm");
-		_massUnits->setText(tr("g"));
+		_massUnits->setText(tr("kg"));
 	}
 	else {
 		text = tr("in");
@@ -507,7 +497,7 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	QDoubleSpinBox *massBox = new QDoubleSpinBox();
 	massBox->setObjectName("mass");
 	massBox->setMinimum(0);
-	massBox->setMaximum(100);
+	massBox->setMaximum(100000);
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
@@ -633,7 +623,7 @@ void cylinderEditor::setUnits(bool si) {
 	QString text;
 	if (si) {
 		text = tr("cm");
-		_massUnits->setText(tr("g"));
+		_massUnits->setText(tr("kg"));
 	}
 	else {
 		text = tr("in");
@@ -714,7 +704,7 @@ dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 	sizeBox->setMaximum(100);
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
-	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
 	sizeBox->setToolTip("Set the size of the dot");
 	sizeBox->setToolTipDuration(-1);
 
@@ -769,8 +759,8 @@ void dotEditor::submitPZ(double value) {
 	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
 }
 
-void dotEditor::submitMass(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+void dotEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::SIZE), value);
 }
 
 void dotEditor::submitColor(QColor color) {
@@ -786,7 +776,7 @@ void dotEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -936,14 +926,13 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 
 	// width
 	QLabel *widthLabel = new QLabel(tr("Width:"));
-	_widthUnits = new QLabel();
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
 	widthBox->setObjectName("width");
 	widthBox->setMinimum(0);
 	widthBox->setMaximum(100);
 	widthBox->setSingleStep(1);
 	widthLabel->setBuddy(widthBox);
-	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
 	widthBox->setToolTip("Set the width of the line");
 	widthBox->setToolTipDuration(-1);
 
@@ -987,7 +976,6 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	QHBoxLayout *hbox5 = new QHBoxLayout();
 	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
 	hbox5->addWidget(widthBox, 5);
-	hbox5->addWidget(_widthUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
@@ -1020,8 +1008,8 @@ void lineEditor::submitL3(double value) {
 	_model->setData(_model->index(_row, rsObstacleModel::L_3), value);
 }
 
-void lineEditor::submitMass(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+void lineEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::SIZE), value);
 }
 
 void lineEditor::submitColor(QColor color) {
@@ -1040,7 +1028,7 @@ void lineEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObstacleModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -1140,7 +1128,7 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 	QDoubleSpinBox *massBox = new QDoubleSpinBox();
 	massBox->setObjectName("mass");
 	massBox->setMinimum(0);
-	massBox->setMaximum(100);
+	massBox->setMaximum(100000);
 	massBox->setSingleStep(0.5);
 	massLabel->setBuddy(massBox);
 	QWidget::connect(massBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
@@ -1237,7 +1225,7 @@ void sphereEditor::setUnits(bool si) {
 	QString text;
 	if (si) {
 		text = tr("cm");
-		_massUnits->setText(tr("g"));
+		_massUnits->setText(tr("kg"));
 	}
 	else {
 		text = tr("in");
@@ -1326,7 +1314,7 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 	sizeBox->setMaximum(100);
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
-	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitMass(double)));
+	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
 	sizeBox->setToolTip("Set the size of the text");
 	sizeBox->setToolTipDuration(-1);
 
@@ -1390,8 +1378,8 @@ void textEditor::submitPZ(double value) {
 	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
 }
 
-void textEditor::submitMass(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+void textEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObstacleModel::SIZE), value);
 }
 
 void textEditor::submitColor(QColor value) {
@@ -1408,7 +1396,7 @@ void textEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }

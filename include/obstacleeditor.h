@@ -140,7 +140,7 @@ class dotEditor : public QWidget {
 		void submitPX(double);
 		void submitPY(double);
 		void submitPZ(double);
-		void submitMass(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -172,7 +172,7 @@ class lineEditor : public QWidget {
 		void submitL1(double);
 		void submitL2(double);
 		void submitL3(double);
-		void submitMass(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -183,7 +183,6 @@ class lineEditor : public QWidget {
 		QLabel *_lXUnits;
 		QLabel *_lYUnits;
 		QLabel *_lZUnits;
-		QLabel *_widthUnits;
 		bodyColorPicker *_colorPicker;
 		int _row;
 };
@@ -226,7 +225,7 @@ class textEditor : public QWidget {
 		void submitPX(double);
 		void submitPY(double);
 		void submitPZ(double);
-		void submitMass(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:

@@ -214,7 +214,8 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 		// get form, id, and mass
 		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
 		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
-		int mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS), Qt::EditRole).toInt();
+		double mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS)).toDouble();
+		int size = _o_model->data(_o_model->index(i, rsObstacleModel::SIZE)).toInt();
 
 		// get name
 		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
@@ -258,7 +259,7 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 						   _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, p, p2, led, mass);
+				Writer::setMarker(marker, name, p, p2, led, size);
 				break;
 			}
 		}

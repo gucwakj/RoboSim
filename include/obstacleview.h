@@ -1,8 +1,6 @@
 #ifndef OBSTACLEVIEW_H_
 #define OBSTACLEVIEW_H_
 
-#include <iostream>
-
 #include <QListView>
 #include <QEvent>
 #include <QKeyEvent>
