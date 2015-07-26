@@ -9,7 +9,7 @@
 #include <rsXML/Reader>
 #include <rsXML/Writer>
 
-#include "obstaclemodel.h"
+#include "objectmodel.h"
 #include "robotmodel.h"
 
 class QListWidgetItem;
@@ -21,7 +21,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 		virtual ~xmlParser(void) {};
 		void parse(const char*);
 		void setRobotModel(robotModel*);
-		void setObstacleModel(obstacleModel*);
+		void setObjectModel(objectModel*);
 
 	signals:
 		void backgroundImage(int, std::string);
@@ -36,9 +36,9 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void units(bool);
 
 	public slots:
-		void deleteObstacleIndex(QModelIndex, int, int);
+		void deleteObjectIndex(QModelIndex, int, int);
 		void deleteRobotIndex(QModelIndex, int, int);
-		void obstacleDataChanged(QModelIndex, QModelIndex);
+		void objectDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
 		int save(void);
 		int saveFile(const QString&);
@@ -56,7 +56,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 	private:
 		bool _units;
 		std::vector<double> _grid;
-		obstacleModel *_o_model;
+		objectModel *_o_model;
 		robotModel *_r_model;
 };
 

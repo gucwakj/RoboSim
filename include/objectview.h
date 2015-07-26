@@ -1,17 +1,17 @@
-#ifndef OBSTACLEVIEW_H_
-#define OBSTACLEVIEW_H_
+#ifndef OBJECTVIEW_H_
+#define OBJECTVIEW_H_
 
 #include <QListView>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QProxyStyle>
 
-#include "obstaclemodel.h"
+#include "objectmodel.h"
 
-class obstacleView : public QListView {
+class objectView : public QListView {
 		Q_OBJECT
 	public:
-		obstacleView(obstacleModel*, QWidget* = 0);
+		objectView(objectModel*, QWidget* = 0);
 
 	signals:
 		void indexChanged(const QModelIndex&);
@@ -24,7 +24,7 @@ class obstacleView : public QListView {
 		bool eventFilter(QObject*, QEvent*);
 };
 
-class obstacleViewStyle : public QProxyStyle {
+class objectViewStyle : public QProxyStyle {
 	public:
 		void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
 };

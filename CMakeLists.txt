@@ -124,9 +124,9 @@ set (EXTRA_LIBS ${EXTRA_LIBS} optimized rsXML debug rsXMLd)
 
 # add source files
 set (SRCS ${SRCS}
-	src/obstacleeditor.cpp
-	src/obstaclemodel.cpp
-	src/obstacleview.cpp
+	src/objecteditor.cpp
+	src/objectmodel.cpp
+	src/objectview.cpp
 	src/platformselector.cpp
 	src/robosimwidget.cpp
 	src/roboteditor.cpp
@@ -138,9 +138,9 @@ set (SRCS ${SRCS}
 
 # add headers
 set (HEADERS
-	include/obstacleeditor.h
-	include/obstaclemodel.h
-	include/obstacleview.h
+	include/objecteditor.h
+	include/objectmodel.h
+	include/objectview.h
 	include/platformselector.h
 	include/robosimwidget.h
 	include/roboteditor.h

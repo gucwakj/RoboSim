@@ -1,24 +1,24 @@
 #include <algorithm>
 
-#include "obstaclemodel.h"
+#include "objectmodel.h"
 
-using namespace rsObstacleModel;
+using namespace rsObjectModel;
 
-obstacleModel::obstacleModel(QObject *parent) : QAbstractTableModel(parent) {
+objectModel::objectModel(QObject *parent) : QAbstractTableModel(parent) {
 	// set US units
 	_units = false;
 }
 
-obstacleModel::~obstacleModel(void) {
+objectModel::~objectModel(void) {
 }
 
-bool obstacleModel::addObstacle(int form, int role) {
+bool objectModel::addObject(int form, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
 		this->insertRows(row, 1);
 
-		// new obstacle data
+		// new object data
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
@@ -29,7 +29,7 @@ bool obstacleModel::addObstacle(int form, int role) {
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][COLOR] = QString("#00ff00");	// green
 		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
-		_list[row][rsObstacleModel::SIZE] = QVariant(1).toString();		// f*$k microsoft
+		_list[row][rsObjectModel::SIZE] = QVariant(1).toString();		// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
@@ -38,7 +38,7 @@ bool obstacleModel::addObstacle(int form, int role) {
 	return false;
 }
 
-bool obstacleModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Vec &c, int size, std::string name, int role) {
+bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Vec &c, int size, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -55,7 +55,7 @@ bool obstacleModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos
 		_list[row][L_3] = QVariant(p2[2]).toString();
 		QColor qtc(c[0] * 255, c[1] * 255, c[2] * 255, c[3] * 255);
 		_list[row][COLOR] = QString(qtc.name());
-		_list[row][rsObstacleModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
+		_list[row][rsObjectModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString(name.c_str());
 		this->sort(ID);
@@ -65,13 +65,13 @@ bool obstacleModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos
 	return false;
 }
 
-bool obstacleModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &c, const rs::Vec &l, double mass, int role) {
+bool objectModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &c, const rs::Vec &l, double mass, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
 		this->insertRows(row, 1);
 
-		// new obstacle data
+		// new object data
 		_list[row][ID] = QVariant(id).toString();
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][P_X] = QVariant(p[0]).toString();
@@ -92,19 +92,19 @@ bool obstacleModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Qu
 	return false;
 }
 
-QVariant obstacleModel::findByID(int id) {
+QVariant objectModel::findByID(int id) {
 	for (int i = 0; i < this->rowCount(); i++) {
-		if (id == _list[i][rsObstacleModel::ID].toInt())
+		if (id == _list[i][rsObjectModel::ID].toInt())
 			return i;
 	}
 	return QVariant();
 }
 
-void obstacleModel::setUnits(bool si) {
+void objectModel::setUnits(bool si) {
 	_units = si;
 }
 
-void obstacleModel::printModel(void) {
+void objectModel::printModel(void) {
 	qDebug() << "model:";
 	for (int i = 0; i < _list.size(); i++) {
 		for (int j = 0; j < NUM_COLUMNS; j++) {
@@ -114,23 +114,23 @@ void obstacleModel::printModel(void) {
 	}
 }
 
-int obstacleModel::columnCount(const QModelIndex&) const {
+int objectModel::columnCount(const QModelIndex&) const {
 	return NUM_COLUMNS;
 }
 
-int obstacleModel::rowCount(const QModelIndex&) const {
+int objectModel::rowCount(const QModelIndex&) const {
 	return _list.size();
 }
 
-QVariant obstacleModel::data(const QModelIndex &index, int role) const {
+QVariant objectModel::data(const QModelIndex &index, int role) const {
 	// check if index is valid
 	if (!index.isValid())
 		return QVariant();
 
 	// return data
 	if (role == Qt::DisplayRole) {
-		if (index.column() == rsObstacleModel::ID) {
-			switch (_list[index.row()][rsObstacleModel::FORM].toInt()) {
+		if (index.column() == rsObjectModel::ID) {
+			switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 				case rs::BOX:
 					return QString(tr("Box %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 				case rs::CYLINDER:
@@ -162,7 +162,7 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 	}
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
-		switch (_list[index.row()][rsObstacleModel::FORM].toInt()) {
+		switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 			case rs::BOX:
 				image.load("icons/box32.png");
 				break;
@@ -189,7 +189,7 @@ QVariant obstacleModel::data(const QModelIndex &index, int role) const {
 	return QVariant();
 }
 
-QVariant obstacleModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant objectModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -199,7 +199,7 @@ QVariant obstacleModel::headerData(int section, Qt::Orientation orientation, int
 		return QString(tr("Row %1")).arg(section);
 }
 
-void obstacleModel::sort(int column, Qt::SortOrder order) {
+void objectModel::sort(int column, Qt::SortOrder order) {
 	switch (column) {
 		case ID: {
 			for (int i = 0; i < _list.size() - 1; i++) {
@@ -216,18 +216,18 @@ void obstacleModel::sort(int column, Qt::SortOrder order) {
 	return;
 }
 
-Qt::ItemFlags obstacleModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags objectModel::flags(const QModelIndex &index) const {
 	if (!index.isValid())
 		return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
 	return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 }
 
-Qt::DropActions obstacleModel::supportedDropActions(void) const {
+Qt::DropActions objectModel::supportedDropActions(void) const {
 	return Qt::CopyAction;
 }
 
-bool obstacleModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
+bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
 	if (action == Qt::IgnoreAction)
 		return true;
 
@@ -239,22 +239,22 @@ bool obstacleModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	stream >> r >> c >> map;
 
 	if (!map[0].toString().compare("Box"))
-		this->addObstacle(rs::BOX);
+		this->addObject(rs::BOX);
 	else if (!map[0].toString().compare("Cylinder"))
-		this->addObstacle(rs::CYLINDER);
+		this->addObject(rs::CYLINDER);
 	else if (!map[0].toString().compare("Point"))
-		this->addObstacle(rs::DOT);
+		this->addObject(rs::DOT);
 	else if (!map[0].toString().compare("Line"))
-		this->addObstacle(rs::LINE);
+		this->addObject(rs::LINE);
 	else if (!map[0].toString().compare("Sphere"))
-		this->addObstacle(rs::SPHERE);
+		this->addObject(rs::SPHERE);
 	else if (!map[0].toString().compare("Text"))
-		this->addObstacle(rs::TEXT);
+		this->addObject(rs::TEXT);
 
 	return true;
 }
 
-bool obstacleModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+bool objectModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (index.isValid() && role == Qt::EditRole) {
 		// store old value
 		QString oldValue = _list[index.row()][index.column()];
@@ -280,7 +280,7 @@ bool obstacleModel::setData(const QModelIndex &index, const QVariant &value, int
 	return false;
 }
 
-bool obstacleModel::insertRows(int row, int count, const QModelIndex &parent) {
+bool objectModel::insertRows(int row, int count, const QModelIndex &parent) {
 	// signal that rows are being added
 	beginInsertRows(parent, row, row + count - 1);
 
@@ -299,7 +299,7 @@ bool obstacleModel::insertRows(int row, int count, const QModelIndex &parent) {
 	return true;
 }
 
-bool obstacleModel::removeRows(int row, int count, const QModelIndex &parent) {
+bool objectModel::removeRows(int row, int count, const QModelIndex &parent) {
 	// signal that rows are being deleted
 	beginRemoveRows(parent, row, row + count - 1);
 
@@ -314,7 +314,7 @@ bool obstacleModel::removeRows(int row, int count, const QModelIndex &parent) {
 	return true;
 }
 
-QVariant obstacleModel::convert(double value, bool store) const {
+QVariant objectModel::convert(double value, bool store) const {
 	QVariant tmp;
 
 	// convert [cm/in] -> [m]
@@ -326,7 +326,7 @@ QVariant obstacleModel::convert(double value, bool store) const {
 	return tmp;
 }
 
-QVariant obstacleModel::convertMass(double value, bool store) const {
+QVariant objectModel::convertMass(double value, bool store) const {
 	QVariant tmp;
 
 	// convert [kg/lb] -> [g]

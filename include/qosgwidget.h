@@ -11,7 +11,7 @@
 
 #include <rsScene/Scene>
 
-#include "obstaclemodel.h"
+#include "objectmodel.h"
 #include "robotmodel.h"
 
 class QListWidgetItem;
@@ -22,18 +22,18 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		explicit QOsgWidget(QWidget* = 0);
 
 		void setRobotModel(robotModel*);
-		void setObstacleModel(obstacleModel*);
+		void setObjectModel(objectModel*);
 
 	signals:
 		void currentTab(int);
-		void obstacleIndexChanged(const QModelIndex&);
+		void objectIndexChanged(const QModelIndex&);
 		void robotIndexChanged(const QModelIndex&);
 		void nullIndex(void);
 
 	public slots:
-		void clickedObstacleIndex(int);
+		void clickedObjectIndex(int);
 		void clickedRobotIndex(int);
-		void deleteObstacleIndex(QModelIndex, int, int);
+		void deleteObjectIndex(QModelIndex, int, int);
 		void deleteRobotIndex(QModelIndex, int, int);
 		void gridDefaults(void);
 		void gridEnabled(bool);
@@ -43,12 +43,12 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void gridMinX(double);
 		void gridMinY(double);
 		void gridTics(double);
-		void obstacleDataChanged(QModelIndex, QModelIndex);
+		void objectDataChanged(QModelIndex, QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
 		void setBackgroundImage(int, std::string);
 		void setCurrentBackground(int);
 		void setCurrentIndex(int);
-		void setCurrentObstacleIndex(const QModelIndex&);
+		void setCurrentObjectIndex(const QModelIndex&);
 		void setCurrentRobotIndex(const QModelIndex&);
 		void setNewBackground(QListWidgetItem*, QListWidgetItem*);
 		void setUnits(bool);
@@ -62,7 +62,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 	private:
 		rsScene::Scene *_scene;
 		robotModel *_r_model;
-		obstacleModel *_o_model;
+		objectModel *_o_model;
 		bool _units;
 		int _current[3];
 		int _level;
@@ -78,7 +78,7 @@ class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {
 		virtual int pick(const osgGA::GUIEventAdapter&, osgViewer::Viewer*);
 
 	signals:
-		void clickedObstacleIndex(int);
+		void clickedObjectIndex(int);
 		void clickedRobotIndex(int);
 };
 

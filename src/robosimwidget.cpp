@@ -5,9 +5,9 @@
 #include <QSettings>
 
 #include "robosimwidget.h"
-#include "obstacleeditor.h"
-#include "obstaclemodel.h"
-#include "obstacleview.h"
+#include "objecteditor.h"
+#include "objectmodel.h"
+#include "objectview.h"
 #include "platformselector.h"
 #include "roboteditor.h"
 #include "robotmodel.h"
@@ -55,8 +55,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	icons.clear();
 	names << "Line" <<  "Point" << "Text";
 	icons << "icons/line128.png" << "icons/point128.png" << "icons/text128.png";
-	this->build_selector(ui->list_drawings, names, icons);
-	ui->list_drawings->setDragEnabled(true);
+	this->build_selector(ui->list_markers, names, icons);
+	ui->list_markers->setDragEnabled(true);
 
 	// set robots as first view in toolbox
 	ui->toolBox_config->setCurrentIndex(0);
@@ -75,16 +75,16 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	robotEditor *editor = new robotEditor(model);
 	ui->layout_robots->addWidget(editor);
 
-	// set up obstacle model
-	obstacleModel *o_model = new obstacleModel(this);
+	// set up object model
+	objectModel *o_model = new objectModel(this);
 
-	// set up obstacle view
-	obstacleView *o_view = new obstacleView(o_model);
-	ui->layout_obstacles->addWidget(o_view);
+	// set up object view
+	objectView *o_view = new objectView(o_model);
+	ui->layout_objects->addWidget(o_view);
 
-	// set up obstacle editor
-	obstacleEditor *o_editor = new obstacleEditor(o_model);
-	ui->layout_obstacles->addWidget(o_editor);
+	// set up object editor
+	objectEditor *o_editor = new objectEditor(o_model);
+	ui->layout_objects->addWidget(o_editor);
 
 	// set up background view
 	// parse default path
@@ -124,12 +124,12 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 
 	// set up osg view
 	ui->osgWidget->setRobotModel(model);
-	ui->osgWidget->setObstacleModel(o_model);
+	ui->osgWidget->setObjectModel(o_model);
 
 	// set up xml parser
 	_xml = new xmlParser(rsXML::getDefaultPath());
 	_xml->setRobotModel(model);
-	_xml->setObstacleModel(o_model);
+	_xml->setObjectModel(o_model);
 
 	// set up default grid units
 	_us.push_back(1);
@@ -207,21 +207,21 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 
-	// connect obstacle pieces together
+	// connect object pieces together
 	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentObjectIndex(const QModelIndex&)));
 	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
+	QWidget::connect(o_view, SIGNAL(indexChanged(const QModelIndex&)), ui->osgWidget, SLOT(setCurrentObjectIndex(const QModelIndex&)));
 	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
-	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentObstacleIndex(const QModelIndex&)));
-	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
-	QWidget::connect(ui->osgWidget, SIGNAL(obstacleIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
+	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentObjectIndex(const QModelIndex&)));
+	QWidget::connect(ui->osgWidget, SIGNAL(objectIndexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
+	QWidget::connect(ui->osgWidget, SIGNAL(objectIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_view, SLOT(dataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(obstacleDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
-	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteObstacleIndex(QModelIndex, int, int)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(objectDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(objectDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObjectIndex(QModelIndex, int, int)));
+	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteObjectIndex(QModelIndex, int, int)));
 
 	// parse xml file
 	_xml->parse("");

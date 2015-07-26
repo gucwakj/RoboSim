@@ -10,11 +10,11 @@
 
 xmlParser::xmlParser(const std::string filename) : rsXML::Writer(filename, filename) { }
 
-void xmlParser::deleteObstacleIndex(QModelIndex index, int first, int last) {
+void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
-	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
-	int form = _o_model->data(_o_model->index(first, rsObstacleModel::FORM)).toInt();
-	// save obstacle
+	int id = _o_model->data(_o_model->index(first, rsObjectModel::ID), Qt::EditRole).toInt();
+	int form = _o_model->data(_o_model->index(first, rsObjectModel::FORM)).toInt();
+	// save object
 	switch (form) {
 		case rs::BOX: case rs::CYLINDER: case rs::SPHERE:
 			Writer::deleteObstacle(id);
@@ -107,7 +107,7 @@ void xmlParser::parse(const char *name) {
 	}
 }
 
-void xmlParser::setObstacleModel(obstacleModel *model) {
+void xmlParser::setObjectModel(objectModel *model) {
 	// set model
 	_o_model = model;
 }
@@ -209,24 +209,24 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	Writer::save();
 }
 
-void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
+void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		// get form, id, and mass
-		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
-		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
-		double mass = _o_model->data(_o_model->index(i, rsObstacleModel::MASS)).toDouble();
-		int size = _o_model->data(_o_model->index(i, rsObstacleModel::SIZE)).toInt();
+		int form = _o_model->data(_o_model->index(i, rsObjectModel::FORM)).toInt();
+		int id = _o_model->data(_o_model->index(i, rsObjectModel::ID), Qt::EditRole).toInt();
+		double mass = _o_model->data(_o_model->index(i, rsObjectModel::MASS)).toDouble();
+		int size = _o_model->data(_o_model->index(i, rsObjectModel::SIZE)).toInt();
 
 		// get name
-		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
+		std::string name = _o_model->data(_o_model->index(i, rsObjectModel::TEXT)).toString().toStdString();
 
 		// get position
-		rs::Pos p(_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
-				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Y)).toDouble(),
-				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Z)).toDouble());
+		rs::Pos p(_o_model->data(_o_model->index(i, rsObjectModel::P_X)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObjectModel::P_Y)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObjectModel::P_Z)).toDouble());
 
 		// quaternion
-		int axis = _o_model->data(_o_model->index(i, rsObstacleModel::AXIS)).toInt();
+		int axis = _o_model->data(_o_model->index(i, rsObjectModel::AXIS)).toInt();
 		rs::Quat q;
 		switch (axis) {
 			case 0: // x
@@ -240,24 +240,24 @@ void xmlParser::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight
 		}
 
 		// get led color
-		QColor color(_o_model->data(_o_model->index(i, rsObstacleModel::COLOR)).toString());
+		QColor color(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
 		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
-		// save obstacle
+		// save object
 		switch (form) {
 			case rs::BOX: case rs::CYLINDER: case rs::SPHERE: {
-				rs::Vec dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
-							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
-							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				if (form == rs::CYLINDER) dims[2] = axis;
 				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;
 			}
 			case rs::DOT: case rs::LINE: case rs::TEXT: {
-				rs::Pos p2(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
-						   _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
-						   _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				rs::Pos p2(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
+						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
+						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
 				Writer::setMarker(marker, name, p, p2, led, size);
 				break;

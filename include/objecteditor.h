@@ -1,5 +1,5 @@
-#ifndef OBSTACLEEDITOR_H_
-#define OBSTACLEEDITOR_H_
+#ifndef OBJECTEDITOR_H_
+#define OBJECTEDITOR_H_
 
 #include <iostream>
 
@@ -16,7 +16,7 @@
 #include <QStringListModel>
 #include <QWidget>
 
-#include "obstaclemodel.h"
+#include "objectmodel.h"
 
 class bodyColorPicker : public QWidget {
 		Q_OBJECT
@@ -42,10 +42,10 @@ class bodyColorPicker : public QWidget {
 		QPushButton *_button;
 };
 
-class obstacleEditor : public QWidget {
+class objectEditor : public QWidget {
 		Q_OBJECT
 	public:
-		obstacleEditor(obstacleModel*, QWidget* = 0);
+		objectEditor(objectModel*, QWidget* = 0);
 
 	signals:
 		void indexChanged(const QModelIndex&);
@@ -61,7 +61,7 @@ class obstacleEditor : public QWidget {
 		void setUnits(bool);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QStackedWidget *_pages;
 		QPushButton *_deleteButton;
 		QPushButton *_nextButton;
@@ -73,7 +73,7 @@ class obstacleEditor : public QWidget {
 class boxEditor : public QWidget {
 		Q_OBJECT
 	public:
-		boxEditor(obstacleModel*, QWidget* = 0);
+		boxEditor(objectModel*, QWidget* = 0);
 		void setIndex(int);
 		void setUnits(bool);
 
@@ -88,7 +88,7 @@ class boxEditor : public QWidget {
 		void submitColor(QColor);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -103,7 +103,7 @@ class boxEditor : public QWidget {
 class cylinderEditor : public QWidget {
 		Q_OBJECT
 	public:
-		cylinderEditor(obstacleModel*, QWidget* = 0);
+		cylinderEditor(objectModel*, QWidget* = 0);
 		void setIndex(int);
 		void setUnits(bool);
 
@@ -118,7 +118,7 @@ class cylinderEditor : public QWidget {
 		void submitColor(QColor);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -132,7 +132,7 @@ class cylinderEditor : public QWidget {
 class dotEditor : public QWidget {
 		Q_OBJECT
 	public:
-		dotEditor(obstacleModel*, QWidget* = 0);
+		dotEditor(objectModel*, QWidget* = 0);
 		void setIndex(int);
 		void setUnits(bool);
 
@@ -144,7 +144,7 @@ class dotEditor : public QWidget {
 		void submitColor(QColor);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -161,7 +161,7 @@ class emptyEditor : public QWidget {
 class lineEditor : public QWidget {
 		Q_OBJECT
 	public:
-		lineEditor(obstacleModel*, QWidget* = 0);
+		lineEditor(objectModel*, QWidget* = 0);
 		void setIndex(int);
 		void setUnits(bool);
 
@@ -176,7 +176,7 @@ class lineEditor : public QWidget {
 		void submitColor(QColor);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -190,7 +190,7 @@ class lineEditor : public QWidget {
 class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:
-		sphereEditor(obstacleModel*, QWidget* = 0);
+		sphereEditor(objectModel*, QWidget* = 0);
 		void setIndex(int);
 		void setUnits(bool);
 
@@ -203,7 +203,7 @@ class sphereEditor : public QWidget {
 		void submitColor(QColor);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -216,7 +216,7 @@ class sphereEditor : public QWidget {
 class textEditor : public QWidget {
 		Q_OBJECT
 	public:
-		textEditor(obstacleModel*, QWidget* = 0);
+		textEditor(objectModel*, QWidget* = 0);
 		void setIndex(int);
 		void setUnits(bool);
 
@@ -229,7 +229,7 @@ class textEditor : public QWidget {
 		void submitColor(QColor);
 
 	private:
-		obstacleModel *_model;
+		objectModel *_model;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -237,5 +237,5 @@ class textEditor : public QWidget {
 		int _row;
 };
 
-#endif // OBSTACLEEDITOR_H_
+#endif // OBJECTEDITOR_H_
 

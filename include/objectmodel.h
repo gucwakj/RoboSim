@@ -1,5 +1,5 @@
-#ifndef OBSTACLEMODEL_H
-#define OBSTACLEMODEL_H
+#ifndef OBJECTMODEL_H
+#define OBJECTMODEL_H
 
 #include <iostream>
 #include <vector>
@@ -16,9 +16,9 @@
 #include <rs/Quat>
 #include <rs/Vec>
 
-namespace rsObstacleModel {
+namespace rsObjectModel {
 
-	enum obstacles_list {
+	enum objects_list {
 		ID,
 		FORM,
 		P_X,
@@ -37,11 +37,11 @@ namespace rsObstacleModel {
 
 }
 
-class obstacleModel : public QAbstractTableModel {
+class objectModel : public QAbstractTableModel {
 		Q_OBJECT
 	public:
-		obstacleModel(QObject* = 0);
-		~obstacleModel(void);
+		objectModel(QObject* = 0);
+		~objectModel(void);
 
 		// for subclassing
 		int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -67,7 +67,7 @@ class obstacleModel : public QAbstractTableModel {
 		QVariant findByID(int);
 
 	public slots:
-		bool addObstacle(int = 0, int = Qt::EditRole);
+		bool addObject(int = 0, int = Qt::EditRole);
 		bool newMarker(int, int, const rs::Pos&, const rs::Pos&, const rs::Vec&, int, std::string, int = Qt::EditRole);
 		bool newObstacle(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, double, int = Qt::EditRole);
 		void setUnits(bool);
@@ -82,5 +82,5 @@ class obstacleModel : public QAbstractTableModel {
 		bool _units;			// 1: SI, 0: US
 };
 
-#endif // OBSTACLEMODEL_H
+#endif // OBJECTMODEL_H
 

@@ -1,15 +1,15 @@
-#include "obstacleeditor.h"
+#include "objecteditor.h"
 
 /*!
  *
  *
- *	obstacleEditor
+ *	objectEditor
  *
  *
  */
 
-obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
-	// store obstacle model
+objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// store object model
 	_model = model;
 
 	// set size properties
@@ -64,18 +64,18 @@ obstacleEditor::obstacleEditor(obstacleModel *model, QWidget *parent) : QWidget(
 	_row = -1;
 }
 
-void obstacleEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
+void objectEditor::dataChanged(QModelIndex/*topLeft*/, QModelIndex bottomRight) {
 	if (bottomRight.row() != _row)
 		this->setCurrentIndex(bottomRight);
 }
 
-void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
+void objectEditor::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid()) {
 		// set new curent model row
 		_row = index.row();
 
 		// load appropriate page
-		int form = _model->data(_model->index(index.row(), rsObstacleModel::FORM), Qt::EditRole).toInt();
+		int form = _model->data(_model->index(index.row(), rsObjectModel::FORM), Qt::EditRole).toInt();
 		switch (form) {
 			case rs::BOX:
 				_pages->setCurrentIndex(1);
@@ -126,7 +126,7 @@ void obstacleEditor::setCurrentIndex(const QModelIndex &index) {
 	}
 }
 
-void obstacleEditor::nextButtonPressed(void) {
+void objectEditor::nextButtonPressed(void) {
 	// set new index
 	QModelIndex index = _model->index(_row + 1, 0);
 	this->setCurrentIndex(index);
@@ -135,7 +135,7 @@ void obstacleEditor::nextButtonPressed(void) {
 	emit indexChanged(index);
 }
 
-void obstacleEditor::prevButtonPressed(void) {
+void objectEditor::prevButtonPressed(void) {
 	// set new index
 	QModelIndex index = _model->index(_row - 1, 0);
 	this->setCurrentIndex(index);
@@ -144,11 +144,11 @@ void obstacleEditor::prevButtonPressed(void) {
 	emit indexChanged(index);
 }
 
-void obstacleEditor::deleteCurrentIndex(void) {
+void objectEditor::deleteCurrentIndex(void) {
 	// save current index
 	int row = _row;
 
-	// remove current obstacle from model
+	// remove current object from model
 	_model->removeRows(row, 1);
 
 	// if it is invalid, then set the last row in the model
@@ -156,13 +156,13 @@ void obstacleEditor::deleteCurrentIndex(void) {
 		row = _model->rowCount() - 1;
 
 	// set new index
-	this->setCurrentIndex(_model->index(row, rsObstacleModel::ID));
+	this->setCurrentIndex(_model->index(row, rsObjectModel::ID));
 
-	// signal a change in current obstacle
-	emit indexChanged(_model->index(row, rsObstacleModel::ID));
+	// signal a change in current object
+	emit indexChanged(_model->index(row, rsObjectModel::ID));
 }
 
-void obstacleEditor::setUnits(bool si) {
+void objectEditor::setUnits(bool si) {
 	// do nothing if units don't change
 	if (_units == si) return;
 
@@ -170,7 +170,7 @@ void obstacleEditor::setUnits(bool si) {
 	_units = si;
 
 	// reload current editor
-	this->setCurrentIndex(_model->index(_row, rsObstacleModel::FORM));
+	this->setCurrentIndex(_model->index(_row, rsObjectModel::FORM));
 }
 
 /*!
@@ -185,9 +185,9 @@ void obstacleEditor::setUnits(bool si) {
  *
  *	Build individual box editor with relevant pieces of information.
  *
- *	\param		model data model from obstacleEditor model.
+ *	\param		model data model from objectEditor model.
  */
-boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+boxEditor::boxEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	// save model
 	_model = model;
 
@@ -335,35 +335,35 @@ boxEditor::boxEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 }
 
 void boxEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
 }
 
 void boxEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
 void boxEditor::submitPZ(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
 void boxEditor::submitL1(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
 }
 
 void boxEditor::submitL2(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_2), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
 }
 
 void boxEditor::submitL3(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_3), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
 }
 
 void boxEditor::submitMass(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+	_model->setData(_model->index(_row, rsObjectModel::MASS), value);
 }
 
 void boxEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
 /*!	\brief Slot to re-enable all inputs.
@@ -372,14 +372,14 @@ void boxEditor::submitColor(QColor color) {
  */
 void boxEditor::setIndex(int row) {
 	_row = row;
-	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObjectModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
@@ -417,9 +417,9 @@ void boxEditor::setUnits(bool si) {
  *
  *	Build individual cylinder editor with relevant pieces of information.
  *
- *	\param		model data model from obstacleEditor model.
+ *	\param		model data model from objectEditor model.
  */
-cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+cylinderEditor::cylinderEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	// save model
 	_model = model;
 
@@ -567,35 +567,35 @@ cylinderEditor::cylinderEditor(obstacleModel *model, QWidget *parent) : QWidget(
 }
 
 void cylinderEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
 }
 
 void cylinderEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
 void cylinderEditor::submitPZ(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
 void cylinderEditor::submitL1(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
 }
 
 void cylinderEditor::submitL2(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_2), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
 }
 
 void cylinderEditor::submitAxis(int value) {
-	_model->setData(_model->index(_row, rsObstacleModel::AXIS), value);
+	_model->setData(_model->index(_row, rsObjectModel::AXIS), value);
 }
 
 void cylinderEditor::submitMass(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+	_model->setData(_model->index(_row, rsObjectModel::MASS), value);
 }
 
 void cylinderEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -604,14 +604,14 @@ void cylinderEditor::submitColor(QColor color) {
  */
 void cylinderEditor::setIndex(int row) {
 	_row = row;
-	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-	(this->findChild<QComboBox *>("axis"))->setCurrentIndex(_model->data(_model->index(row, rsObstacleModel::AXIS), Qt::EditRole).toInt());
-	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObjectModel::MASS), Qt::EditRole).toDouble());
+	(this->findChild<QComboBox *>("axis"))->setCurrentIndex(_model->data(_model->index(row, rsObjectModel::AXIS), Qt::EditRole).toInt());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
@@ -648,9 +648,9 @@ void cylinderEditor::setUnits(bool si) {
  *
  *	Build individual dot editor with relevant pieces of information.
  *
- *	\param		model data model from obstacleEditor model.
+ *	\param		model data model from objectEditor model.
  */
-dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+dotEditor::dotEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	// save model
 	_model = model;
 
@@ -748,23 +748,23 @@ dotEditor::dotEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
 }
 
 void dotEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
 }
 
 void dotEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
 void dotEditor::submitPZ(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
 void dotEditor::submitSize(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::SIZE), value);
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
 }
 
 void dotEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -773,11 +773,11 @@ void dotEditor::submitColor(QColor color) {
  */
 void dotEditor::setIndex(int row) {
 	_row = row;
-	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::SIZE), Qt::EditRole).toDouble());
-	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
@@ -806,7 +806,7 @@ emptyEditor::emptyEditor(QWidget *parent) : QWidget(parent) {
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Obstacles and Drawings Editor</span>"));
 
 	// set note to user
-	QLabel *note1 = new QLabel(tr("<span style=\"font-size:9pt;\">There are no obstacles or drawings in the Scene.</span>"));
+	QLabel *note1 = new QLabel(tr("<span style=\"font-size:9pt;\">There are no objects or drawings in the Scene.</span>"));
 	QLabel *note2 = new QLabel(tr("<span style=\"font-size:9pt;\">Therefore nothing to edit here.</span>"));
 
 	// display info
@@ -837,9 +837,9 @@ emptyEditor::emptyEditor(QWidget *parent) : QWidget(parent) {
  *
  *	Build individual line editor with relevant pieces of information.
  *
- *	\param		model data model from obstacleEditor model.
+ *	\param		model data model from objectEditor model.
  */
-lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+lineEditor::lineEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	// save model
 	_model = model;
 
@@ -985,35 +985,35 @@ lineEditor::lineEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 }
 
 void lineEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
 }
 
 void lineEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
 void lineEditor::submitPZ(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
 void lineEditor::submitL1(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
 }
 
 void lineEditor::submitL2(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_2), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
 }
 
 void lineEditor::submitL3(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_3), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
 }
 
 void lineEditor::submitSize(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::SIZE), value);
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
 }
 
 void lineEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -1022,14 +1022,14 @@ void lineEditor::submitColor(QColor color) {
  */
 void lineEditor::setIndex(int row) {
 	_row = row;
-	(this->findChild<QDoubleSpinBox *>("px1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz1"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_2), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_3), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObstacleModel::SIZE), Qt::EditRole).toDouble());
-	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
@@ -1061,9 +1061,9 @@ void lineEditor::setUnits(bool si) {
  *
  *	Build individual sphere editor with relevant pieces of information.
  *
- *	\param		model data model from obstacleEditor model.
+ *	\param		model data model from objectEditor model.
  */
-sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+sphereEditor::sphereEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	// save model
 	_model = model;
 
@@ -1179,27 +1179,27 @@ sphereEditor::sphereEditor(obstacleModel *model, QWidget *parent) : QWidget(pare
 }
 
 void sphereEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
 }
 
 void sphereEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
 void sphereEditor::submitPZ(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
 void sphereEditor::submitL1(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::L_1), value);
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
 }
 
 void sphereEditor::submitMass(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::MASS), value);
+	_model->setData(_model->index(_row, rsObjectModel::MASS), value);
 }
 
 void sphereEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsObstacleModel::COLOR), color);
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -1208,12 +1208,12 @@ void sphereEditor::submitColor(QColor color) {
  */
 void sphereEditor::setIndex(int row) {
 	_row = row;
-	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObstacleModel::L_1), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObstacleModel::MASS), Qt::EditRole).toDouble());
-	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("mass"))->setValue(_model->data(_model->index(row, rsObjectModel::MASS), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 
@@ -1249,9 +1249,9 @@ void sphereEditor::setUnits(bool si) {
  *
  *	Build individual text editor with relevant pieces of information.
  *
- *	\param		model data model from obstacleEditor model.
+ *	\param		model data model from objectEditor model.
  */
-textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) {
+textEditor::textEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	// save model
 	_model = model;
 
@@ -1363,27 +1363,27 @@ textEditor::textEditor(obstacleModel *model, QWidget *parent) : QWidget(parent) 
 }
 
 void textEditor::submitName(QString value) {
-	_model->setData(_model->index(_row, rsObstacleModel::TEXT), value);
+	_model->setData(_model->index(_row, rsObjectModel::TEXT), value);
 }
 
 void textEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_X), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
 }
 
 void textEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Y), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
 void textEditor::submitPZ(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::P_Z), value);
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
 void textEditor::submitSize(double value) {
-	_model->setData(_model->index(_row, rsObstacleModel::SIZE), value);
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
 }
 
 void textEditor::submitColor(QColor value) {
-	_model->setData(_model->index(_row, rsObstacleModel::COLOR), value);
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), value);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -1392,12 +1392,12 @@ void textEditor::submitColor(QColor value) {
  */
 void textEditor::setIndex(int row) {
 	_row = row;
-	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsObstacleModel::TEXT), Qt::EditRole).toString());
-	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_X), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObstacleModel::P_Z), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObstacleModel::SIZE), Qt::EditRole).toDouble());
-	QColor color(_model->data(_model->index(row, rsObstacleModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsObjectModel::TEXT), Qt::EditRole).toString());
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
 

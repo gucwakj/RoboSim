@@ -4,17 +4,17 @@
 
 #include <rs/Enum>
 
-#include "obstacleview.h"
+#include "objectview.h"
 
 /*!
  *
  *
- *	obstacleView
+ *	objectView
  *
  *
  */
 
-obstacleView::obstacleView(obstacleModel *model, QWidget *parent) : QListView(parent) {
+objectView::objectView(objectModel *model, QWidget *parent) : QListView(parent) {
 	// set model
 	this->setModel(model);
 
@@ -26,7 +26,7 @@ obstacleView::obstacleView(obstacleModel *model, QWidget *parent) : QListView(pa
 	this->setMinimumWidth(64);
 	this->setSpacing(12);
 	this->setCurrentIndex(model->index(0, 0));
-	this->setModelColumn(rsObstacleModel::ID);
+	this->setModelColumn(rsObjectModel::ID);
 	this->setUniformItemSizes(false);
 	this->installEventFilter(this);
 	this->setToolTip("Obstacle and Drawings List\nThe obstacles and drawings within the RoboSim Scene");
@@ -38,21 +38,21 @@ obstacleView::obstacleView(obstacleModel *model, QWidget *parent) : QListView(pa
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->setDropIndicatorShown(true);
 	this->setDragDropMode(QAbstractItemView::DropOnly);
-	this->setStyle(new obstacleViewStyle());
+	this->setStyle(new objectViewStyle());
 }
 
-void obstacleView::dataChanged(const QModelIndex &/*topLeft*/, const QModelIndex &bottomRight) {
+void objectView::dataChanged(const QModelIndex &/*topLeft*/, const QModelIndex &bottomRight) {
 	this->setCurrentIndex(model()->index(bottomRight.row(), 0));
 }
 
-void obstacleView::setCurrentIndex(const QModelIndex &index) {
+void objectView::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid())
 		QListView::setCurrentIndex(index);
 	else
 		QListView::clearSelection();
 }
 
-bool obstacleView::eventFilter(QObject *obj, QEvent *event) {
+bool objectView::eventFilter(QObject *obj, QEvent *event) {
 	if (event->type() == QEvent::KeyPress) {
 		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 		switch (keyEvent->key()) {
@@ -76,37 +76,25 @@ bool obstacleView::eventFilter(QObject *obj, QEvent *event) {
 /*!
  *
  *
- *	obstacleViewStyle
+ *	objectViewStyle
  *
  *
  */
 
 /*!	\brief draw primitive element.
  *
- *	Draw the elements of this obstacle view.  A special dropIndicator is
+ *	Draw the elements of this object view.  A special dropIndicator is
  *	used here.
  *
  */
 
-void obstacleViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const {
+void objectViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const {
 	if (element == QStyle::PE_IndicatorItemViewItemDrop) {
 		painter->setRenderHint(QPainter::Antialiasing, true);
 
-		// fill obstacle view area with 'add obstacle' message
-		QSize size = dynamic_cast<const obstacleView *>(widget)->viewport()->frameSize();
+		// fill object view area with 'add object' message
+		QSize size = dynamic_cast<const objectView *>(widget)->viewport()->frameSize();
 		QRect dropRect = QRect(0, 0, size.width(), size.height());
-
-		/*// add small obstacle box next to last one
-		// get position of last obstacle in list
-		const obstacleView *rv = static_cast<const obstacleView *>(widget);
-		QRect rect = rv->visualRect(rv->model()->index(rv->model()->rowCount() - 1, 0));
-		// position new one one unit over
-		QRect dropRect;
-		if (rect.x() + rect.width() + rect.width()/2 + 2*rv->spacing() > size.width())
-			dropRect = QRect(rv->spacing(), rect.y() + rect.height() + rv->spacing(), rect.width(), rect.height());
-		else
-			dropRect = QRect(rect.x() + rect.width() + rv->spacing(), rect.y(), rect.width(), rect.height());
-		*/
 
 		// draw rectangle
 		QPalette palette;
@@ -123,7 +111,7 @@ void obstacleViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOpti
 		cText.setAlpha(200);
 		QPen penText(cText);
 		painter->setPen(penText);
-		painter->drawText(dropRect, Qt::AlignCenter, tr("Add New Obstacle to RoboSim"));
+		painter->drawText(dropRect, Qt::AlignCenter, tr("Add New Object to RoboSim"));
 	}
 	else {
 		QProxyStyle::drawPrimitive(element, option, painter, widget);

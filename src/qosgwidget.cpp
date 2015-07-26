@@ -46,7 +46,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_scene->setupScene(traits->width, traits->height, false);
 	QMouseHandler *mh = new QMouseHandler(_scene);
 	_scene->setMouseHandler(mh);
-	QWidget::connect(mh, SIGNAL(clickedObstacleIndex(int)), this, SLOT(clickedObstacleIndex(int)));
+	QWidget::connect(mh, SIGNAL(clickedObjectIndex(int)), this, SLOT(clickedObjectIndex(int)));
 	QWidget::connect(mh, SIGNAL(clickedRobotIndex(int)), this, SLOT(clickedRobotIndex(int)));
 
 	// set grid
@@ -85,10 +85,10 @@ QOsgWidget::~QOsgWidget(void) {
 	_scene->setMouseHandler(NULL);
 }
 
-void QOsgWidget::clickedObstacleIndex(int id) {
+void QOsgWidget::clickedObjectIndex(int id) {
 	QModelIndex index;
 	for (int i = 0; i < _o_model->rowCount(); i++) {
-		index = _o_model->index(i, rsObstacleModel::ID);
+		index = _o_model->index(i, rsObjectModel::ID);
 		if (_o_model->data(index, Qt::EditRole).toInt() == id) {
 			// highlight new item
 			if (id != _current[1] || _current[2] == 0) {
@@ -101,9 +101,9 @@ void QOsgWidget::clickedObstacleIndex(int id) {
 				_current[1] = -1;
 				index = _o_model->index(-1, -1);
 			}
-			// obstacle is valid index
+			// object is valid index
 			_current[2] = 1;
-			emit obstacleIndexChanged(index);
+			emit objectIndexChanged(index);
 			return;
 		}
 	}
@@ -133,9 +133,9 @@ void QOsgWidget::clickedRobotIndex(int id) {
 	}
 }
 
-void QOsgWidget::deleteObstacleIndex(QModelIndex index, int first, int last) {
+void QOsgWidget::deleteObjectIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
-	int id = _o_model->data(_o_model->index(first, rsObstacleModel::ID), Qt::EditRole).toInt();
+	int id = _o_model->data(_o_model->index(first, rsObjectModel::ID), Qt::EditRole).toInt();
 	_scene->deleteObstacle(id);
 	_scene->deleteMarker(id);
 	_scene->addAndRemoveChildren();
@@ -380,24 +380,24 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 	this->setCurrentRobotIndex(bottomRight);
 }
 
-void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
-	// draw all new obstacles
+void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
+	// draw all new objects
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
 		// get form, id, and mass
-		int form = _o_model->data(_o_model->index(i, rsObstacleModel::FORM)).toInt();
-		int id = _o_model->data(_o_model->index(i, rsObstacleModel::ID), Qt::EditRole).toInt();
-		int size = _o_model->data(_o_model->index(i, rsObstacleModel::SIZE)).toInt();
+		int form = _o_model->data(_o_model->index(i, rsObjectModel::FORM)).toInt();
+		int id = _o_model->data(_o_model->index(i, rsObjectModel::ID), Qt::EditRole).toInt();
+		int size = _o_model->data(_o_model->index(i, rsObjectModel::SIZE)).toInt();
 
 		// get name
-		std::string name = _o_model->data(_o_model->index(i, rsObstacleModel::TEXT)).toString().toStdString();
+		std::string name = _o_model->data(_o_model->index(i, rsObjectModel::TEXT)).toString().toStdString();
 
 		// get position
-		rs::Pos p(_o_model->data(_o_model->index(i, rsObstacleModel::P_X)).toDouble(),
-				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Y)).toDouble(),
-				  _o_model->data(_o_model->index(i, rsObstacleModel::P_Z)).toDouble());
+		rs::Pos p(_o_model->data(_o_model->index(i, rsObjectModel::P_X)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObjectModel::P_Y)).toDouble(),
+				  _o_model->data(_o_model->index(i, rsObjectModel::P_Z)).toDouble());
 
 		// quaternion
-		int axis = _o_model->data(_o_model->index(i, rsObstacleModel::AXIS)).toInt();
+		int axis = _o_model->data(_o_model->index(i, rsObjectModel::AXIS)).toInt();
 		rs::Quat quat;
 		switch (axis) {
 			case 0: // x
@@ -411,40 +411,40 @@ void QOsgWidget::obstacleDataChanged(QModelIndex topLeft, QModelIndex bottomRigh
 		}
 
 		// get led color
-		QColor color(_o_model->data(_o_model->index(i, rsObstacleModel::COLOR)).toString());
+		QColor color(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
 		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
-		// delete old obstacle
+		// delete old object
 		_scene->deleteObstacle(id);
 		_scene->deleteMarker(id);
 
-		// draw new obstacle
+		// draw new object
 		switch (form) {
 			case rs::BOX:
 			case rs::CYLINDER:
 			case rs::SPHERE: {
-				rs::Vec dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
-							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
-							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				_scene->drawObstacle(id, form, p, led, dims, quat);
 				break;
 			}
 			case rs::DOT:
 			case rs::LINE:
 			case rs::TEXT: {
-				rs::Pos dims(_o_model->data(_o_model->index(i, rsObstacleModel::L_1)).toDouble(),
-							 _o_model->data(_o_model->index(i, rsObstacleModel::L_2)).toDouble(),
-							 _o_model->data(_o_model->index(i, rsObstacleModel::L_3)).toDouble());
+				rs::Pos dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
+							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				_scene->drawMarker(id, form, p, dims, led, size, name);
 				break;
 			}
 		}
 
-		// add new obstacle to scene
+		// add new object to scene
 		_scene->addAndRemoveChildren();
 	}
 	// set current robot
-	this->setCurrentObstacleIndex(bottomRight);
+	this->setCurrentObjectIndex(bottomRight);
 }
 
 void QOsgWidget::setBackgroundImage(int pos, std::string name) {
@@ -465,20 +465,20 @@ void QOsgWidget::setCurrentIndex(int ind) {
 	if (ind == 0) {
 		this->setCurrentRobotIndex(_r_model->index(_r_model->findByID(_current[0]).toInt(), rsRobotModel::ID)); }
 	else if (ind == 1)
-		this->setCurrentObstacleIndex(_o_model->index(_o_model->findByID(_current[1]).toInt(), rsObstacleModel::ID));
+		this->setCurrentObjectIndex(_o_model->index(_o_model->findByID(_current[1]).toInt(), rsObjectModel::ID));
 }
 
-void QOsgWidget::setCurrentObstacleIndex(const QModelIndex &index) {
+void QOsgWidget::setCurrentObjectIndex(const QModelIndex &index) {
 	// invalid index: remove all highlight and return
 	if ( !index.isValid() ) {
 		_scene->addHighlight(-1, false);
 		return;
 	}
 
-	// set new obstacle ID
-	_current[1] = _o_model->data(_o_model->index(index.row(), rsObstacleModel::ID), Qt::EditRole).toInt();
+	// set new object ID
+	_current[1] = _o_model->data(_o_model->index(index.row(), rsObjectModel::ID), Qt::EditRole).toInt();
 
-	// obstacle is valid ID
+	// object is valid ID
 	_current[2] = 1;
 
 	// update view
@@ -514,7 +514,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 	// set level after images are set
 	_scene->setLevel(background.getLevel());
 
-	// draw obstacle objects
+	// draw object objects
 	for (int i = 0; i < background.getNumObstacles(); i++) {
 		rsXML::Obstacle *obstacle = background.getObstacle(i);
 		_scene->drawObstacle(0, obstacle->getForm(), obstacle->getPosition(), obstacle->getColor(), obstacle->getDimensions(), obstacle->getQuaternion());
@@ -529,7 +529,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 	_scene->addChildrenToBackground();
 }
 
-void QOsgWidget::setObstacleModel(obstacleModel *model) {
+void QOsgWidget::setObjectModel(objectModel *model) {
 	// set model
 	_o_model = model;
 }
@@ -573,21 +573,21 @@ bool QOsgWidget::eventFilter(QObject *obj, QEvent *event) {
 					}
 				}
 				else if (_current[1] != -1 && _current[2] == 1) {
-					// remove current obstacle from model
-					QModelIndex index = _o_model->index(_current[1], rsObstacleModel::ID);
+					// remove current object from model
+					QModelIndex index = _o_model->index(_current[1], rsObjectModel::ID);
 					_o_model->removeRows(index.row(), 1);
 
 					// new index is same row as last one
-					int row = _o_model->index(_current[1], rsObstacleModel::ID).row();
+					int row = _o_model->index(_current[1], rsObjectModel::ID).row();
 
 					// if it is invalid, then set the last row in the model
 					if (row == -1) {
-						this->setCurrentObstacleIndex(_o_model->index(_o_model->rowCount()-1, rsObstacleModel::ID));
-						emit obstacleIndexChanged(_o_model->index(_o_model->rowCount()-1, rsObstacleModel::ID));
+						this->setCurrentObjectIndex(_o_model->index(_o_model->rowCount()-1, rsObjectModel::ID));
+						emit objectIndexChanged(_o_model->index(_o_model->rowCount()-1, rsObjectModel::ID));
 					}
 					else {
-						this->setCurrentObstacleIndex(_o_model->index(row, rsObstacleModel::ID));
-						emit obstacleIndexChanged(_o_model->index(row, rsObstacleModel::ID));
+						this->setCurrentObjectIndex(_o_model->index(row, rsObjectModel::ID));
+						emit objectIndexChanged(_o_model->index(row, rsObjectModel::ID));
 					}
 				}
 				break;
@@ -648,7 +648,7 @@ QMouseHandler::QMouseHandler(rsScene::Scene *scene) : rsScene::MouseHandler(scen
 int QMouseHandler::pick(const osgGA::GUIEventAdapter &ea, osgViewer::Viewer *viewer) {
 	int id = rsScene::MouseHandler::pick(ea, viewer);
 	if (id >= 1000)
-		emit clickedObstacleIndex(id-1000);
+		emit clickedObjectIndex(id-1000);
 	else if (id >= 0)
 		emit clickedRobotIndex(id);
 
