@@ -21,9 +21,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 	QWidget::connect(ui->action_About, SIGNAL(triggered()), widget, SLOT(about()));
 	QWidget::connect(ui->action_AboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 	QWidget::connect(ui->action_Load, SIGNAL(triggered()), widget, SLOT(load()));
+	QWidget::connect(ui->action_Quit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	QWidget::connect(ui->action_Save, SIGNAL(triggered()), widget, SLOT(save()));
 	QWidget::connect(ui->action_SaveAs, SIGNAL(triggered()), widget, SLOT(saveAs()));
-	QWidget::connect(ui->action_Quit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	QWidget::connect(ui->action_UsersGuide, SIGNAL(triggered()), widget, SLOT(usersGuide()));
 
 	// create status bar
 	this->statusBar()->showMessage("Loaded", 2000);

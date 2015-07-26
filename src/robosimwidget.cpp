@@ -1,3 +1,4 @@
+#include <QDesktopServices>
 #include <QDirIterator>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -423,6 +424,10 @@ bool roboSimWidget::saveAs(void) {
 	bool retval = _xml->saveFile(files.at(0));
 	emit statusMessage(tr("RoboSim: Saved %1").arg(files.at(0)), 2000);
 	return retval;
+}
+
+void roboSimWidget::usersGuide(void) {
+	QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo("../docs/robosim.pdf").absoluteFilePath()));
 }
 
 void roboSimWidget::load_settings(void) {

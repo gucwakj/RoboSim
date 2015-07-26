@@ -43,6 +43,7 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		void load(void);
 		void save(void);
 		bool saveAs(void);
+		void usersGuide(void);
 
 	private:
 		void build_selector(QListWidget*, QStringList&, QStringList&);
