@@ -73,7 +73,7 @@ class objectModel : public QAbstractTableModel {
 		void setUnits(bool);
 
 	private:
-		QVariant convert(double, bool) const;
+		QVariant convertLength(double, bool) const;
 		QVariant convertMass(double, bool) const;
 
 	private:

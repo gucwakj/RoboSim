@@ -150,10 +150,10 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 	}
 	else if (role == Qt::EditRole) {
 		if (index.column() == P_X || index.column() == P_Y || index.column() == P_Z) {
-			return this->convert(_list[index.row()][index.column()].toDouble(), false);
+			return this->convertLength(_list[index.row()][index.column()].toDouble(), false);
 		}
 		else if (index.column() == L_1 || index.column() == L_2 || index.column() == L_3) {
-			return this->convert(_list[index.row()][index.column()].toDouble(), false);
+			return this->convertLength(_list[index.row()][index.column()].toDouble(), false);
 		}
 		else if (index.column() == MASS) {
 			return this->convertMass(_list[index.row()][index.column()].toDouble(), false);
@@ -261,7 +261,7 @@ bool objectModel::setData(const QModelIndex &index, const QVariant &value, int r
 		// if numerical values convert to meters
 		if (index.column() == P_X || index.column() == P_Y || index.column() == P_Z ||
 			index.column() == L_1 || index.column() == L_2 || index.column() == L_3) {
-			QVariant newValue = this->convert(value.toDouble(), true);
+			QVariant newValue = this->convertLength(value.toDouble(), true);
 			_list[index.row()][index.column()] = newValue.toString();
 		}
 		else if (index.column() == MASS) {
@@ -314,7 +314,7 @@ bool objectModel::removeRows(int row, int count, const QModelIndex &parent) {
 	return true;
 }
 
-QVariant objectModel::convert(double value, bool store) const {
+QVariant objectModel::convertLength(double value, bool store) const {
 	QVariant tmp;
 
 	// convert [cm/in] -> [m]
