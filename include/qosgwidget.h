@@ -1,7 +1,6 @@
-#ifndef QOSGWIDGET_H
-#define QOSGWIDGET_H
+#ifndef QOSGWIDGET_H_
+#define QOSGWIDGET_H_
 
-#include <iostream>
 #include <vector>
 
 #include <QEvent>
@@ -82,4 +81,4 @@ class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {
 		void clickedRobotIndex(int);
 };
 
-#endif // QOSGWIDGET_H
+#endif // QOSGWIDGET_H_

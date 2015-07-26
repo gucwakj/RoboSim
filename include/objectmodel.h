@@ -1,7 +1,6 @@
-#ifndef OBJECTMODEL_H
-#define OBJECTMODEL_H
+#ifndef OBJECTMODEL_H_
+#define OBJECTMODEL_H_
 
-#include <iostream>
 #include <vector>
 
 #include <QAbstractTableModel>
@@ -82,5 +81,5 @@ class objectModel : public QAbstractTableModel {
 		bool _units;			// 1: SI, 0: US
 };
 
-#endif // OBJECTMODEL_H
+#endif // OBJECTMODEL_H_
 

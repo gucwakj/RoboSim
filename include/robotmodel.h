@@ -1,7 +1,6 @@
-#ifndef ROBOTMODEL_H
-#define ROBOTMODEL_H
+#ifndef ROBOTMODEL_H_
+#define ROBOTMODEL_H_
 
-#include <iostream>
 #include <vector>
 
 #include <QAbstractTableModel>
@@ -81,4 +80,4 @@ class robotModel : public QAbstractTableModel {
 		bool _units;			// 1: SI, 0: US
 };
 
-#endif // ROBOTMODEL_H
+#endif // ROBOTMODEL_H_

@@ -1,8 +1,6 @@
 #ifndef OBJECTEDITOR_H_
 #define OBJECTEDITOR_H_
 
-#include <iostream>
-
 #include <QColorDialog>
 #include <QComboBox>
 #include <QDoubleSpinBox>

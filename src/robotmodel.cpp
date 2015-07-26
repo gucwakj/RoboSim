@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "robotmodel.h"
 
 using namespace rsRobotModel;

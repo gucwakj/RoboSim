@@ -1,5 +1,5 @@
-#ifndef ROBOSIMWIDGET_H
-#define ROBOSIMWIDGET_H
+#ifndef ROBOSIMWIDGET_H_
+#define ROBOSIMWIDGET_H_
 
 #include <QFileSystemWatcher>
 #include <QListView>
@@ -61,5 +61,5 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		QFileSystemWatcher _watcher;
 };
 
-#endif // ROBOSIMWIDGET_H
+#endif // ROBOSIMWIDGET_H_
 

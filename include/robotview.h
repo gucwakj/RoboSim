@@ -1,8 +1,6 @@
 #ifndef ROBOTVIEW_H_
 #define ROBOTVIEW_H_
 
-#include <iostream>
-
 #include <QListView>
 #include <QEvent>
 #include <QKeyEvent>
