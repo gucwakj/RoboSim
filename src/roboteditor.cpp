@@ -226,7 +226,7 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Linkbot-I Editor</span>"));
 
 	// form list
-	QLabel *formLabel = new QLabel(tr("Form: "));
+	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
 	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
@@ -484,7 +484,7 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Linkbot-L Editor</span>"));
 
 	// form list
-	QLabel *formLabel = new QLabel(tr("Form: "));
+	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
 	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
@@ -675,7 +675,7 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Mindstorms Editor</span>"));
 
 	// form list
-	QLabel *formLabel = new QLabel(tr("Form: "));
+	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
 	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
@@ -933,7 +933,7 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Robot Editor</span>"));
 
 	// form list
-	QLabel *formLabel = new QLabel(tr("Form: "));
+	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
 	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
