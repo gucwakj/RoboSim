@@ -25,7 +25,7 @@ robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 robotModel::~robotModel(void) {
 }
 
-bool robotModel::addRobot(int form, int role) {
+bool robotModel::addRobot(int form, int left, int right, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -48,8 +48,8 @@ bool robotModel::addRobot(int form, int role) {
 		_list[row][R_PSI] = QVariant(0).toString();
 		_list[row][COLOR] = QString("#00ff00");
 		_list[row][RADIUS] = QVariant(0).toString();
-		_list[row][WHEELLEFT] = QVariant(0).toString();
-		_list[row][WHEELRIGHT] = QVariant(0).toString();
+		_list[row][WHEELLEFT] = QVariant(left).toString();
+		_list[row][WHEELRIGHT] = QVariant(right).toString();
 		_list[row][PRECONFIG] = QVariant(0).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -280,7 +280,7 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 	QMap<int,  QVariant> map;
 	stream >> r >> c >> map;
 	if (!map[0].toString().compare("Linkbot I"))
-		this->addRobot(rs::LINKBOTI);
+		this->addRobot(rs::LINKBOTI, 2, 2);
 	else if (!map[0].toString().compare("Linkbot L"))
 		this->addRobot(rs::LINKBOTL);
 	else if (!map[0].toString().compare("Mindstorms EV3"))

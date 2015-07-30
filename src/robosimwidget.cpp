@@ -227,8 +227,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	_xml->parse("");
 
 	// if no robots were added, add a token Linkbot-I now
-	if (!model->rowCount())
-		model->addRobot(rs::LINKBOTI);
+	if (!model->rowCount()) model->addRobot(rs::LINKBOTI, 2, 2);
 
 	// highlight and show first robot found
 	ui->osgWidget->setCurrentIndex(0);
