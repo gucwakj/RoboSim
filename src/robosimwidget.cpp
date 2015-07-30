@@ -35,12 +35,12 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->list_robots->setDragEnabled(true);
 
 	// build preconfig selector
-	//names.clear();
-	//icons.clear();
-	//names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
-	//icons << "bow.jpg" <<  "explorer.jpg" << "fourbotdrive.jpg" << "fourwheeldrive.jpg" << "fourwheelexplorer.jpg" << "groupbow.jpg" << "inchworm.jpg" << "lift.jpg" << "omnidrive.jpg" << "snake.jpg" << "stand.jpg";
-	//this->build_selector(ui->list_preconfig, names, icons);
-	//ui->list_preconfig->setDragEnabled(true);
+	names.clear();
+	icons.clear();
+	names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
+	icons << "icons/bow128.png" << "icons/explorer128.png" << "icons/fourbotdrive128.png" << "icons/fourwheeldrive128.png" << "icons/fourwheelexplorer128.png" << "icons/groupbow128.png" << "icons/inchworm128.png" << "icons/lift128.png" << "icons/omnidrive128.png" << "icons/snake128.png" << "icons/stand128.png";
+	this->build_selector(ui->list_preconfig, names, icons);
+	ui->list_preconfig->setDragEnabled(true);
 
 	// build obstacles selector
 	names.clear();
