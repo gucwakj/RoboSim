@@ -286,7 +286,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						robot->setID(id);
 						robot->setName(name);
 						// adjust height to be above zero
-						if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
+						if (fabs(p[2]) < (robot->getBodyHeight() - rs::Epsilon)) {
 							p.add(0, 0, robot->getBodyHeight() / 2);
 						}
 						// get wheels
@@ -333,7 +333,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setID(id);
 				robot->setName(name);
 				// adjust height to be above zero
-				if (fabs(p[2]) < (robot->getBodyHeight() - rs::EPSILON)) {
+				if (fabs(p[2]) < (robot->getBodyHeight() - rs::Epsilon)) {
 					p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
 				}
 				// draw linkbot

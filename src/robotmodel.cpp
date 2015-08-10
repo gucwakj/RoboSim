@@ -73,7 +73,7 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 		_list[row][P_Z] = QVariant(p[2]).toString();
 		_list[row][R_PHI] = QVariant(0).toString();
 		_list[row][R_THETA] = QVariant(0).toString();
-		_list[row][R_PSI] = QVariant(asin(q[2]) * 180 * 2 / rs::PI).toString();
+		_list[row][R_PSI] = QVariant(asin(q[2]) * 180 * 2 / rs::Pi).toString();
 		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
 		_list[row][COLOR] = QString(qtc.name());
 		_list[row][RADIUS] = QVariant(0).toString();
