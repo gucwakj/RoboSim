@@ -77,7 +77,6 @@ class objectModel : public QAbstractTableModel {
 
 	private:
 		QList<QStringList> _list;
-		int _l_preconfig[rsLinkbot::NUM_PRECONFIG];
 		bool _units;			// 1: SI, 0: US
 };
 

@@ -7,17 +7,17 @@ using namespace rsRobotModel;
 
 robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	// set up preconfig
-	_l_preconfig[rsLinkbot::BOW] = 2;
-	_l_preconfig[rsLinkbot::EXPLORER] = 5;
-	_l_preconfig[rsLinkbot::FOURBOTDRIVE] = 4;
-	_l_preconfig[rsLinkbot::FOURWHEELDRIVE] = 4;
-	_l_preconfig[rsLinkbot::FOURWHEELEXPLORER] = 5;
-	_l_preconfig[rsLinkbot::GROUPBOW] = 4;
-	_l_preconfig[rsLinkbot::INCHWORM] = 2;
-	_l_preconfig[rsLinkbot::LIFT] = 4;
-	_l_preconfig[rsLinkbot::OMNIDRIVE] = 4;
-	_l_preconfig[rsLinkbot::SNAKE] = 5;
-	_l_preconfig[rsLinkbot::STAND] = 2;
+	_l_preconfig[rsLinkbot::Preconfigs::Bow] = 2;
+	_l_preconfig[rsLinkbot::Preconfigs::Explorer] = 5;
+	_l_preconfig[rsLinkbot::Preconfigs::FourBotDrive] = 4;
+	_l_preconfig[rsLinkbot::Preconfigs::FourWheelDrive] = 4;
+	_l_preconfig[rsLinkbot::Preconfigs::FourWheelExplorer] = 5;
+	_l_preconfig[rsLinkbot::Preconfigs::GroupBow] = 4;
+	_l_preconfig[rsLinkbot::Preconfigs::Inchworm] = 2;
+	_l_preconfig[rsLinkbot::Preconfigs::Lift] = 4;
+	_l_preconfig[rsLinkbot::Preconfigs::Omnidrive] = 4;
+	_l_preconfig[rsLinkbot::Preconfigs::Snake] = 5;
+	_l_preconfig[rsLinkbot::Preconfigs::Stand] = 2;
 
 	// set US units
 	_units = false;
@@ -103,30 +103,12 @@ bool robotModel::addPreconfig(int type, int role) {
 		_list[row][COLOR] = QString("#00ff00");
 		_list[row][PRECONFIG] = QVariant(type).toString();
 		switch (type) {
-			case rsLinkbot::BOW:
+			case rsLinkbot::Preconfigs::Bow:
 				_list[row][R_PHI] = QVariant(90).toString();
 				_list[row][R_THETA] = QVariant(0).toString();
 				_list[row][R_PSI] = QVariant(0).toString();
 				break;
-			case rsLinkbot::EXPLORER:
-				break;
-			case rsLinkbot::FOURBOTDRIVE:
-				break;
-			case rsLinkbot::FOURWHEELDRIVE:
-				break;
-			case rsLinkbot::FOURWHEELEXPLORER:
-				break;
-			case rsLinkbot::GROUPBOW:
-				break;
-			case rsLinkbot::INCHWORM:
-				break;
-			case rsLinkbot::LIFT:
-				break;
-			case rsLinkbot::OMNIDRIVE:
-				break;
-			case rsLinkbot::SNAKE:
-				break;
-			case rsLinkbot::STAND:
+			default:
 				break;
 		}
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
@@ -178,18 +160,42 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 					int id = _list[index.row()][rsRobotModel::ID].toInt();
 					QString name = _list[index.row()][rsRobotModel::NAME];
 					switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
-						case rsLinkbot::BOW:				return QString(tr("Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::BOW]); break;
-						case rsLinkbot::EXPLORER:			return QString(tr("Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::EXPLORER]); break;
-						case rsLinkbot::FOURBOTDRIVE:		return QString(tr("Four Bot Drive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURBOTDRIVE]); break;
-						case rsLinkbot::FOURWHEELDRIVE:		return QString(tr("Four Wheel Drive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELDRIVE]); break;
-						case rsLinkbot::FOURWHEELEXPLORER:	return QString(tr("Four Wheel Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::FOURWHEELEXPLORER]); break;
-						case rsLinkbot::GROUPBOW:			return QString(tr("Group Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::GROUPBOW]); break;
-						case rsLinkbot::INCHWORM:			return QString(tr("Inchworm\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::INCHWORM]); break;
-						case rsLinkbot::LIFT:				return QString(tr("Lift\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::LIFT]); break;
-						case rsLinkbot::OMNIDRIVE:			return QString(tr("Omnidrive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::OMNIDRIVE]); break;
-						case rsLinkbot::SNAKE:				return QString(tr("Snake\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::SNAKE]); break;
-						case rsLinkbot::STAND:				return QString(tr("StandRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::STAND]); break;
-						default:							return QString(tr("%1\nRobot %2")).arg(name).arg(id + 1); break;
+						case rsLinkbot::Preconfigs::Bow:
+							return QString(tr("Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Bow]);
+							break;
+						case rsLinkbot::Preconfigs::Explorer:
+							return QString(tr("Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Explorer]);
+							break;
+						case rsLinkbot::Preconfigs::FourBotDrive:
+							return QString(tr("Four Bot Drive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::FourBotDrive]);
+							break;
+						case rsLinkbot::Preconfigs::FourWheelDrive:
+							return QString(tr("Four Wheel Drive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::FourWheelDrive]);
+							break;
+						case rsLinkbot::Preconfigs::FourWheelExplorer:
+							return QString(tr("Four Wheel Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::FourWheelExplorer]);
+							break;
+						case rsLinkbot::Preconfigs::GroupBow:
+							return QString(tr("Group Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::GroupBow]);
+							break;
+						case rsLinkbot::Preconfigs::Inchworm:
+							return QString(tr("Inchworm\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Inchworm]);
+							break;
+						case rsLinkbot::Preconfigs::Lift:
+							return QString(tr("Lift\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Lift]);
+							break;
+						case rsLinkbot::Preconfigs::Omnidrive:
+							return QString(tr("Omnidrive\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Omnidrive]);
+							break;
+						case rsLinkbot::Preconfigs::Snake:
+							return QString(tr("Snake\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Snake]);
+							break;
+						case rsLinkbot::Preconfigs::Stand:
+							return QString(tr("StandRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Stand]);
+							break;
+						default:
+							return QString(tr("%1\nRobot %2")).arg(name).arg(id + 1);
+							break;
 					}
 				}
 				case rs::EV3: case rs::NXT:
@@ -214,18 +220,18 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
 			case rs::LINKBOTI: {
 				switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
-					case rsLinkbot::BOW:				image.load("icons/bow32.png"); break;
-					case rsLinkbot::EXPLORER:			image.load("icons/explorer32.png"); break;
-					case rsLinkbot::FOURBOTDRIVE:		image.load("icons/fourbotexplorer32.png"); break;
-					case rsLinkbot::FOURWHEELDRIVE:		image.load("icons/fourwheeldrive32.png"); break;
-					case rsLinkbot::FOURWHEELEXPLORER:	image.load("icons/fourwheelexplorer32.png"); break;
-					case rsLinkbot::GROUPBOW:			image.load("icons/groupbow32.png"); break;
-					case rsLinkbot::INCHWORM:			image.load("icons/inchworm32.png"); break;
-					case rsLinkbot::LIFT:				image.load("icons/lift32.png"); break;
-					case rsLinkbot::OMNIDRIVE:			image.load("icons/omnidrive32.png"); break;
-					case rsLinkbot::SNAKE:				image.load("icons/snake32.png"); break;
-					case rsLinkbot::STAND:				image.load("icons/stand32.png"); break;
-					default: 							image.load("icons/linkbotI32.png"); break;
+					case rsLinkbot::Preconfigs::Bow:				image.load("icons/bow32.png"); break;
+					case rsLinkbot::Preconfigs::Explorer:			image.load("icons/explorer32.png"); break;
+					case rsLinkbot::Preconfigs::FourBotDrive:		image.load("icons/fourbotexplorer32.png"); break;
+					case rsLinkbot::Preconfigs::FourWheelDrive:		image.load("icons/fourwheeldrive32.png"); break;
+					case rsLinkbot::Preconfigs::FourWheelExplorer:	image.load("icons/fourwheelexplorer32.png"); break;
+					case rsLinkbot::Preconfigs::GroupBow:			image.load("icons/groupbow32.png"); break;
+					case rsLinkbot::Preconfigs::Inchworm:			image.load("icons/inchworm32.png"); break;
+					case rsLinkbot::Preconfigs::Lift:				image.load("icons/lift32.png"); break;
+					case rsLinkbot::Preconfigs::Omnidrive:			image.load("icons/omnidrive32.png"); break;
+					case rsLinkbot::Preconfigs::Snake:				image.load("icons/snake32.png"); break;
+					case rsLinkbot::Preconfigs::Stand:				image.load("icons/stand32.png"); break;
+					default:										image.load("icons/linkbotI32.png"); break;
 				}
 				break;
 			}
@@ -289,27 +295,27 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 	else if (!map[0].toString().compare("Mindstorms NXT"))
 		this->addRobot(rs::NXT);
 	else if (!map[0].toString().compare("Bow"))
-		this->addPreconfig(rsLinkbot::BOW);
+		this->addPreconfig(rsLinkbot::Preconfigs::Bow);
 	else if (!map[0].toString().compare("Explorer"))
-		this->addPreconfig(rsLinkbot::EXPLORER);
+		this->addPreconfig(rsLinkbot::Preconfigs::Explorer);
 	else if (!map[0].toString().compare("Four Bot Drive"))
-		this->addPreconfig(rsLinkbot::FOURBOTDRIVE);
+		this->addPreconfig(rsLinkbot::Preconfigs::FourBotDrive);
 	else if (!map[0].toString().compare("Four Wheel Drive"))
-		this->addPreconfig(rsLinkbot::FOURWHEELDRIVE);
+		this->addPreconfig(rsLinkbot::Preconfigs::FourWheelDrive);
 	else if (!map[0].toString().compare("Four Wheel Explorer"))
-		this->addPreconfig(rsLinkbot::FOURWHEELEXPLORER);
+		this->addPreconfig(rsLinkbot::Preconfigs::FourWheelExplorer);
 	else if (!map[0].toString().compare("Group Bow"))
-		this->addPreconfig(rsLinkbot::GROUPBOW);
+		this->addPreconfig(rsLinkbot::Preconfigs::GroupBow);
 	else if (!map[0].toString().compare("Inchworm"))
-		this->addPreconfig(rsLinkbot::INCHWORM);
+		this->addPreconfig(rsLinkbot::Preconfigs::Inchworm);
 	else if (!map[0].toString().compare("Lift"))
-		this->addPreconfig(rsLinkbot::LIFT);
+		this->addPreconfig(rsLinkbot::Preconfigs::Lift);
 	else if (!map[0].toString().compare("Omnidrive"))
-		this->addPreconfig(rsLinkbot::OMNIDRIVE);
+		this->addPreconfig(rsLinkbot::Preconfigs::Omnidrive);
 	else if (!map[0].toString().compare("Snake"))
-		this->addPreconfig(rsLinkbot::SNAKE);
+		this->addPreconfig(rsLinkbot::Preconfigs::Snake);
 	else if (!map[0].toString().compare("Stand"))
-		this->addPreconfig(rsLinkbot::STAND);
+		this->addPreconfig(rsLinkbot::Preconfigs::Stand);
 
 	return true;
 }

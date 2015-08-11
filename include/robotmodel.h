@@ -76,7 +76,7 @@ class robotModel : public QAbstractTableModel {
 
 	private:
 		QList<QStringList> _list;
-		int _l_preconfig[rsLinkbot::NUM_PRECONFIG];
+		int _l_preconfig[rsLinkbot::Preconfigs::Num_Preconfig];
 		bool _units;			// 1: SI, 0: US
 };
 

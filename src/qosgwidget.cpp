@@ -247,7 +247,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		switch (form) {
 			case rs::LINKBOTI: {
 				switch (preconfig) {
-					case rsLinkbot::BOW: {
+					case rsLinkbot::Preconfigs::Bow: {
 						// delete old robots
 						_scene->deleteRobot(id);
 						_scene->deleteRobot(id + 1);
@@ -257,21 +257,21 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						robot0->setID(id);
 						robot0->setName(name);
 						rsScene::Robot *sceneRobot0 = _scene->drawRobot(robot0, p, q, rs::Vec(0, 0, 0), c, 0);
-						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::BRIDGE, rsLinkbot::FACE1, rs::LEFT, 0, 1, -1);
-						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
+						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::Connectors::Bridge, rsLinkbot::Bodies::Face1, rs::LEFT, 0, 1, -1);
+						_scene->drawConnector(robot0, sceneRobot0, rsLinkbot::Connectors::Faceplate, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 1, -1);
 
 						// draw second robot
 						rsRobots::Linkbot *robot1 = new rsRobots::Linkbot(rs::LINKBOTL);
 						robot1->setID(id + 1);
 						robot1->setName(name);
-						rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::FACE1, p, q);
-						rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::FACE1, 0, q);
-						P = robot0->getConnFacePosition(rsLinkbot::DOUBLEBRIDGE, rsLinkbot::SIDE2, rs::LEFT, P, Q);
-						Q = robot0->getConnFaceQuaternion(rsLinkbot::DOUBLEBRIDGE, rsLinkbot::SIDE2, rs::LEFT, Q);
-						P = robot1->getRobotCenterPosition(rsLinkbot::FACE3, P, Q);
-						Q = robot1->getRobotCenterQuaternion(rsLinkbot::FACE3, rs::LEFT, 0, Q);
+						rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::Bodies::Face1, p, q);
+						rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::Bodies::Face1, 0, q);
+						P = robot0->getConnFacePosition(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::LEFT, P, Q);
+						Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::LEFT, Q);
+						P = robot1->getRobotCenterPosition(rsLinkbot::Bodies::Face3, P, Q);
+						Q = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face3, rs::LEFT, 0, Q);
 						rsScene::Robot *sceneRobot1 = _scene->drawRobot(robot1, P, Q, rs::Vec(0, 0, 0), c, 0);
-						_scene->drawConnector(robot1, sceneRobot1, rsLinkbot::FACEPLATE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
+						_scene->drawConnector(robot1, sceneRobot1, rsLinkbot::Connectors::Faceplate, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 1, -1);
 
 						// end
 						delete robot0;
@@ -291,11 +291,11 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						}
 						// get wheels
 						for (int i = 0; i < 2; i++) {
-							if (wheelID[i] == 0)		wheel[i] = rsLinkbot::NONE;
-							else if (wheelID[i] == 1)	wheel[i] = rsLinkbot::TINYWHEEL;
-							else if (wheelID[i] == 2)	wheel[i] = rsLinkbot::SMALLWHEEL;
-							else if (wheelID[i] == 3)	wheel[i] = rsLinkbot::BIGWHEEL;
-							else if (wheelID[i] == 4)	wheel[i] = rsLinkbot::WHEEL;
+							if (wheelID[i] == 0)		wheel[i] = rsLinkbot::Connectors::None;
+							else if (wheelID[i] == 1)	wheel[i] = rsLinkbot::Connectors::TinyWheel;
+							else if (wheelID[i] == 2)	wheel[i] = rsLinkbot::Connectors::SmallWheel;
+							else if (wheelID[i] == 3)	wheel[i] = rsLinkbot::Connectors::BigWheel;
+							else if (wheelID[i] == 4)	wheel[i] = rsLinkbot::Connectors::Wheel;
 						}
 						// tilt for wheels
 						double p2;
@@ -305,18 +305,18 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0, 0), c, 0);
 						// left wheel
 						if (wheelID[0]) {
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, 0, 1, -1);
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE1, rs::RIGHT, radius, 2, wheel[0]);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::RIGHT, 0, 1, -1);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::RIGHT, radius, 2, wheel[0]);
 						}
 						// caster
 						if (wheelID[0] || wheelID[1]) {
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 1, -1);
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE2, rs::RIGHT, 0, 2, rsLinkbot::CASTER);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 1, -1);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 2, rsLinkbot::Connectors::Caster);
 						}
 						// right wheel
 						if (wheelID[1]) {
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, 0, 1, -1);
-							_scene->drawConnector(robot, sceneRobot, rsLinkbot::SIMPLE, rsLinkbot::FACE3, rs::RIGHT, radius, 2, wheel[1]);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::RIGHT, 0, 1, -1);
+							_scene->drawConnector(robot, sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::RIGHT, radius, 2, wheel[1]);
 						}
 						// end
 						delete robot;
@@ -356,8 +356,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				robot->setName(name);
 				// get wheels
 				for (int i = 0; i < 2; i++) {
-					if (wheelID[i] == 0)		wheel[i] = rsMindstorms::SMALL;
-					else if (wheelID[i] == 1)	wheel[i] = rsMindstorms::BIG;
+					if (wheelID[i] == 0)		wheel[i] = rsMindstorms::Connectors::Small;
+					else if (wheelID[i] == 1)	wheel[i] = rsMindstorms::Connectors::Big;
 				}
 				// tilt for wheels
 				double p2;
@@ -366,8 +366,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				// draw mindstorms
 				rsScene::Robot *sceneRobot = _scene->drawRobot(robot, p, q, rs::Vec(0, 0), c, 0);
 				// draw wheels
-				if (wheel[0]) _scene->drawWheel(robot, sceneRobot, wheel[0], rsMindstorms::WHEEL1);
-				if (wheel[1]) _scene->drawWheel(robot, sceneRobot, wheel[1], rsMindstorms::WHEEL2);
+				if (wheel[0]) _scene->drawWheel(robot, sceneRobot, wheel[0], rsMindstorms::Bodies::Wheel1);
+				if (wheel[1]) _scene->drawWheel(robot, sceneRobot, wheel[1], rsMindstorms::Bodies::Wheel2);
 				// end
 				delete robot;
 				break;
@@ -609,28 +609,10 @@ void QOsgWidget::highlight_robots(const QModelIndex &index) {
 	// highlight rest of preconfig robots
 	int preconfig = _r_model->data(_r_model->index(index.row(), rsRobotModel::PRECONFIG), Qt::EditRole).toInt();
 	switch (preconfig) {
-		case rsLinkbot::BOW:
+		case rsLinkbot::Preconfigs::Bow:
 			_scene->addHighlight(_current[0] + 1, true, false);
 			break;
-		case rsLinkbot::EXPLORER:
-			break;
-		case rsLinkbot::FOURBOTDRIVE:
-			break;
-		case rsLinkbot::FOURWHEELDRIVE:
-			break;
-		case rsLinkbot::FOURWHEELEXPLORER:
-			break;
-		case rsLinkbot::GROUPBOW:
-			break;
-		case rsLinkbot::INCHWORM:
-			break;
-		case rsLinkbot::LIFT:
-			break;
-		case rsLinkbot::OMNIDRIVE:
-			break;
-		case rsLinkbot::SNAKE:
-			break;
-		case rsLinkbot::STAND:
+		default:
 			break;
 	}
 }

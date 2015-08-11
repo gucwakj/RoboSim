@@ -66,13 +66,13 @@ void xmlParser::parse(const char *name) {
 			switch (xmlbot->getForm()) {
 				case rs::LINKBOTI:
 				case rs::LINKBOTL: {
-					if (xmlwheels[i] == rsLinkbot::TINYWHEEL)
+					if (xmlwheels[i] == rsLinkbot::Connectors::TinyWheel)
 						wheels[i] = 1;
-					else if (xmlwheels[i] == rsLinkbot::SMALLWHEEL)
+					else if (xmlwheels[i] == rsLinkbot::Connectors::SmallWheel)
 						wheels[i] = 2;
-					else if (xmlwheels[i] == rsLinkbot::BIGWHEEL)
+					else if (xmlwheels[i] == rsLinkbot::Connectors::BigWheel)
 						wheels[i] = 3;
-					else if (xmlwheels[i] == rsLinkbot::WHEEL)
+					else if (xmlwheels[i] == rsLinkbot::Connectors::Wheel)
 						wheels[i] = 4;
 					else
 						wheels[i] = 0;
@@ -80,9 +80,9 @@ void xmlParser::parse(const char *name) {
 				}
 				case rs::EV3:
 				case rs::NXT: {
-					if (xmlwheels[i] == rsMindstorms::SMALL)
+					if (xmlwheels[i] == rsMindstorms::Connectors::Small)
 						wheels[i] = 0;
-					else if (xmlwheels[i] == rsMindstorms::BIG)
+					else if (xmlwheels[i] == rsMindstorms::Connectors::Big)
 						wheels[i] = 1;
 					break;
 				}
@@ -167,13 +167,13 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				// set wheel sizes
 				for (int i = 0; i < 2; i++) {
 					if (wheelID[i] == 1)
-						wheel[i] = rsLinkbot::TINYWHEEL;
+						wheel[i] = rsLinkbot::Connectors::TinyWheel;
 					else if (wheelID[i] == 2)
-						wheel[i] = rsLinkbot::SMALLWHEEL;
+						wheel[i] = rsLinkbot::Connectors::SmallWheel;
 					else if (wheelID[i] == 3)
-						wheel[i] = rsLinkbot::BIGWHEEL;
+						wheel[i] = rsLinkbot::Connectors::BigWheel;
 					else if (wheelID[i] == 4)
-						wheel[i] = rsLinkbot::WHEEL;
+						wheel[i] = rsLinkbot::Connectors::Wheel;
 				}
 
 				// done
@@ -191,9 +191,9 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				// set wheel sizes
 				for (int i = 0; i < 2; i++) {
 					if (wheelID[i] == 0)
-						wheel[i] = rsMindstorms::SMALL;
+						wheel[i] = rsMindstorms::Connectors::Small;
 					else if (wheelID[i] == 1)
-						wheel[i] = rsMindstorms::BIG;
+						wheel[i] = rsMindstorms::Connectors::Big;
 				}
 
 				// done
