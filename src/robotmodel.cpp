@@ -41,7 +41,16 @@ bool robotModel::addRobot(int form, int left, int right, int role) {
 		}
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
-		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row - 1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		double offset = 0;
+		switch (form) {
+			case rs::LINKBOTI: case rs::LINKBOTL: case rs::LINKBOTT:
+				offset = 0.1524;	// linkbot offset by 6 inches
+				break;
+			case rs::EV3: case rs::NXT:
+				offset = 0.3048;	// mindstorms offset by 12 inches
+				break;
+		}
+		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row - 1, P_X)).toDouble() + offset : 0).toString();
 		_list[row][P_Y] = QVariant(0).toString();
 		_list[row][P_Z] = QVariant(0).toString();
 		_list[row][R_PHI] = QVariant(0).toString();
