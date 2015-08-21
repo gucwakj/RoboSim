@@ -19,7 +19,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 	public:
 		xmlParser(const std::string);
 		virtual ~xmlParser(void) {};
-		void parse(const char*);
+		void parse(const char* = NULL);
 		void setRobotModel(robotModel*);
 		void setObjectModel(objectModel*);
 
