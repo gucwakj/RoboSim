@@ -138,12 +138,16 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Cylinder %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 				case rs::DOT:
 					return QString(tr("Point %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::HACKYSACK:
+					return QString(tr("Hacky Sack %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 				case rs::LINE:
 					return QString(tr("Line %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 				case rs::SPHERE:
 					return QString(tr("Sphere %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 				case rs::TEXT:
 					return QString(tr("Text %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+				case rs::WOODBLOCK:
+					return QString(tr("Wood Block %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 			}
 		}
 		else
@@ -173,6 +177,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 			case rs::DOT:
 				image.load("icons/point32.png");
 				break;
+			case rs::HACKYSACK:
+				image.load("icons/hackysack32.png");
+				break;
 			case rs::LINE:
 				image.load("icons/line32.png");
 				break;
@@ -181,6 +188,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				break;
 			case rs::TEXT:
 				image.load("icons/text32.png");
+				break;
+			case rs::WOODBLOCK:
+				image.load("icons/woodblock32.png");
 				break;
 		}
 		return image;
@@ -245,12 +255,16 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::CYLINDER);
 	else if (!map[0].toString().compare("Point"))
 		this->addObject(rs::DOT);
+	else if (!map[0].toString().compare("Hacky Sack"))
+		this->addObject(rs::HACKYSACK);
 	else if (!map[0].toString().compare("Line"))
 		this->addObject(rs::LINE);
 	else if (!map[0].toString().compare("Sphere"))
 		this->addObject(rs::SPHERE);
 	else if (!map[0].toString().compare("Text"))
 		this->addObject(rs::TEXT);
+	else if (!map[0].toString().compare("Wood Block"))
+		this->addObject(rs::WOODBLOCK);
 
 	return true;
 }

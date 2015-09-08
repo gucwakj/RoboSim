@@ -21,9 +21,11 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new boxEditor(_model));
 	_pages->addWidget(new cylinderEditor(_model));
 	_pages->addWidget(new dotEditor(_model));
+	_pages->addWidget(new hackysackEditor(_model));
 	_pages->addWidget(new lineEditor(_model));
 	_pages->addWidget(new sphereEditor(_model));
 	_pages->addWidget(new textEditor(_model));
+	_pages->addWidget(new woodblockEditor(_model));
 
 	// set up buttons
 	_deleteButton = new QPushButton(tr("Delete"));
@@ -92,20 +94,30 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::LINE:
+			case rs::HACKYSACK:
 				_pages->setCurrentIndex(4);
+				dynamic_cast<hackysackEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<hackysackEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::LINE:
+				_pages->setCurrentIndex(5);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::SPHERE:
-				_pages->setCurrentIndex(5);
+				_pages->setCurrentIndex(6);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::TEXT:
-				_pages->setCurrentIndex(6);
+				_pages->setCurrentIndex(7);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::WOODBLOCK:
+				_pages->setCurrentIndex(8);
+				dynamic_cast<woodblockEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<woodblockEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 		}
 
@@ -829,6 +841,103 @@ emptyEditor::emptyEditor(QWidget *parent) : QWidget(parent) {
 /*!
  *
  *
+ *	Hacky Sack Editor
+ *
+ *
+ */
+
+/*!	\brief Hacky Sack Drawing Editor.
+ *
+ *	Build individual hackysack editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+hackysackEditor::hackysackEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Hacky Sack Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the hacky sack");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the hacky sack");
+	pYBox->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void hackysackEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void hackysackEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void hackysackEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void hackysackEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+}
+
+/*!
+ *
+ *
  *	Line Editor
  *
  *
@@ -1417,6 +1526,195 @@ void textEditor::setUnits(bool si) {
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Wood Block Editor
+ *
+ *
+ */
+
+/*!	\brief Box Obstacle Editor.
+ *
+ *	Build individual box editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+woodblockEditor::woodblockEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Wood Block Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the block");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the block");
+	pYBox->setToolTipDuration(-1);
+
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Pos Z:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("pz");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the Z position of the block");
+	pZBox->setToolTipDuration(-1);
+
+	// length x
+	QLabel *lXLabel = new QLabel(tr("Length X:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("lx");
+	lXBox->setMinimum(-100);
+	lXBox->setMaximum(100);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the X length of the block");
+	lXBox->setToolTipDuration(-1);
+
+	// length y
+	QLabel *lYLabel = new QLabel(tr("Length Y:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("ly");
+	lYBox->setMinimum(-100);
+	lYBox->setMaximum(100);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the Y length of the block");
+	lYBox->setToolTipDuration(-1);
+
+	// length z
+	QLabel *lZLabel = new QLabel(tr("Length Z:"));
+	_lZUnits = new QLabel();
+	QDoubleSpinBox *lZBox = new QDoubleSpinBox();
+	lZBox->setObjectName("lz");
+	lZBox->setMinimum(-100);
+	lZBox->setMaximum(100);
+	lZBox->setSingleStep(0.5);
+	lZLabel->setBuddy(lZBox);
+	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
+	lZBox->setToolTip("Set the Z length of the block");
+	lZBox->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	hbox4->addWidget(lZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(lZBox, 5);
+	hbox4->addWidget(_lZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void woodblockEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void woodblockEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void woodblockEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
+}
+
+void woodblockEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
+}
+
+void woodblockEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
+}
+
+void woodblockEditor::submitL3(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
+}
+
+/*!	\brief Slot to re-enable all inputs.
+ *
+ *	\param		row Row of the model to load.
+ */
+void woodblockEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("pz"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void woodblockEditor::setUnits(bool si) {
+	QString text;
+	if (si)
+		text = tr("cm");
+	else
+		text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
+	_lZUnits->setText(text);
 }
 
 /*!

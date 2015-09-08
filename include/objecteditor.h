@@ -156,6 +156,24 @@ class emptyEditor : public QWidget {
 		emptyEditor(QWidget* = 0);
 };
 
+class hackysackEditor : public QWidget {
+		Q_OBJECT
+	public:
+		hackysackEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		int _row;
+};
+
 class lineEditor : public QWidget {
 		Q_OBJECT
 	public:
@@ -232,6 +250,32 @@ class textEditor : public QWidget {
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
 		bodyColorPicker *_colorPicker;
+		int _row;
+};
+
+class woodblockEditor : public QWidget {
+		Q_OBJECT
+	public:
+		woodblockEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitL1(double);
+		void submitL2(double);
+		void submitL3(double);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_pZUnits;
+		QLabel *_lXUnits;
+		QLabel *_lYUnits;
+		QLabel *_lZUnits;
 		int _row;
 };
 

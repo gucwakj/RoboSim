@@ -16,7 +16,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 	int form = _o_model->data(_o_model->index(first, rsObjectModel::FORM)).toInt();
 	// save object
 	switch (form) {
-		case rs::BOX: case rs::CYLINDER: case rs::SPHERE:
+		case rs::BOX: case rs::CYLINDER: case rs::HACKYSACK: case rs::SPHERE: case rs::WOODBLOCK:
 			Writer::deleteObstacle(id);
 			break;
 		case rs::DOT: case rs::LINE: case rs::TEXT:
@@ -245,7 +245,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 
 		// save object
 		switch (form) {
-			case rs::BOX: case rs::CYLINDER: case rs::SPHERE: {
+			case rs::BOX: case rs::CYLINDER: case rs::HACKYSACK: case rs::SPHERE: case rs::WOODBLOCK: {
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());

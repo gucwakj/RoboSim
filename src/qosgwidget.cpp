@@ -429,7 +429,9 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 		switch (form) {
 			case rs::BOX:
 			case rs::CYLINDER:
-			case rs::SPHERE: {
+			case rs::HACKYSACK:
+			case rs::SPHERE:
+			case rs::WOODBLOCK: {
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
