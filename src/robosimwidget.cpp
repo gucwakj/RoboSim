@@ -432,11 +432,6 @@ void roboSimWidget::usersGuide(void) {
 void roboSimWidget::load_settings(void) {
 	QSettings settings(tr("UC Davis C-STEM Center"), tr("RoboSim"));
 
-	//settings.beginGroup("mainwindow");
-	//this->resize(settings.value("size", QSize(400, 400)).toSize());
-	//this->move(settings.value("pos", QPoint(200, 200)).toPoint());
-	//settings.endGroup();
-
 	settings.beginGroup("background");
 	int size = settings.beginReadArray("directories");
 	for (int i = 0; i < size; ++i) {
@@ -449,11 +444,6 @@ void roboSimWidget::load_settings(void) {
 
 void roboSimWidget::save_settings(void) {
 	QSettings settings(tr("UC Davis C-STEM Center"), tr("RoboSim"));
-
-	//settings.beginGroup("mainwindow");
-	//settings.setValue("size", size());
-	//settings.setValue("pos", pos());
-	//settings.endGroup();
 
 	settings.beginGroup("background");
 	settings.beginWriteArray("directories");
