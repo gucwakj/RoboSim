@@ -39,7 +39,10 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	traits->width = 640;
 	traits->height = 360;
 	traits->doubleBuffer = true;
-	traits->vsync = true;
+	traits->alpha = ds->getMinimumNumAlphaBits();
+	traits->stencil = ds->getMinimumNumStencilBits();
+	traits->sampleBuffers = ds->getMultiSamples();
+	traits->samples = ds->getNumMultiSamples();
 	traits->inheritedWindowData = new osgQt::GraphicsWindowQt::WindowData(this);
 	osg::ref_ptr<osgQt::GraphicsWindowQt> gw = new osgQt::GraphicsWindowQt(traits.get());
 
@@ -79,9 +82,9 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// hide robot popup labels
 	_scene->setLabel(false);
 
-	// draw viewer
-	this->setRunMaxFrameRate(30);
-	osgQt::setViewer(this);
+	// create timer to manage redraws
+	QWidget::connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
+	this->_timer.start(25);		// 40 fps
 }
 
 QOsgWidget::~QOsgWidget(void) {

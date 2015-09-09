@@ -5,6 +5,7 @@
 
 #include <QEvent>
 #include <QKeyEvent>
+#include <QTimer>
 
 #include <osgQt/GraphicsWindowQt>
 
@@ -57,6 +58,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		double convert(double);
 		bool eventFilter(QObject*, QEvent*);
 		void highlight_robots(const QModelIndex&);
+		void paintEvent(QPaintEvent*) { frame(); }
 
 	private:
 		rsScene::Scene *_scene;
@@ -66,6 +68,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		int _current[3];
 		int _level;
 		std::vector<double> _grid;
+		QTimer _timer;
 };
 
 class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {
