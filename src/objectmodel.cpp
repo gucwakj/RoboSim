@@ -25,6 +25,14 @@ bool objectModel::addObject(int form, int role) {
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		_list[row][P_Y] = QVariant(0).toString();
 		_list[row][P_Z] = QVariant(0).toString();
+		switch (form) {
+			case rs::HACKYSACK:
+				_list[row][P_Z] = QVariant(0.0275).toString();
+				break;
+			case rs::WOODBLOCK:
+				_list[row][P_Z] = QVariant(0.0127).toString();
+				break;
+		}
 		_list[row][L_1] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
