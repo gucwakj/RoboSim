@@ -14,6 +14,7 @@
 #include <rs/Pos>
 #include <rs/Quat>
 #include <rs/Vec>
+#include <rsRobots/Linkbot>
 
 namespace rsRobotModel {
 
