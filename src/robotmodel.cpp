@@ -43,7 +43,7 @@ bool robotModel::addRobot(int form, int left, int right, int role) {
 		_list[row][NAME] = QString("");
 		double offset = 0;
 		switch (form) {
-			case rs::LINKBOTI: case rs::LINKBOTL: case rs::LINKBOTT:
+			case rs::LinkbotI: case rs::LinkbotL: case rs::LinkbotT:
 				offset = 0.1524;	// linkbot offset by 6 inches
 				break;
 			case rs::EV3: case rs::NXT:
@@ -106,7 +106,7 @@ bool robotModel::addPreconfig(int type, int role) {
 		else {
 			_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		}
-		_list[row][FORM] = QVariant(rs::LINKBOTI).toString();
+		_list[row][FORM] = QVariant(rs::LinkbotI).toString();
 		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		_list[row][COLOR] = QString("#00ff00");
@@ -165,7 +165,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 	if (role == Qt::DisplayRole) {
 		if (index.column() == rsRobotModel::ID) {
 			switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
-				case rs::LINKBOTI: case rs::LINKBOTL: case rs::LINKBOTT: {
+				case rs::LinkbotI: case rs::LinkbotL: case rs::LinkbotT: {
 					int id = _list[index.row()][rsRobotModel::ID].toInt();
 					QString name = _list[index.row()][rsRobotModel::NAME];
 					switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
@@ -227,7 +227,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
 		switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
-			case rs::LINKBOTI: {
+			case rs::LinkbotI: {
 				switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
 					case rsLinkbot::Preconfigs::Bow:				image.load("icons/bow32.png"); break;
 					case rsLinkbot::Preconfigs::Explorer:			image.load("icons/explorer32.png"); break;
@@ -244,7 +244,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 				}
 				break;
 			}
-			case rs::LINKBOTL:
+			case rs::LinkbotL:
 				image.load("icons/linkbotL32.png");
 				break;
 			case rs::EV3:
@@ -296,9 +296,9 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 	QMap<int,  QVariant> map;
 	stream >> r >> c >> map;
 	if (!map[0].toString().compare("Linkbot I"))
-		this->addRobot(rs::LINKBOTI, 2, 2);
+		this->addRobot(rs::LinkbotI, 2, 2);
 	else if (!map[0].toString().compare("Linkbot L"))
-		this->addRobot(rs::LINKBOTL);
+		this->addRobot(rs::LinkbotL);
 	else if (!map[0].toString().compare("Mindstorms EV3"))
 		this->addRobot(rs::EV3);
 	else if (!map[0].toString().compare("Mindstorms NXT"))

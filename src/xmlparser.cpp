@@ -18,10 +18,10 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 	int form = _o_model->data(_o_model->index(first, rsObjectModel::FORM)).toInt();
 	// save object
 	switch (form) {
-		case rs::BOX: case rs::CYLINDER: case rs::HACKYSACK: case rs::SPHERE: case rs::WOODBLOCK:
+		case rs::Box: case rs::Cylinder: case rs::HackySack: case rs::Sphere: case rs::WoodBlock:
 			Writer::deleteObstacle(id);
 			break;
-		case rs::DOT: case rs::LINE: case rs::TEXT:
+		case rs::Dot: case rs::Line: case rs::Text:
 			Writer::deleteMarker(id);
 			break;
 	}
@@ -66,8 +66,8 @@ void xmlParser::parse(const char *name) {
 		wheels.allocate(2);
 		for (int i = 0; i < 2; i++) {
 			switch (xmlbot->getForm()) {
-				case rs::LINKBOTI:
-				case rs::LINKBOTL: {
+				case rs::LinkbotI:
+				case rs::LinkbotL: {
 					if (xmlwheels[i] == rsLinkbot::Connectors::TinyWheel)
 						wheels[i] = 1;
 					else if (xmlwheels[i] == rsLinkbot::Connectors::SmallWheel)
@@ -157,8 +157,8 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		int wheel[2] = {0};
 
 		switch (form) {
-			case rs::LINKBOTI:
-			case rs::LINKBOTL: {
+			case rs::LinkbotI:
+			case rs::LinkbotL: {
 				// joints
 				rs::Vec j;
 				j.allocate(3);
@@ -247,16 +247,16 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 
 		// save object
 		switch (form) {
-			case rs::BOX: case rs::CYLINDER: case rs::HACKYSACK: case rs::SPHERE: case rs::WOODBLOCK: {
+			case rs::Box: case rs::Cylinder: case rs::HackySack: case rs::Sphere: case rs::WoodBlock: {
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
-				if (form == rs::CYLINDER) dims[2] = axis;
+				if (form == rs::Cylinder) dims[2] = axis;
 				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;
 			}
-			case rs::DOT: case rs::LINE: case rs::TEXT: {
+			case rs::Dot: case rs::Line: case rs::Text: {
 				rs::Pos p2(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());

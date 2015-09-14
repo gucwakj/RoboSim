@@ -26,10 +26,10 @@ bool objectModel::addObject(int form, int role) {
 		_list[row][P_Y] = QVariant(0).toString();
 		_list[row][P_Z] = QVariant(0).toString();
 		switch (form) {
-			case rs::HACKYSACK:
+			case rs::HackySack:
 				_list[row][P_Z] = QVariant(0.0275).toString();
 				break;
-			case rs::WOODBLOCK:
+			case rs::WoodBlock:
 				_list[row][P_Z] = QVariant(0.0127).toString();
 				break;
 		}
@@ -140,21 +140,21 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 	if (role == Qt::DisplayRole) {
 		if (index.column() == rsObjectModel::ID) {
 			switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
-				case rs::BOX:
+				case rs::Box:
 					return QString(tr("Box %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::CYLINDER:
+				case rs::Cylinder:
 					return QString(tr("Cylinder %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::DOT:
+				case rs::Dot:
 					return QString(tr("Point %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::HACKYSACK:
+				case rs::HackySack:
 					return QString(tr("Hacky Sack %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::LINE:
+				case rs::Line:
 					return QString(tr("Line %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::SPHERE:
+				case rs::Sphere:
 					return QString(tr("Sphere %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::TEXT:
+				case rs::Text:
 					return QString(tr("Text %1")).arg(_list[index.row()][index.column()].toInt() + 1);
-				case rs::WOODBLOCK:
+				case rs::WoodBlock:
 					return QString(tr("Wood Block %1")).arg(_list[index.row()][index.column()].toInt() + 1);
 			}
 		}
@@ -176,28 +176,28 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
 		switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
-			case rs::BOX:
+			case rs::Box:
 				image.load("icons/box32.png");
 				break;
-			case rs::CYLINDER:
+			case rs::Cylinder:
 				image.load("icons/cylinder32.png");
 				break;
-			case rs::DOT:
+			case rs::Dot:
 				image.load("icons/point32.png");
 				break;
-			case rs::HACKYSACK:
+			case rs::HackySack:
 				image.load("icons/hackysack32.png");
 				break;
-			case rs::LINE:
+			case rs::Line:
 				image.load("icons/line32.png");
 				break;
-			case rs::SPHERE:
+			case rs::Sphere:
 				image.load("icons/sphere32.png");
 				break;
-			case rs::TEXT:
+			case rs::Text:
 				image.load("icons/text32.png");
 				break;
-			case rs::WOODBLOCK:
+			case rs::WoodBlock:
 				image.load("icons/woodblock32.png");
 				break;
 		}
@@ -258,21 +258,21 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 	stream >> r >> c >> map;
 
 	if (!map[0].toString().compare("Box"))
-		this->addObject(rs::BOX);
+		this->addObject(rs::Box);
 	else if (!map[0].toString().compare("Cylinder"))
-		this->addObject(rs::CYLINDER);
+		this->addObject(rs::Cylinder);
 	else if (!map[0].toString().compare("Point"))
-		this->addObject(rs::DOT);
+		this->addObject(rs::Dot);
 	else if (!map[0].toString().compare("Hacky Sack"))
-		this->addObject(rs::HACKYSACK);
+		this->addObject(rs::HackySack);
 	else if (!map[0].toString().compare("Line"))
-		this->addObject(rs::LINE);
+		this->addObject(rs::Line);
 	else if (!map[0].toString().compare("Sphere"))
-		this->addObject(rs::SPHERE);
+		this->addObject(rs::Sphere);
 	else if (!map[0].toString().compare("Text"))
-		this->addObject(rs::TEXT);
+		this->addObject(rs::Text);
 	else if (!map[0].toString().compare("Wood Block"))
-		this->addObject(rs::WOODBLOCK);
+		this->addObject(rs::WoodBlock);
 
 	return true;
 }

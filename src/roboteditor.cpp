@@ -90,7 +90,7 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 				dynamic_cast<preconfigEditor *>(_pages->currentWidget())->setUnits(_units);
 			}
 			else {
-				if (_form == rs::LINKBOTL) {
+				if (_form == rs::LinkbotL) {
 					_pages->setCurrentIndex(2);	// Linkbot-L
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setIndex(_row);
 					dynamic_cast<linkbotLEditor *>(_pages->currentWidget())->setUnits(_units);
@@ -369,8 +369,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 
 void linkbotIEditor::submitForm(int value) {
 	int form = -1;
-	if (value == LINKBOTI) form = rs::LINKBOTI;
-	else if (value == LINKBOTL) form = rs::LINKBOTL;
+	if (value == LINKBOTI) form = rs::LinkbotI;
+	else if (value == LINKBOTL) form = rs::LinkbotL;
 	else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
@@ -413,8 +413,8 @@ void linkbotIEditor::setIndex(int row) {
 	_row = row;
 	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	int ind = -1;
-	if (form == rs::LINKBOTI) ind = LINKBOTI;
-	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	if (form == rs::LinkbotI) ind = LINKBOTI;
+	else if (form == rs::LinkbotL) ind = LINKBOTL;
 	else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
@@ -591,8 +591,8 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 
 void linkbotLEditor::submitForm(int value) {
 	int form = -1;
-	if (value == LINKBOTI) form = rs::LINKBOTI;
-	else if (value == LINKBOTL) form = rs::LINKBOTL;
+	if (value == LINKBOTI) form = rs::LinkbotI;
+	else if (value == LINKBOTL) form = rs::LinkbotL;
 	else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
@@ -627,8 +627,8 @@ void linkbotLEditor::setIndex(int row) {
 	_row = row;
 	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	int ind = -1;
-	if (form == rs::LINKBOTI) ind = LINKBOTI;
-	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	if (form == rs::LinkbotI) ind = LINKBOTI;
+	else if (form == rs::LinkbotL) ind = LINKBOTL;
 	else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
@@ -818,8 +818,8 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 
 void mindstormsEditor::submitForm(int value) {
 	int form = -1;
-	if (value == LINKBOTI) form = rs::LINKBOTI;
-	else if (value == LINKBOTL) form = rs::LINKBOTL;
+	if (value == LINKBOTI) form = rs::LinkbotI;
+	else if (value == LINKBOTL) form = rs::LinkbotL;
 	else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
@@ -862,8 +862,8 @@ void mindstormsEditor::setIndex(int row) {
 	_row = row;
 	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	int ind = -1;
-	if (form == rs::LINKBOTI) ind = LINKBOTI;
-	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	if (form == rs::LinkbotI) ind = LINKBOTI;
+	else if (form == rs::LinkbotL) ind = LINKBOTL;
 	else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
@@ -1070,8 +1070,8 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 
 void customEditor::submitForm(int value) {
 	int form = -1;
-	if (value == LINKBOTI) form = rs::LINKBOTI;
-	else if (value == LINKBOTL) form = rs::LINKBOTL;
+	if (value == LINKBOTI) form = rs::LinkbotI;
+	else if (value == LINKBOTL) form = rs::LinkbotL;
 	else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
@@ -1114,8 +1114,8 @@ void customEditor::setIndex(int row) {
 	_row = row;
 	int form = _model->data(_model->index(row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	int ind = -1;
-	if (form == rs::LINKBOTI) ind = LINKBOTI;
-	else if (form == rs::LINKBOTL) ind = LINKBOTL;
+	if (form == rs::LinkbotI) ind = LINKBOTI;
+	else if (form == rs::LinkbotL) ind = LINKBOTL;
 	else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);

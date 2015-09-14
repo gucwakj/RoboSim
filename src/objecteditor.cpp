@@ -79,42 +79,42 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 		// load appropriate page
 		int form = _model->data(_model->index(index.row(), rsObjectModel::FORM), Qt::EditRole).toInt();
 		switch (form) {
-			case rs::BOX:
+			case rs::Box:
 				_pages->setCurrentIndex(1);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::CYLINDER:
+			case rs::Cylinder:
 				_pages->setCurrentIndex(2);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::DOT:
+			case rs::Dot:
 				_pages->setCurrentIndex(3);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::HACKYSACK:
+			case rs::HackySack:
 				_pages->setCurrentIndex(4);
 				dynamic_cast<hackysackEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<hackysackEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::LINE:
+			case rs::Line:
 				_pages->setCurrentIndex(5);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::SPHERE:
+			case rs::Sphere:
 				_pages->setCurrentIndex(6);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::TEXT:
+			case rs::Text:
 				_pages->setCurrentIndex(7);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
-			case rs::WOODBLOCK:
+			case rs::WoodBlock:
 				_pages->setCurrentIndex(8);
 				dynamic_cast<woodblockEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<woodblockEditor *>(_pages->currentWidget())->setIndex(_row);

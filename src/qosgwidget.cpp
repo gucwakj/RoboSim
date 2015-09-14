@@ -251,7 +251,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 
 		// draw new robot
 		switch (form) {
-			case rs::LINKBOTI: {
+			case rs::LinkbotI: {
 				switch (preconfig) {
 					case rsLinkbot::Preconfigs::Bow: {
 						// delete old robots
@@ -259,27 +259,27 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						_scene->deleteRobot(id + 1);
 
 						// draw base robot
-						rsScene::Linkbot *robot0 = new rsScene::Linkbot(rs::LINKBOTL);
+						rsScene::Linkbot *robot0 = new rsScene::Linkbot(rs::LinkbotL);
 						robot0->setID(id);
 						robot0->setName(name);
 						rsScene::Group *sceneRobot0 = _scene->createRobot(robot0);
 						robot0->draw(sceneRobot0, p, q, rs::Vec(0, 0, 0), c, 0);
-						robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Bridge, rsLinkbot::Bodies::Face1, rs::LEFT, 0, 1, -1);
-						robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Faceplate, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 1, -1);
+						robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Bridge, rsLinkbot::Bodies::Face1, rs::Left, 0, 1, -1);
+						robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Faceplate, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
 
 						// draw second robot
-						rsScene::Linkbot *robot1 = new rsScene::Linkbot(rs::LINKBOTL);
+						rsScene::Linkbot *robot1 = new rsScene::Linkbot(rs::LinkbotL);
 						robot1->setID(id + 1);
 						robot1->setName(name);
 						rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::Bodies::Face1, p, q);
 						rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::Bodies::Face1, 0, q);
-						P = robot0->getConnFacePosition(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::LEFT, P, Q);
-						Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::LEFT, Q);
+						P = robot0->getConnFacePosition(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::Left, P, Q);
+						Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::Left, Q);
 						P = robot1->getRobotCenterPosition(rsLinkbot::Bodies::Face3, P, Q);
-						Q = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face3, rs::LEFT, 0, Q);
+						Q = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face3, rs::Left, 0, Q);
 						rsScene::Group *sceneRobot1 = _scene->createRobot(robot1);
 						robot1->draw(sceneRobot1, P, Q, rs::Vec(0, 0, 0), c, 0);
-						robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Faceplate, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 1, -1);
+						robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Faceplate, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
 
 						// end
 						delete robot0;
@@ -290,7 +290,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						// remove old robot
 						_scene->deleteRobot(id);
 						// create new one
-						rsScene::Linkbot *robot = new rsScene::Linkbot(rs::LINKBOTI);
+						rsScene::Linkbot *robot = new rsScene::Linkbot(rs::LinkbotI);
 						robot->setID(id);
 						robot->setName(name);
 						// adjust height to be above zero
@@ -314,18 +314,18 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						robot->draw(sceneRobot, p, q, rs::Vec(0, 0, 0), c, 0);
 						// left wheel
 						if (wheelID[0]) {
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::RIGHT, 0, 1, -1);
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::RIGHT, radius, 2, wheel[0]);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, -1);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, radius, 2, wheel[0]);
 						}
 						// caster
 						if (wheelID[0] || wheelID[1]) {
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 1, -1);
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::RIGHT, 0, 2, rsLinkbot::Connectors::Caster);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 2, rsLinkbot::Connectors::Caster);
 						}
 						// right wheel
 						if (wheelID[1]) {
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::RIGHT, 0, 1, -1);
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::RIGHT, radius, 2, wheel[1]);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, -1);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, radius, 2, wheel[1]);
 						}
 						// end
 						delete robot;
@@ -334,11 +334,11 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				}
 				break;
 			}
-			case rs::LINKBOTL: {
+			case rs::LinkbotL: {
 				// remove old robot
 				_scene->deleteRobot(id);
 				// create new one
-				rsScene::Linkbot *robot = new rsScene::Linkbot(rs::LINKBOTL);
+				rsScene::Linkbot *robot = new rsScene::Linkbot(rs::LinkbotL);
 				robot->setID(id);
 				robot->setName(name);
 				// adjust height to be above zero
@@ -430,20 +430,20 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 
 		// draw new object
 		switch (form) {
-			case rs::BOX:
-			case rs::CYLINDER:
-			case rs::HACKYSACK:
-			case rs::SPHERE:
-			case rs::WOODBLOCK: {
+			case rs::Box:
+			case rs::Cylinder:
+			case rs::HackySack:
+			case rs::Sphere:
+			case rs::WoodBlock: {
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				_scene->drawObstacle(id, form, p, led, dims, quat);
 				break;
 			}
-			case rs::DOT:
-			case rs::LINE:
-			case rs::TEXT: {
+			case rs::Dot:
+			case rs::Line:
+			case rs::Text: {
 				rs::Pos dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
