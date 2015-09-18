@@ -328,6 +328,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, radius, 2, wheel[1]);
 						}
 						// end
+						_scene->stageChild(sceneRobot);
 						delete robot;
 						break;
 					}
@@ -346,7 +347,9 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 					p.add(q.multiply(0, 0, robot->getBodyHeight()/2));
 				}
 				// draw linkbot
-				robot->draw(_scene->createRobot(robot), p, q, rs::Vec(0, 0, 0), c, 0);
+				rsScene::Group *sceneRobot = _scene->createRobot(robot);
+				robot->draw(sceneRobot, p, q, rs::Vec(0, 0, 0), c, 0);
+				_scene->stageChild(sceneRobot);
 				// end
 				delete robot;
 				break;
@@ -379,6 +382,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				if (wheel[0]) robot->drawWheel(sceneRobot, wheel[0], rsMindstorms::Bodies::Wheel1);
 				if (wheel[1]) robot->drawWheel(sceneRobot, wheel[1], rsMindstorms::Bodies::Wheel2);
 				// end
+				_scene->stageChild(sceneRobot);
 				delete robot;
 				break;
 			}
