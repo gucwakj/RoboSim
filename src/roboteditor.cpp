@@ -289,7 +289,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	// left wheel list
 	QLabel *wheelLLabel = new QLabel(tr("Left Wheel:"));
 	QStringList wheelLItems;
-	wheelLItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	//wheelLItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	wheelLItems << "None" << "4.13" << "4.45" << "5.08";
 	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
 	_wheelLUnits = new QLabel(tr("cm"));
 	_wheelLBox = new QComboBox();
@@ -303,7 +304,8 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	// right wheel list
 	QLabel *wheelRLabel = new QLabel(tr("Right Wheel:"));
 	QStringList wheelRItems;
-	wheelRItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	//wheelRItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+	wheelRItems << "None" << "4.13" << "4.45" << "5.08";
 	QStringListModel *wheelRModel = new QStringListModel(wheelRItems, this);
 	_wheelRUnits = new QLabel(tr("cm"));
 	_wheelRBox = new QComboBox();
@@ -445,12 +447,16 @@ void linkbotIEditor::setUnits(bool si) {
 	// set wheel list to new values
 	QStringList wheelLItems, wheelRItems;
 	if (si) {
-		wheelLItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
-		wheelRItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+		//wheelLItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+		//wheelRItems << "None" << "4.13" << "4.45" << "5.08" << tr("Custom");
+		wheelLItems << "None" << "4.13" << "4.45" << "5.08";
+		wheelRItems << "None" << "4.13" << "4.45" << "5.08";
 	}
 	else {
-		wheelLItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
-		wheelRItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
+		//wheelLItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
+		//wheelRItems << "None" << "1.625" << "1.75" << "2.00" << tr("Custom");
+		wheelLItems << "None" << "1.625" << "1.75" << "2.00";
+		wheelRItems << "None" << "1.625" << "1.75" << "2.00";
 	}
 	QStringListModel *wheelLModel = new QStringListModel(wheelLItems, this);
 	QStringListModel *wheelRModel = new QStringListModel(wheelRItems, this);
