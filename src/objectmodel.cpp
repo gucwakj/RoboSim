@@ -141,21 +141,21 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 		if (index.column() == rsObjectModel::ID) {
 			switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 				case rs::Box:
-					return QString(tr("Box %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Box"));
 				case rs::Cylinder:
-					return QString(tr("Cylinder %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Cylinder"));
 				case rs::Dot:
-					return QString(tr("Point %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Point"));
 				case rs::HackySack:
-					return QString(tr("Hacky Sack %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Hacky Sack"));
 				case rs::Line:
-					return QString(tr("Line %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Line"));
 				case rs::Sphere:
-					return QString(tr("Sphere %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Sphere"));
 				case rs::Text:
-					return QString(tr("Text %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Text"));
 				case rs::WoodBlock:
-					return QString(tr("Wood Block %1")).arg(_list[index.row()][index.column()].toInt() + 1);
+					return QString(tr("Wood Block"));
 			}
 		}
 		else
