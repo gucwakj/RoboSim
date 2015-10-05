@@ -218,6 +218,11 @@ void QOsgWidget::gridEnabled(bool enabled) {
 void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 	// draw all new robots
 	for (int i = topLeft.row(); i <= bottomRight.row(); i++) {
+		// redo ids
+		if (topLeft.column() == rsRobotModel::ID) {
+			_scene->changeID(_r_model->data(_r_model->index(i, rsRobotModel::ID), Qt::EditRole).toInt());
+		}
+
 		// get form and id
 		int form = _r_model->data(_r_model->index(i, rsRobotModel::FORM)).toInt();
 		int id = _r_model->data(_r_model->index(i, rsRobotModel::ID), Qt::EditRole).toInt();

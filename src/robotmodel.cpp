@@ -263,8 +263,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		return QVariant();
 }
 
-QVariant robotModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
+QVariant robotModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -379,6 +378,10 @@ bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 
 	// signal that rows have been deleted
 	endRemoveRows();
+
+	// re-id all subsequent robots
+	for (int i = row; i < _list.size(); i++)
+		this->setData(this->index(i, ID), _list[i][ID].toInt() - 1);
 
 	// success
 	return true;
