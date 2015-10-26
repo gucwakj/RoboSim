@@ -311,7 +311,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							else if (wheelID[i] == 4)	wheel[i] = rsLinkbot::Connectors::Wheel;
 						}
 						// tilt for wheels
-						double p2;
+						float p2;
 						q.multiply(robot->tiltForWheels(wheel[0], wheel[1], p2));
 						p[2] += p2;
 						// draw linkbot
@@ -377,7 +377,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 					else if (wheelID[i] == 1)	wheel[i] = rsMindstorms::Connectors::Big;
 				}
 				// tilt for wheels
-				double p2;
+				float p2;
 				q.multiply(robot->tiltForWheels(wheel[0], wheel[1], p2));
 				p[2] += p2;
 				// draw mindstorms
