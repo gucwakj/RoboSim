@@ -63,6 +63,7 @@ class robotModel : public QAbstractTableModel {
 		bool dropMimeData(const QMimeData*, Qt::DropAction, int, int, const QModelIndex&);
 
 		// utility
+		void clear(void);
 		void printModel(void);
 		QVariant findByID(int);
 

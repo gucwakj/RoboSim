@@ -398,3 +398,7 @@ QVariant robotModel::convert(double value, bool store) const {
 	return tmp;
 }
 
+void robotModel::clear(void) {
+	_list.clear();
+}
+

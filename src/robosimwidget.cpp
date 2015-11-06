@@ -6,11 +6,9 @@
 
 #include "robosimwidget.h"
 #include "objecteditor.h"
-#include "objectmodel.h"
 #include "objectview.h"
 #include "platformselector.h"
 #include "roboteditor.h"
-#include "robotmodel.h"
 #include "robotview.h"
 #include "ui_robosimwidget.h"
 
@@ -65,25 +63,25 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->tab_scene->setCurrentIndex(0);
 
 	// set up robot model
-	robotModel *model = new robotModel(this);
+	_rob_model = new robotModel(this);
 
 	// set up robot view
-	robotView *view = new robotView(model);
+	robotView *view = new robotView(_rob_model);
 	ui->layout_robots->addWidget(view);
 
 	// set up robot editor
-	robotEditor *editor = new robotEditor(model);
+	robotEditor *editor = new robotEditor(_rob_model);
 	ui->layout_robots->addWidget(editor);
 
 	// set up object model
-	objectModel *o_model = new objectModel(this);
+	_obj_model = new objectModel(this);
 
 	// set up object view
-	objectView *o_view = new objectView(o_model);
+	objectView *o_view = new objectView(_obj_model);
 	ui->layout_objects->addWidget(o_view);
 
 	// set up object editor
-	objectEditor *o_editor = new objectEditor(o_model);
+	objectEditor *o_editor = new objectEditor(_obj_model);
 	ui->layout_objects->addWidget(o_editor);
 
 	// set up background view
@@ -123,13 +121,13 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	}
 
 	// set up osg view
-	ui->osgWidget->setRobotModel(model);
-	ui->osgWidget->setObjectModel(o_model);
+	ui->osgWidget->setRobotModel(_rob_model);
+	ui->osgWidget->setObjectModel(_obj_model);
 
 	// set up xml parser
 	_xml = new xmlParser(rsXML::getDefaultPath());
-	_xml->setRobotModel(model);
-	_xml->setObjectModel(o_model);
+	_xml->setRobotModel(_rob_model);
+	_xml->setObjectModel(_obj_model);
 
 	// set up default grid units
 	_us.push_back(1);
@@ -146,9 +144,9 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	_si.push_back(200);
 
 	// connect designer elements to slots
-	QWidget::connect(ui->si, SIGNAL(toggled(bool)), model, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), _rob_model, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), editor, SLOT(setUnits(bool)));
-	QWidget::connect(ui->si, SIGNAL(toggled(bool)), o_model, SLOT(setUnits(bool)));
+	QWidget::connect(ui->si, SIGNAL(toggled(bool)), _obj_model, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), o_editor, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(setUnits(bool)));
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), this, SLOT(set_units(bool)));
@@ -185,9 +183,9 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_xml, SIGNAL(gridDefaults()), this, SLOT(grid_defaults()));
 	QWidget::connect(_xml, SIGNAL(level(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(_xml, SIGNAL(backgroundName(std::string)), this, SLOT(setCurrentBackground(std::string)));
-	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)), model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)));
-	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)), o_model, SLOT(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)));
-	QWidget::connect(_xml, SIGNAL(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)), o_model, SLOT(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)));
+	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)), _rob_model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)));
+	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)), _obj_model, SLOT(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)));
+	QWidget::connect(_xml, SIGNAL(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)), _obj_model, SLOT(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)));
 	QWidget::connect(_xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
 	QWidget::connect(_xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
 
@@ -200,12 +198,12 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentRobotIndex(const QModelIndex&)));
 	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(ui->osgWidget, SIGNAL(robotIndexChanged(QModelIndex)), editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), view, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
-	QWidget::connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteRobotIndex(QModelIndex, int, int)));
+	QWidget::connect(_rob_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), view, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_rob_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_rob_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_rob_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_rob_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
+	QWidget::connect(_rob_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 
 	// connect object pieces together
 	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
@@ -216,22 +214,22 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(o_editor, SIGNAL(indexChanged(QModelIndex)), ui->osgWidget, SLOT(setCurrentObjectIndex(const QModelIndex&)));
 	QWidget::connect(ui->osgWidget, SIGNAL(objectIndexChanged(QModelIndex)), o_view, SLOT(setCurrentIndex(QModelIndex)));
 	QWidget::connect(ui->osgWidget, SIGNAL(objectIndexChanged(QModelIndex)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_view, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(objectDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(objectDataChanged(QModelIndex, QModelIndex)));
-	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObjectIndex(QModelIndex, int, int)));
-	QWidget::connect(o_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteObjectIndex(QModelIndex, int, int)));
+	QWidget::connect(_obj_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_view, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_obj_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), o_editor, SLOT(dataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_obj_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), ui->osgWidget, SLOT(objectDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_obj_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(objectDataChanged(QModelIndex, QModelIndex)));
+	QWidget::connect(_obj_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteObjectIndex(QModelIndex, int, int)));
+	QWidget::connect(_obj_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteObjectIndex(QModelIndex, int, int)));
 
 	// parse xml file
 	_xml->parse();
 
 	// if no robots were added, add a token Linkbot-I now
-	if (!model->rowCount()) model->addRobot(rs::LinkbotI, 2, 2);
+	if (!_rob_model->rowCount()) _rob_model->addRobot(rs::LinkbotI, 2, 2);
 
 	// highlight and show first robot found
 	ui->osgWidget->setCurrentIndex(0);
-	editor->setCurrentIndex(model->index(0,0));
+	editor->setCurrentIndex(_rob_model->index(0,0));
 
 	// parsing of xml complete
 	emit statusMessage(tr("RoboSim: Ready"), 2000);
@@ -401,6 +399,8 @@ void roboSimWidget::about(void) {
 void roboSimWidget::load(void) {
 	QString fileName = QFileDialog::getOpenFileName(this);
 	if (!fileName.isEmpty()) {
+		_rob_model->clear();
+		_obj_model->clear();
 		_xml->parse(fileName.toStdString().c_str());
 		emit statusMessage(tr("RoboSim: Loaded %1").arg(fileName), 2000);
 	}

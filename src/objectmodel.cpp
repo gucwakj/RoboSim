@@ -361,3 +361,7 @@ QVariant objectModel::convertMass(double value, bool store) const {
 	return tmp;
 }
 
+void objectModel::clear(void) {
+	_list.clear();
+}
+

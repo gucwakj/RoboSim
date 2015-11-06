@@ -7,6 +7,8 @@
 #include <QMainWindow>
 #include <QMessageBox>
 
+#include "objectmodel.h"
+#include "robotmodel.h"
 #include "xmlparser.h"
 
 #if defined(ROBOSIMWIDGET_DLL) && defined(_WIN32)
@@ -59,6 +61,8 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		xmlParser *_xml;
 		QStringList _background;
 		QFileSystemWatcher _watcher;
+		robotModel *_rob_model;
+		objectModel *_obj_model;
 };
 
 #endif // ROBOSIMWIDGET_H_
