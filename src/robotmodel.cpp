@@ -399,6 +399,8 @@ QVariant robotModel::convert(double value, bool store) const {
 }
 
 void robotModel::clear(void) {
-	_list.clear();
+	for (int i = _list.size(); i >= 0; i--) {
+		this->removeRows(i, 1);
+	}
 }
 
