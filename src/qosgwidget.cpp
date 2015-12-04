@@ -278,8 +278,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						robot1->setName(name);
 						rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::Bodies::Face1, p, q);
 						rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::Bodies::Face1, 0, q);
-						P = robot0->getConnFacePosition(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::Left, P, Q);
-						Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::DoubleBridge, rsLinkbot::Connectors::Side2, rs::Left, Q);
+						P = robot0->getConnFacePosition(rsLinkbot::Connectors::Bridge, rsLinkbot::Connectors::Side2, rs::Left, P, Q);
+						Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::Bridge, rsLinkbot::Connectors::Side2, rs::Left, Q);
 						P = robot1->getRobotCenterPosition(rsLinkbot::Bodies::Face3, P, Q);
 						Q = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face3, rs::Left, 0, Q);
 						rsScene::Group *sceneRobot1 = _scene->createRobot(robot1);
