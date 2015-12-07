@@ -67,8 +67,7 @@ bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &
 		_list[row][rsObjectModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString(name.c_str());
-		this->sort(ID);
-		emit dataChanged(createIndex(0, 0), createIndex(_list.size(), NUM_COLUMNS));
+		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
 	return false;
@@ -94,8 +93,7 @@ bool objectModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Quat
 		_list[row][MASS] = QVariant(mass).toString();
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString();
-		this->sort(ID);
-		emit dataChanged(createIndex(0, 0), createIndex(_list.size(), NUM_COLUMNS));
+		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
 	return false;
