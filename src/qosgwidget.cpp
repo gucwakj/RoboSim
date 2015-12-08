@@ -527,7 +527,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 	// read background xml file
 	rsXML::BackgroundReader background(current->data(Qt::UserRole).toString().toStdString());
 
-	// load background images	
+	// load background images
 	for (int i = 0; i < 7; i++) {
 		_scene->setBackgroundImage(i, background.getBackgroundImage(i));
 	}
