@@ -172,7 +172,7 @@ set (EXTRA_LIBS ${EXTRA_LIBS} optimized robosimwidget debug robosimwidgetd)
 qt5_wrap_ui (APP_FORMS_HEADERS forms/mainwindow.ui)
 
 # create standalone app
-add_executable (RoboSim
+add_executable (RoboSim WIN32
     src/main.cpp
     src/mainwindow.cpp
     include/mainwindow.h
@@ -180,4 +180,7 @@ add_executable (RoboSim
 )
 set_target_properties (RoboSim PROPERTIES DEBUG_POSTFIX "d")
 target_link_libraries (RoboSim ${EXTRA_LIBS})
+if (WIN32)
+	target_link_libraries (RoboSim Qt5::WinMain)
+endif ()
 
