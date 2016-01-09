@@ -32,7 +32,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 
 	public slots:
 		void clickedObjectIndex(int);
-		void clickedRobotIndex(int);
+		void clickedRobotIndex(int, bool = true);
 		void deleteObjectIndex(QModelIndex, int, int);
 		void deleteRobotIndex(QModelIndex, int, int);
 		void gridDefaults(void);
@@ -81,7 +81,7 @@ class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {
 
 	signals:
 		void clickedObjectIndex(int);
-		void clickedRobotIndex(int);
+		void clickedRobotIndex(int, bool);
 };
 
 #endif // QOSGWIDGET_H_

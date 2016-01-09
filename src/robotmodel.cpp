@@ -34,7 +34,7 @@ bool robotModel::addRobot(int form, int left, int right, int role) {
 
 		// new robot data
 		if (row && this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()) {
-			_list[row][ID] = QVariant(this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()]).toString();
+			_list[row][ID] = QVariant(this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()]).toString();
 		}
 		else {
 			_list[row][ID] = QVariant((row) ? this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
@@ -101,7 +101,7 @@ bool robotModel::addPreconfig(int type, int role) {
 
 	if (role == Qt::EditRole) {
 		if (row && this->data(createIndex(row-1, PRECONFIG), Qt::EditRole).toInt()) {
-			_list[row][ID] = QVariant(this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 + _l_preconfig[type]).toString();
+			_list[row][ID] = QVariant(this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + _l_preconfig[type]).toString();
 		}
 		else {
 			_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
@@ -113,6 +113,7 @@ bool robotModel::addPreconfig(int type, int role) {
 		_list[row][PRECONFIG] = QVariant(type).toString();
 		switch (type) {
 			case rsLinkbot::Preconfigs::Bow:
+				_list[row][P_Z] = QVariant(0.05275).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
 				_list[row][R_THETA] = QVariant(0).toString();
 				_list[row][R_PSI] = QVariant(0).toString();
@@ -120,6 +121,32 @@ bool robotModel::addPreconfig(int type, int role) {
 			default:
 				break;
 		}
+		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
+		return true;
+	}
+	return false;
+}
+
+bool robotModel::newPreconfig(int id, int form, int shape, const rs::Pos &p, const rs::Quat &q, const rs::Vec &c, std::string name, int role) {
+	if (role == Qt::EditRole) {
+		// add row
+		int row = _list.size();
+		this->insertRows(row, 1);
+
+		// new robot data
+		_list[row][ID] = QVariant(id).toString();
+		_list[row][FORM] = QVariant(form).toString();
+		_list[row][NAME] = QString(name.c_str());
+		_list[row][P_X] = QVariant(p[0]).toString();
+		_list[row][P_Y] = QVariant(p[1]).toString();
+		_list[row][P_Z] = QVariant(p[2]).toString();
+		_list[row][R_PHI] = QVariant(asin(q[0]) * 180 * 2 / rs::Pi).toString();
+		_list[row][R_THETA] = QVariant(asin(q[1]) * 180 * 2 / rs::Pi).toString();
+		_list[row][R_PSI] = QVariant(asin(q[2]) * 180 * 2 / rs::Pi).toString();
+		QColor qtc(c[0]*255, c[1]*255, c[2]*255, c[3]*255);
+		_list[row][COLOR] = QString(qtc.name());
+		_list[row][RADIUS] = QVariant(0).toString();
+		_list[row][PRECONFIG] = QVariant(shape).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -226,36 +253,36 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 	}
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
-		switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
-			case rs::LinkbotI: {
-				switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
-					case rsLinkbot::Preconfigs::Bow:				image.load("icons/bow32.png"); break;
-					case rsLinkbot::Preconfigs::Explorer:			image.load("icons/explorer32.png"); break;
-					case rsLinkbot::Preconfigs::FourBotDrive:		image.load("icons/fourbotexplorer32.png"); break;
-					case rsLinkbot::Preconfigs::FourWheelDrive:		image.load("icons/fourwheeldrive32.png"); break;
-					case rsLinkbot::Preconfigs::FourWheelExplorer:	image.load("icons/fourwheelexplorer32.png"); break;
-					case rsLinkbot::Preconfigs::GroupBow:			image.load("icons/groupbow32.png"); break;
-					case rsLinkbot::Preconfigs::Inchworm:			image.load("icons/inchworm32.png"); break;
-					case rsLinkbot::Preconfigs::Lift:				image.load("icons/lift32.png"); break;
-					case rsLinkbot::Preconfigs::Omnidrive:			image.load("icons/omnidrive32.png"); break;
-					case rsLinkbot::Preconfigs::Snake:				image.load("icons/snake32.png"); break;
-					case rsLinkbot::Preconfigs::Stand:				image.load("icons/stand32.png"); break;
-					default:										image.load("icons/linkbotI32.png"); break;
-				}
-				break;
-			}
-			case rs::LinkbotL:
-				image.load("icons/linkbotL32.png");
-				break;
-			case rs::EV3:
-				image.load("icons/mindstormsEV332.png");
-				break;
-			case rs::NXT:
-				image.load("icons/mindstormsNXT32.png");
-				break;
+		switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
+			case rsLinkbot::Preconfigs::Bow:				image.load("icons/bow32.png"); break;
+			case rsLinkbot::Preconfigs::Explorer:			image.load("icons/explorer32.png"); break;
+			case rsLinkbot::Preconfigs::FourBotDrive:		image.load("icons/fourbotexplorer32.png"); break;
+			case rsLinkbot::Preconfigs::FourWheelDrive:		image.load("icons/fourwheeldrive32.png"); break;
+			case rsLinkbot::Preconfigs::FourWheelExplorer:	image.load("icons/fourwheelexplorer32.png"); break;
+			case rsLinkbot::Preconfigs::GroupBow:			image.load("icons/groupbow32.png"); break;
+			case rsLinkbot::Preconfigs::Inchworm:			image.load("icons/inchworm32.png"); break;
+			case rsLinkbot::Preconfigs::Lift:				image.load("icons/lift32.png"); break;
+			case rsLinkbot::Preconfigs::Omnidrive:			image.load("icons/omnidrive32.png"); break;
+			case rsLinkbot::Preconfigs::Snake:				image.load("icons/snake32.png"); break;
+			case rsLinkbot::Preconfigs::Stand:				image.load("icons/stand32.png"); break;
 			default:
-				image.load("icons/monkey32.png");
-				break;
+				switch (_list[index.row()][rsRobotModel::FORM].toInt()) {
+					case rs::LinkbotI:
+						image.load("icons/linkbotI32.png");
+						break;
+					case rs::LinkbotL:
+						image.load("icons/linkbotL32.png");
+						break;
+					case rs::EV3:
+						image.load("icons/mindstormsEV332.png");
+						break;
+					case rs::NXT:
+						image.load("icons/mindstormsNXT32.png");
+						break;
+					default:
+						image.load("icons/monkey32.png");
+						break;
+				}
 		}
 		return image;
 	}
