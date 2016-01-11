@@ -257,9 +257,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		// draw new robot
 		switch (preconfig) {
 			case rsLinkbot::Preconfigs::Bow: {
-				// delete old robots
-				_scene->deleteRobot(id);
-				_scene->deleteRobot(id + 1);
+				// delete old preconfig
+				_scene->deletePreconfig(id);
 
 				// create preconfig group
 				rsScene::Group *group = _scene->createPreconfig(id);
