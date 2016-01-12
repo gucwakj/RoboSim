@@ -45,8 +45,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build obstacles selector
 	names.clear();
 	icons.clear();
-	names << "Box" <<  "Cylinder" << "Hacky Sack" << "Sphere" << "Wood Block";
-	icons << "icons/box128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
+	names << "Box" <<  "Cylinder" << "Hacky Sack" << "Pullup Bar" << "Sphere" << "Wood Block";
+	icons << "icons/box128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/pullup128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
 	this->build_selector(ui->list_obstacles, names, icons);
 	ui->list_obstacles->setDragEnabled(true);
 

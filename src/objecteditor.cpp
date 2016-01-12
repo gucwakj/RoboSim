@@ -23,6 +23,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new dotEditor(_model));
 	_pages->addWidget(new hackysackEditor(_model));
 	_pages->addWidget(new lineEditor(_model));
+	_pages->addWidget(new pullupbarEditor(_model));
 	_pages->addWidget(new sphereEditor(_model));
 	_pages->addWidget(new textEditor(_model));
 	_pages->addWidget(new woodblockEditor(_model));
@@ -80,42 +81,47 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 		int form = _model->data(_model->index(index.row(), rsObjectModel::FORM), Qt::EditRole).toInt();
 		switch (form) {
 			case rs::Box:
-				_pages->setCurrentIndex(1);
+				_pages->setCurrentIndex(rs::Box + 1);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Cylinder:
-				_pages->setCurrentIndex(2);
+				_pages->setCurrentIndex(rs::Cylinder + 1);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<cylinderEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Dot:
-				_pages->setCurrentIndex(3);
+				_pages->setCurrentIndex(rs::Dot + 1);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::HackySack:
-				_pages->setCurrentIndex(4);
+				_pages->setCurrentIndex(rs::HackySack + 1);
 				dynamic_cast<hackysackEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<hackysackEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Line:
-				_pages->setCurrentIndex(5);
+				_pages->setCurrentIndex(rs::Line + 1);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<lineEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
+			case rs::PullupBar:
+				_pages->setCurrentIndex(rs::PullupBar + 1);
+				dynamic_cast<pullupbarEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<pullupbarEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
 			case rs::Sphere:
-				_pages->setCurrentIndex(6);
+				_pages->setCurrentIndex(rs::Sphere + 1);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Text:
-				_pages->setCurrentIndex(7);
+				_pages->setCurrentIndex(rs::Text + 1);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::WoodBlock:
-				_pages->setCurrentIndex(8);
+				_pages->setCurrentIndex(rs::WoodBlock + 1);
 				dynamic_cast<woodblockEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<woodblockEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
@@ -1158,6 +1164,103 @@ void lineEditor::setUnits(bool si) {
 	_lXUnits->setText(text);
 	_lYUnits->setText(text);
 	_lZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Pullup Bar Editor
+ *
+ *
+ */
+
+/*!	\brief Pullup Bar Drawing Editor.
+ *
+ *	Build individual pullup bar editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+pullupbarEditor::pullupbarEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Pullup Bar Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the hacky sack");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the hacky sack");
+	pYBox->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void pullupbarEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void pullupbarEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void pullupbarEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void pullupbarEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
 }
 
 /*!

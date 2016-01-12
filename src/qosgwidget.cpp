@@ -453,6 +453,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 			case rs::Box:
 			case rs::Cylinder:
 			case rs::HackySack:
+			case rs::PullupBar:
 			case rs::Sphere:
 			case rs::WoodBlock: {
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),

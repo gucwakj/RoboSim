@@ -29,6 +29,9 @@ bool objectModel::addObject(int form, int role) {
 			case rs::HackySack:
 				_list[row][P_Z] = QVariant(0.0275).toString();
 				break;
+			case rs::PullupBar:
+				_list[row][P_Z] = QVariant(0.056585).toString();
+				break;
 			case rs::WoodBlock:
 				_list[row][P_Z] = QVariant(0.0127).toString();
 				break;
@@ -148,6 +151,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Hacky Sack"));
 				case rs::Line:
 					return QString(tr("Line"));
+				case rs::PullupBar:
+					return QString(tr("Pullup Bar"));
 				case rs::Sphere:
 					return QString(tr("Sphere"));
 				case rs::Text:
@@ -188,6 +193,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				break;
 			case rs::Line:
 				image.load("icons/line32.png");
+				break;
+			case rs::PullupBar:
+				image.load("icons/pullup32.png");
 				break;
 			case rs::Sphere:
 				image.load("icons/sphere32.png");
@@ -265,6 +273,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::HackySack);
 	else if (!map[0].toString().compare("Line"))
 		this->addObject(rs::Line);
+	else if (!map[0].toString().compare("Pullup Bar"))
+		this->addObject(rs::PullupBar);
 	else if (!map[0].toString().compare("Sphere"))
 		this->addObject(rs::Sphere);
 	else if (!map[0].toString().compare("Text"))

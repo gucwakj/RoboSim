@@ -203,6 +203,24 @@ class lineEditor : public QWidget {
 		int _row;
 };
 
+class pullupbarEditor : public QWidget {
+		Q_OBJECT
+	public:
+		pullupbarEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		int _row;
+};
+
 class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:
