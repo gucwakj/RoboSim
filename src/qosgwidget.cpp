@@ -150,7 +150,11 @@ void QOsgWidget::deleteObjectIndex(QModelIndex index, int first, int last) {
 void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
 	// delete child with id from index
 	int id = _r_model->data(_r_model->index(first, rsRobotModel::ID), Qt::EditRole).toInt();
-	_scene->deleteRobot(id);
+	int preconfig = _r_model->data(_r_model->index(first, rsRobotModel::PRECONFIG), Qt::EditRole).toInt();
+	if (preconfig)
+		_scene->deletePreconfig(id);
+	else
+		_scene->deleteRobot(id);
 	_scene->addAndRemoveChildren();
 }
 

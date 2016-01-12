@@ -6,6 +6,7 @@
 #include <QListWidget>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QTreeWidgetItem>
 
 #include "objectmodel.h"
 #include "robotmodel.h"
@@ -40,6 +41,7 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		void set_units(bool);
 		void grid(std::vector<double>);
 		void setCurrentBackground(std::string);
+		void setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*);
 		void updateBackgroundList(const QString&);
 		void about(void);
 		void load(void);
@@ -48,6 +50,8 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		void usersGuide(void);
 
 	private:
+		void build_challenge(QTreeWidgetItem*, QString, QString);
+		QTreeWidgetItem* build_challenge_folder(QTreeWidgetItem*, QString, QString);
 		void build_selector(QListWidget*, QStringList&, QStringList&);
 		void load_settings(void);
 		void save_settings(void);

@@ -56,7 +56,6 @@ void xmlParser::parse(const char *name) {
 		emit backgroundImage(i, reader.getBackgroundImage(i));
 	}
 	emit backgroundName(reader.getName());
-	emit level(reader.getLevel());
 
 	// add all robots
 	rsXML::Robot *xmlbot = reader.getNextRobot(-1);

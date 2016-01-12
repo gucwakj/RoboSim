@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>739</width>
+    <width>858</width>
     <height>659</height>
    </rect>
   </property>
@@ -310,8 +310,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>143</width>
-            <height>238</height>
+            <width>280</width>
+            <height>585</height>
            </rect>
           </property>
           <attribute name="label">
@@ -607,7 +607,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="movable">
         <bool>true</bool>
@@ -685,7 +685,7 @@
                    <string>Use US Customary Units</string>
                   </property>
                   <property name="text">
-                   <string>US Customary</string>
+                   <string>&amp;US Customary</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -790,7 +790,7 @@
                    <string>Enable the Grid</string>
                   </property>
                   <property name="text">
-                   <string>Grid On</string>
+                   <string>&amp;Grid On</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -1294,6 +1294,84 @@
          </property>
          <item>
           <layout class="QHBoxLayout" name="layout_objects"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_challenges">
+        <attribute name="title">
+         <string>RoboPlay Challenges</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_13">
+         <item>
+          <layout class="QHBoxLayout" name="layout_current" stretch="0,1">
+           <item>
+            <widget class="QLabel" name="label_current">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Current:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_current_item">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>None</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTreeWidget" name="tree_challenges">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QAbstractScrollArea::AdjustIgnored</enum>
+           </property>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="showDropIndicator" stdset="0">
+            <bool>false</bool>
+           </property>
+           <property name="uniformRowHeights">
+            <bool>true</bool>
+           </property>
+           <property name="columnCount">
+            <number>2</number>
+           </property>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Description</string>
+            </property>
+           </column>
+          </widget>
          </item>
         </layout>
        </widget>

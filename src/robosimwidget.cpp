@@ -122,6 +122,73 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 		_watcher.addPath(_background[i]);
 	}
 
+	// set up RoboPlay Challenges list
+	QTreeWidgetItem *rc14 = new QTreeWidgetItem(ui->tree_challenges);
+	rc14->setText(0, "2014");
+	rc14->setText(1, "2014 RoboPlay Challenges");
+	QTreeWidgetItem *rc14div1 = this->build_challenge_folder(rc14, "Division 01", "Middle School");
+	this->build_challenge(rc14div1, "Hit the Wall", "15 points");
+	this->build_challenge(rc14div1, "Disco", "30 points");
+	this->build_challenge(rc14div1, "Chicken", "30 points");
+	this->build_challenge(rc14div1, "Bounce", "40 points");
+	this->build_challenge(rc14div1, "Speed Racer", "60 points");
+	this->build_challenge(rc14div1, "Racetrack", "60 points");
+	this->build_challenge(rc14div1, "High Five Low Five", "60 points");
+	this->build_challenge(rc14div1, "Steal the Gold", "80 points");
+	this->build_challenge(rc14div1, "The Grid", "95 points");
+	this->build_challenge(rc14div1, "MISSINGTransportMISSING", "115 points");
+	QTreeWidgetItem *rc14div2 = this->build_challenge_folder(rc14, "Division 02", "High School");
+	this->build_challenge(rc14div2, "Bounce", "40 points");
+	this->build_challenge(rc14div2, "Steal the Gold", "50 points");
+	this->build_challenge(rc14div2, "Racetrack", "60 points");
+	this->build_challenge(rc14div2, "C U Soon", "50 points");
+	this->build_challenge(rc14div2, "High Five Low Five", "60 points");
+	this->build_challenge(rc14div2, "Get'n Dizzy Wit It", "80 points");
+	this->build_challenge(rc14div2, "Tortoise and the Hare", "80 points");
+	this->build_challenge(rc14div2, "The Grid", "95 points");
+	this->build_challenge(rc14div2, "MISSINGTransportMISSING", "115 points");
+	this->build_challenge(rc14div2, "MISSINGAlley OopMISSING", "120 points");
+	QTreeWidgetItem *rc15 = new QTreeWidgetItem(ui->tree_challenges);
+	rc15->setText(0, "2015");
+	rc15->setText(1, "2015 RoboPlay Challenges");
+	QTreeWidgetItem *rc15div1 = this->build_challenge_folder(rc15, "Division 01", "");
+	this->build_challenge(rc15div1, "Stop on a Dime", "15 points");
+	this->build_challenge(rc15div1, "Straight Forward", "25 points");
+	this->build_challenge(rc15div1, "Robotic Slide", "40 points");
+	this->build_challenge(rc15div1, "Robot Delivery Service", "40 points");
+	this->build_challenge(rc15div1, "Destination Unknown", "60 points");
+	this->build_challenge(rc15div1, "MISSINGBug TimeMISSING", "60 points");
+	this->build_challenge(rc15div1, "Speed Racer", "80 points");
+	this->build_challenge(rc15div1, "Tag", "80 points");
+	this->build_challenge(rc15div1, "MISSINGRobo PullupsMISSING", "100 points");
+	this->build_challenge(rc15div1, "Stacking Challenge", "120 points");
+	QTreeWidgetItem *rc15div2 = this->build_challenge_folder(rc15, "Division 02", "");
+	this->build_challenge(rc15div2, "Landing Zone", "40 points");
+	this->build_challenge(rc15div2, "Newtons Cradle", "55 points");
+	this->build_challenge(rc15div2, "MISSINGRobo PullupsMISSING", "60 points");
+	this->build_challenge(rc15div2, "Speed Racer", "60 points");
+	this->build_challenge(rc15div2, "Navigate the Oval", "60 points");
+	this->build_challenge(rc15div2, "MISSINGMeet Ya ThereMISSING", "75 points");
+	this->build_challenge(rc15div2, "MISSINGBug TimeMISSING", "75 points");
+	this->build_challenge(rc15div2, "Stacking Challenge", "90 points");
+	this->build_challenge(rc15div2, "Retrieve Supplies", "100 points");
+	this->build_challenge(rc15div2, "Synchronized Roboting", "120 points");
+	QTreeWidgetItem *rc15div3 = this->build_challenge_folder(rc15, "Division 03", "");
+	this->build_challenge(rc15div3, "Newtons Cradle", "40 points");
+	this->build_challenge(rc15div3, "MISSINGRobo PullupsMISSING", "40 points");
+	this->build_challenge(rc15div3, "Navigate the Figure Eighter", "40 points");
+	this->build_challenge(rc15div3, "Stacking Challenge", "60 points");
+	this->build_challenge(rc15div3, "Synchronized Roboting", "60 points");
+	this->build_challenge(rc15div3, "Flash Mob", "70 points");
+	this->build_challenge(rc15div3, "Speed Racer", "65 points");
+	this->build_challenge(rc15div3, "Retrieving Supplies from Drop Site", "100 points");
+	this->build_challenge(rc15div3, "MISSINGBug ClockMISSING", "100 points");
+	this->build_challenge(rc15div3, "Tired of Wheels", "140 points");
+	ui->tree_challenges->expandItem(rc14);
+	ui->tree_challenges->expandItem(rc14div1);
+	ui->tree_challenges->expandItem(rc15);
+	ui->tree_challenges->resizeColumnToContents(0);
+
 	// set up osg view
 	ui->osgWidget->setRobotModel(_rob_model);
 	ui->osgWidget->setObjectModel(_obj_model);
@@ -175,6 +242,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), _xml, SLOT(setBackground(QListWidgetItem*, QListWidgetItem*)));
 	QWidget::connect(ui->add_background, SIGNAL(clicked(void)), this, SLOT(addBackground(void)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
+	QWidget::connect(ui->tree_challenges, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*)));
 
 	// file watcher of background files
 	QWidget::connect(&_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(updateBackgroundList(QString)));
@@ -272,6 +340,21 @@ void roboSimWidget::build_selector(QListWidget *widget, QStringList &names, QStr
 	}
 }
 
+void roboSimWidget::build_challenge(QTreeWidgetItem *parent, QString name, QString description) {
+	QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+	treeItem->setText(0, name);
+	treeItem->setText(1, description);
+	parent->addChild(treeItem);
+}
+
+QTreeWidgetItem* roboSimWidget::build_challenge_folder(QTreeWidgetItem *parent, QString name, QString description) {
+	QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+	treeItem->setText(0, name);
+	treeItem->setText(1, description);
+	parent->addChild(treeItem);
+	return treeItem;
+}
+
 void roboSimWidget::changeIndices(int ind) {
 	ui->toolBox_config->setCurrentIndex(ind-2);
 	ui->osgWidget->setCurrentIndex(ind-2);
@@ -366,6 +449,7 @@ void roboSimWidget::setCurrentBackground(std::string name) {
 		QListWidgetItem *item = ui->backgroundListWidget->item(i);
 		if ( !item->text().compare(name.c_str()) ) {
 			ui->backgroundListWidget->setCurrentRow(i);
+			ui->osgWidget->setNewBackground(item, item);
 			break;
 		}
 	}
@@ -382,6 +466,40 @@ void roboSimWidget::updateBackgroundList(const QString &str) {
 				ui->osgWidget->setNewBackground(item, item);
 			}
 			break;
+		}
+	}
+}
+
+void roboSimWidget::setNewChallenge(QTreeWidgetItem *current, QTreeWidgetItem *previous) {
+	QString challenge = current->data(0, Qt::EditRole).toString();
+	QString bread;
+
+	// if challenge is selected
+	if (current->parent()) {
+		QString division = current->parent()->data(0, Qt::EditRole).toString();
+		if (current->parent()->parent()) {
+			QString year = current->parent()->parent()->data(0, Qt::EditRole).toString();
+			bread.append(year).append("->").append(division).append("->").append(challenge);
+			ui->label_current_item->setText(bread);
+			// create filepath to load
+			QString fileName = rsXML::getDefaultChallengePath().c_str();
+			division = division.toLower();
+			division.replace(QString(" "), QString(""));
+			challenge = challenge.toLower();
+			challenge.replace(QString(" "), QString("_"));
+			fileName.append(year).append("/").append(division).append("/").append(challenge).append(".xml");
+			QFileInfo checkFile(fileName);
+			if (checkFile.exists() && checkFile.isFile()) {
+				_rob_model->clear();
+				_obj_model->clear();
+				_xml->parse(fileName.toStdString().c_str());
+				emit statusMessage(tr("Loaded %1").arg(fileName), 2000);
+			}
+		}
+		else {
+			// none, go back to old one
+			ui->label_current_item->setText("None");
+			emit statusMessage(tr("No Challenge Loaded"), 2000);
 		}
 	}
 }
@@ -405,7 +523,7 @@ void roboSimWidget::load(void) {
 		_rob_model->clear();
 		_obj_model->clear();
 		_xml->parse(fileName.toStdString().c_str());
-		emit statusMessage(tr("RoboSim: Loaded %1").arg(fileName), 2000);
+		emit statusMessage(tr("Loaded %1").arg(fileName), 2000);
 	}
 }
 
