@@ -1,1 +1,5 @@
 build/
+*.aux
+*.idx
+*.log
+*.toc

@@ -761,8 +761,8 @@ robot.  \texttt{<position>} specifies the X, Y, and Z coordinates of the robot.
 robot.  \texttt{<joint>} allows the joints to be rotated initially as opposed to
 being built at zero rotation.  \texttt{<wheels>} creates a car robot by
 attaching wheels and a caster to each robot.  The numbers of each wheel
-correspond to the connectors listed in Table \ref{tab:acc}.  Examples are shown
-below.
+correspond to the connectors listed in Table \ref{tab:linkacc} for Linkbots or
+Table \ref{tab:mindacc} for Mindstorms.  Examples are shown below.
 \begin{verbatim}
 <linkboti id="0">
     <position x="0" y="0" z="0"/>
@@ -856,32 +856,45 @@ attached to that side, and the face of that robot.
 <side id="1" robot="1" face="1"/>
 \end{verbatim}
 
-All sides are options which reside under the main accessory tag.  The
-accessories available are shown in Table \ref{tab:acc}.
+All sides are options which reside under the main accessory tag.  Each type of
+robot has his own set of accessories.  Linkbot accessories are shown in Table
+\ref{tab:linkacc} and Mindstorms accessories are shown in Table
+\ref{tab:mindacc}.
 
 \begin{table}[H]
 	\begin{center}
-	\begin{tabular}{c | c | c | l}
+	\begin{tabular}{c | c | c}
 		\hline \hline
-		\textbf{Number} & \textbf{Accessory} & \textbf{Num. of Sides} & \textbf{Robot} \\ \hline
-		0 & bigwheel & 1 & both \\
-		1 & bridge & 2 & linkbot \\
-		2 & caster & 1 & both \\
-		3 & cube & 5 & linkbot \\
-		4 & faceplate & 1 & linkbot \\
-		5 & gripper & 1 & linkbot \\
-		6 & l & 3 & mobot \\
-		7 & omnidrive & 4 & linkbot \\
-		8 & simple & 2 & both \\
-		9 & smallwheel & 1 & both \\
-		10 & square & 4 & mobot \\
-		11 & tank & 3 & mobot \\
-		12 & tinywheel & 1 & linkbot \\
-		13 & wheel & 1 & both \\
+		\textbf{Number} & \textbf{Accessory} & \textbf{Num. of Sides} \\ \hline
+		1 & BigWheel & 1 \\
+		2 & Bridge & 2 \\
+		3 & Caster & 1 \\
+		4 & Cube & 5 \\
+		5 & Faceplate & 1 \\
+		6 & Gripper & 1 \\
+		7 & Omniplate & 4 \\
+		8 & Simple & 2 \\
+		9 & SmallWheel & 1 \\
+		10 & TinyWheel & 1 \\
+		11 & Wheel & 1 \\
 		\hline \hline
 	\end{tabular}
-	\caption{Robot Accessories}
-	\label{tab:acc}
+	\caption{Linkbot Accessories}
+	\label{tab:linkacc}
+	\end{center}
+\end{table}
+
+\begin{table}[H]
+	\begin{center}
+	\begin{tabular}{c | c | c}
+		\hline \hline
+		\textbf{Number} & \textbf{Accessory} & \textbf{Num. of Sides} \\ \hline
+		1 & Big Wheel & 1 \\
+		2 & Small Wheel & 1 \\
+		\hline \hline
+	\end{tabular}
+	\caption{Mindstorms Accessories}
+	\label{tab:mindacc}
 	\end{center}
 \end{table}
 
@@ -919,7 +932,7 @@ Since accessories of the Linkbot can be attached to each other and not just
 directly to the robot, there are options to daisy-chain the accessories
 together.  To do this, the \verb%face% option is replaced for a side with the
 \verb%conn% option and the number corresponding to the accessory shown in the
-first column of Table \ref{tab:acc}.  The example below shows the simple
+first column of Table \ref{tab:linkacc}.  The example below shows the simple
 connector with a smallwheel attached to the third face of the robot.
 \begin{verbatim}
 <simple>
