@@ -60,9 +60,17 @@ void xmlParser::parse(const char *name) {
 	// add all robots
 	rsXML::Robot *xmlbot = reader.getNextRobot(-1);
 	while (xmlbot) {
-		switch(xmlbot->getShape()) {
+		switch (xmlbot->getShape()) {
 			case rsLinkbot::Preconfigs::Bow: {
 				emit newPreconfig(xmlbot->getID(), xmlbot->getForm(), xmlbot->getShape(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getLED(), xmlbot->getName());
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
+				break;
+			}
+			case rsLinkbot::Preconfigs::FourBotDrive: {
+				emit newPreconfig(xmlbot->getID(), xmlbot->getForm(), xmlbot->getShape(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getLED(), xmlbot->getName());
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
 				xmlbot = reader.getNextRobot(-1);
 				xmlbot = reader.getNextRobot(-1);
 				break;
@@ -170,6 +178,11 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 			case rsLinkbot::Preconfigs::Bow: {
 				tinyxml2::XMLElement *bow = Writer::getOrCreatePreconfig(form, preconfig, id);
 				Writer::setPreconfig(bow, name, p, q, c);
+				break;
+			}
+			case rsLinkbot::Preconfigs::FourBotDrive: {
+				tinyxml2::XMLElement *fourbotdrive = Writer::getOrCreatePreconfig(form, preconfig, id);
+				Writer::setPreconfig(fourbotdrive, name, p, q, c);
 				break;
 			}
 			default: {

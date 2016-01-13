@@ -118,6 +118,12 @@ bool robotModel::addPreconfig(int type, int role) {
 				_list[row][R_THETA] = QVariant(0).toString();
 				_list[row][R_PSI] = QVariant(0).toString();
 				break;
+			case rsLinkbot::Preconfigs::FourBotDrive:
+				_list[row][P_Z] = QVariant(0.04445).toString();
+				_list[row][R_PHI] = QVariant(-90).toString();
+				_list[row][R_THETA] = QVariant(0).toString();
+				_list[row][R_PSI] = QVariant(0).toString();
+				break;
 			default:
 				break;
 		}
@@ -256,7 +262,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
 			case rsLinkbot::Preconfigs::Bow:				image.load("icons/bow32.png"); break;
 			case rsLinkbot::Preconfigs::Explorer:			image.load("icons/explorer32.png"); break;
-			case rsLinkbot::Preconfigs::FourBotDrive:		image.load("icons/fourbotexplorer32.png"); break;
+			case rsLinkbot::Preconfigs::FourBotDrive:		image.load("icons/fourbotdrive32.png"); break;
 			case rsLinkbot::Preconfigs::FourWheelDrive:		image.load("icons/fourwheeldrive32.png"); break;
 			case rsLinkbot::Preconfigs::FourWheelExplorer:	image.load("icons/fourwheelexplorer32.png"); break;
 			case rsLinkbot::Preconfigs::GroupBow:			image.load("icons/groupbow32.png"); break;
