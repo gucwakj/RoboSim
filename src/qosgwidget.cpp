@@ -182,41 +182,49 @@ void QOsgWidget::gridDefaults(void) {
 	// draw new grid
 	_scene->setUnits(_units);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridTics(double value) {
 	_grid[0] = convert(value);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridHash(double value) {
 	_grid[1] = convert(value);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMinX(double value) {
 	_grid[2] = convert(value);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMaxX(double value) {
 	_grid[3] = convert(value);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMinY(double value) {
 	_grid[4] = convert(value);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMaxY(double value) {
 	_grid[5] = convert(value);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridEnabled(bool enabled) {
 	_grid[6] = static_cast<double>(enabled);
 	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
@@ -618,6 +626,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 
 	// set level after images are set
 	_scene->setLevel(background.getLevel());
+	_scene->addAndRemoveChildren(true);
 
 	// draw object objects
 	for (int i = 0; i < background.getNumObstacles(); i++) {
