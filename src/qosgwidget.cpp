@@ -490,6 +490,47 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				delete robot3;
 				break;
 			}
+			case rsLinkbot::Preconfigs::Inchworm: {
+				// delete old preconfig
+				_scene->deletePreconfig(id);
+
+				// create preconfig group
+				rsScene::Group *group = _scene->createPreconfig(id);
+
+				// draw base robot
+				rsScene::Linkbot *robot0 = new rsScene::Linkbot(rs::LinkbotL);
+				robot0->setID(id);
+				robot0->setName(name);
+				p.add(0, 0, robot0->getBodyHeight()/2);
+				rsScene::Group *sceneRobot0 = _scene->createRobot(robot0);
+				robot0->draw(sceneRobot0, p, q, rs::Vec(0, 0, 0), c, 0);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Bridge, rsLinkbot::Bodies::Face1, rs::Left, 0, 1, -1);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, rsLinkbot::Connectors::Faceplate);
+
+				// draw second robot
+				rsScene::Linkbot *robot1 = new rsScene::Linkbot(rs::LinkbotL);
+				robot1->setID(id + 1);
+				robot1->setName(name);
+				rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::Bodies::Face1, p, q);
+				rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::Bodies::Face1, 0, q);
+				P = robot0->getConnFacePosition(rsLinkbot::Connectors::Bridge, rsLinkbot::Connectors::Side2, rs::Left, P, Q);
+				Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::Bridge, rsLinkbot::Connectors::Side2, rs::Left, Q);
+				P = robot1->getRobotCenterPosition(rsLinkbot::Bodies::Face1, P, Q);
+				Q = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face1, rs::Right, 0, Q);
+				rsScene::Group *sceneRobot1 = _scene->createRobot(robot1);
+				robot1->draw(sceneRobot1, P, Q, rs::Vec(0, 0, 0), c, 0);
+				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, rsLinkbot::Connectors::Faceplate);
+
+				// add robots to group
+				group->addChild(sceneRobot0);
+				group->addChild(sceneRobot1);
+				_scene->stageChild(group);
+
+				// end
+				delete robot0;
+				delete robot1;
+				break;
+			}
 			default: {
 				switch (form) {
 					case rs::LinkbotI: {
