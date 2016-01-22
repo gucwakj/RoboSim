@@ -142,6 +142,12 @@ bool robotModel::addPreconfig(int type, int role) {
 				_list[row][R_THETA] = QVariant(180).toString();
 				_list[row][R_PSI] = QVariant(0).toString();
 				break;
+			case rsLinkbot::Preconfigs::Stand:
+				_list[row][P_Z] = QVariant(0).toString();
+				_list[row][R_PHI] = QVariant(0).toString();
+				_list[row][R_THETA] = QVariant(0).toString();
+				_list[row][R_PSI] = QVariant(0).toString();
+				break;
 			default:
 				break;
 		}
@@ -251,7 +257,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 							return QString(tr("Snake\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Snake]);
 							break;
 						case rsLinkbot::Preconfigs::Stand:
-							return QString(tr("StandRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Stand]);
+							return QString(tr("Stand\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Stand]);
 							break;
 						default:
 							return QString(tr("%1\nRobot %2")).arg(name).arg(id + 1);
