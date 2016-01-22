@@ -380,6 +380,48 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				delete robot3;
 				break;
 			}
+			case rsLinkbot::Preconfigs::FourWheelDrive: {
+				// delete old preconfig
+				_scene->deletePreconfig(id);
+
+				// create preconfig group
+				rsScene::Group *group = _scene->createPreconfig(id);
+
+				// draw base robot
+				rsScene::Linkbot *robot0 = new rsScene::Linkbot(rs::LinkbotI);
+				robot0->setID(id);
+				robot0->setName(name);
+				rsScene::Group *sceneRobot0 = _scene->createRobot(robot0);
+				robot0->draw(sceneRobot0, p, q, rs::Vec(0, 0, 0), c, 0);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Cube, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+
+				// draw second robot
+				rsScene::Linkbot *robot1 = new rsScene::Linkbot(rs::LinkbotI);
+				robot1->setID(id + 1);
+				robot1->setName(name);
+				rs::Pos P1 = robot0->getRobotFacePosition(rsLinkbot::Bodies::Face2, p, q);
+				rs::Quat Q1 = robot0->getRobotBodyQuaternion(rsLinkbot::Bodies::Face2, 0, q);
+				P1 = robot0->getConnFacePosition(rsLinkbot::Connectors::Cube, rsLinkbot::Connectors::Side3, rs::Right, P1, Q1);
+				Q1 = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::Cube, rsLinkbot::Connectors::Side3, rs::Right, Q1);
+				P1 = robot1->getRobotCenterPosition(rsLinkbot::Bodies::Face2, P1, Q1);
+				Q1 = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face2, rs::Right, 0, Q1);
+				rsScene::Group *sceneRobot1 = _scene->createRobot(robot1);
+				robot1->draw(sceneRobot1, P1, Q1, rs::Vec(0, 0, 0), c, 0);
+				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+
+				// add robots to group
+				group->addChild(sceneRobot0);
+				group->addChild(sceneRobot1);
+				_scene->stageChild(group);
+
+				// end
+				delete robot0;
+				delete robot1;
+				break;
+			}
 			default: {
 				switch (form) {
 					case rs::LinkbotI: {

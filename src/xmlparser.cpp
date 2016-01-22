@@ -75,6 +75,12 @@ void xmlParser::parse(const char *name) {
 				xmlbot = reader.getNextRobot(-1);
 				break;
 			}
+			case rsLinkbot::Preconfigs::FourWheelDrive: {
+				emit newPreconfig(xmlbot->getID(), xmlbot->getForm(), xmlbot->getShape(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getLED(), xmlbot->getName());
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
+				break;
+			}
 			default: {
 				rs::Vec xmlwheels = xmlbot->getWheels();
 				rs::Vec wheels;
@@ -174,18 +180,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
 		int wheel[2] = {0};
 
-		switch (preconfig) {
-			case rsLinkbot::Preconfigs::Bow: {
-				tinyxml2::XMLElement *bow = Writer::getOrCreatePreconfig(form, preconfig, id);
-				Writer::setPreconfig(bow, name, p, q, c);
-				break;
-			}
-			case rsLinkbot::Preconfigs::FourBotDrive: {
-				tinyxml2::XMLElement *fourbotdrive = Writer::getOrCreatePreconfig(form, preconfig, id);
-				Writer::setPreconfig(fourbotdrive, name, p, q, c);
-				break;
-			}
-			default: {
+		if (preconfig == rsLinkbot::Preconfigs::Individual) {
 				// create robot element
 				tinyxml2::XMLElement *robot = Writer::getOrCreateRobot(form, id);
 
@@ -240,7 +235,10 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				Writer::setRobotWheels(robot, wheel[0], radius, wheel[1], radius);
 				// done
 				break;
-			}
+		}
+		else {
+			tinyxml2::XMLElement *pre = Writer::getOrCreatePreconfig(form, preconfig, id);
+			Writer::setPreconfig(pre, name, p, q, c);
 		}
 	}
 
