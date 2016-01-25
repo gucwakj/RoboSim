@@ -322,7 +322,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				rsScene::Group *sceneRobot0 = _scene->createRobot(robot0);
 				robot0->draw(sceneRobot0, p, q, rs::Vec(0, 0, 0), c, 0);
 				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Omniplate, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
-				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, -1);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 2, rsLinkbot::Connectors::SmallWheel);
 
 				// draw second robot
 				rsScene::Linkbot *robot1 = new rsScene::Linkbot(rs::LinkbotI);
@@ -336,7 +337,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Q1 = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face2, rs::Right, 0, Q1);
 				rsScene::Group *sceneRobot1 = _scene->createRobot(robot1);
 				robot1->draw(sceneRobot1, P1, Q1, rs::Vec(0, 0, 0), c, 0);
-				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, -1);
+				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 2, rsLinkbot::Connectors::SmallWheel);
 
 				// draw third robot
 				rsScene::Linkbot *robot2 = new rsScene::Linkbot(rs::LinkbotI);
@@ -350,7 +352,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Q2 = robot2->getRobotCenterQuaternion(rsLinkbot::Bodies::Face2, rs::Right, 0, Q2);
 				rsScene::Group *sceneRobot2 = _scene->createRobot(robot2);
 				robot2->draw(sceneRobot2, P2, Q2, rs::Vec(0, 0, 0), c, 0);
-				robot2->drawConnector(sceneRobot2, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot2->drawConnector(sceneRobot2, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, -1);
+				robot2->drawConnector(sceneRobot2, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 2, rsLinkbot::Connectors::SmallWheel);
 
 				// draw fourth robot
 				rsScene::Linkbot *robot3 = new rsScene::Linkbot(rs::LinkbotI);
@@ -364,7 +367,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Q3 = robot3->getRobotCenterQuaternion(rsLinkbot::Bodies::Face2, rs::Right, 0, Q3);
 				rsScene::Group *sceneRobot3 = _scene->createRobot(robot3);
 				robot3->draw(sceneRobot3, P3, Q3, rs::Vec(0, 0, 0), c, 0);
-				robot3->drawConnector(sceneRobot3, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot3->drawConnector(sceneRobot3, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, -1);
+				robot3->drawConnector(sceneRobot3, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 2, rsLinkbot::Connectors::SmallWheel);
 
 				// add robots to group
 				group->addChild(sceneRobot0);
