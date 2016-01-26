@@ -108,75 +108,45 @@ bool robotModel::addPreconfig(int type, int role) {
 		}
 		_list[row][FORM] = QVariant(rs::LinkbotI).toString();
 		_list[row][NAME] = QString("");
-		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + rs::IN2M(6) : 0).toString();	// offset by 6 inches
+		_list[row][P_Z] = QVariant(0).toString();
 		_list[row][COLOR] = QString("#00ff00");
 		_list[row][PRECONFIG] = QVariant(type).toString();
+		_list[row][R_PHI] = QVariant(0).toString();
+		_list[row][R_THETA] = QVariant(0).toString();
+		_list[row][R_PSI] = QVariant(0).toString();
 		switch (type) {
 			case rsLinkbot::Preconfigs::Bow:
 				_list[row][P_Z] = QVariant(0.05275).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			case rsLinkbot::Preconfigs::Explorer:
+				_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + rs::IN2M(12) : 0).toString();
 				_list[row][P_Z] = QVariant(0.05080).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			case rsLinkbot::Preconfigs::FourBotDrive:
 				_list[row][P_Z] = QVariant(0.04445).toString();
 				_list[row][R_PHI] = QVariant(-90).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			case rsLinkbot::Preconfigs::FourWheelDrive:
 				_list[row][P_Z] = QVariant(0.04445).toString();
-				_list[row][R_PHI] = QVariant(0).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			case rsLinkbot::Preconfigs::FourWheelExplorer:
+				_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + rs::IN2M(12) : 0).toString();
 				_list[row][P_Z] = QVariant(0.05080).toString();
-				_list[row][R_PHI] = QVariant(0).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
 				_list[row][R_PSI] = QVariant(-90).toString();
 				break;
 			case rsLinkbot::Preconfigs::GroupBow:
 				_list[row][P_Z] = QVariant(0.05275).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			case rsLinkbot::Preconfigs::Inchworm:
-				_list[row][P_Z] = QVariant(0).toString();
-				_list[row][R_PHI] = QVariant(0).toString();
 				_list[row][R_THETA] = QVariant(180).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
-				break;
-			case rsLinkbot::Preconfigs::Lift:
-				_list[row][P_Z] = QVariant(0).toString();
-				_list[row][R_PHI] = QVariant(0).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			case rsLinkbot::Preconfigs::Omnidrive:
 				_list[row][P_Z] = QVariant(0.04445).toString();
 				_list[row][R_PHI] = QVariant(-90).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
-				break;
-			case rsLinkbot::Preconfigs::Snake:
-				_list[row][P_Z] = QVariant(0).toString();
-				_list[row][R_PHI] = QVariant(0).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
-				break;
-			case rsLinkbot::Preconfigs::Stand:
-				_list[row][P_Z] = QVariant(0).toString();
-				_list[row][R_PHI] = QVariant(0).toString();
-				_list[row][R_THETA] = QVariant(0).toString();
-				_list[row][R_PSI] = QVariant(0).toString();
 				break;
 			default:
 				break;
