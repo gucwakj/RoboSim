@@ -38,7 +38,6 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
 	icons << "icons/bow128.png" << "icons/explorer128.png" << "icons/fourbotdrive128.png" << "icons/fourwheeldrive128.png" << "icons/fourwheelexplorer128.png" << "icons/groupbow128.png" << "icons/inchworm128.png" << "icons/lift128.png" << "icons/omnidrive128.png" << "icons/snake128.png" << "icons/stand128.png";
 	this->build_selector(ui->list_preconfig, names, icons);
-	ui->list_preconfig->setDragEnabled(true);
 
 	// build obstacles selector
 	names.clear();
@@ -46,7 +45,6 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names << "Box" <<  "Cylinder" << "Hacky Sack" << "Pullup Bar" << "Sphere" << "Wood Block";
 	icons << "icons/box128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/pullup128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
 	this->build_selector(ui->list_obstacles, names, icons);
-	ui->list_obstacles->setDragEnabled(true);
 
 	// build drawings selector
 	names.clear();
@@ -54,7 +52,6 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names << "Line" <<  "Point" << "Text";
 	icons << "icons/line128.png" << "icons/point128.png" << "icons/text128.png";
 	this->build_selector(ui->list_markers, names, icons);
-	ui->list_markers->setDragEnabled(true);
 
 	// set robots as first view in toolbox
 	ui->toolBox_config->setCurrentIndex(0);
