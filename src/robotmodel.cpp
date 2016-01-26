@@ -136,6 +136,12 @@ bool robotModel::addPreconfig(int type, int role) {
 				_list[row][R_THETA] = QVariant(0).toString();
 				_list[row][R_PSI] = QVariant(0).toString();
 				break;
+			case rsLinkbot::Preconfigs::FourWheelExplorer:
+				_list[row][P_Z] = QVariant(0.05080).toString();
+				_list[row][R_PHI] = QVariant(0).toString();
+				_list[row][R_THETA] = QVariant(0).toString();
+				_list[row][R_PSI] = QVariant(-90).toString();
+				break;
 			case rsLinkbot::Preconfigs::GroupBow:
 				_list[row][P_Z] = QVariant(0.05275).toString();
 				_list[row][R_PHI] = QVariant(90).toString();

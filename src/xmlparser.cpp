@@ -90,6 +90,15 @@ void xmlParser::parse(const char *name) {
 				xmlbot = reader.getNextRobot(-1);
 				break;
 			}
+			case rsLinkbot::Preconfigs::FourWheelExplorer: {
+				emit newPreconfig(xmlbot->getID(), xmlbot->getForm(), xmlbot->getShape(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getLED(), xmlbot->getName());
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
+				xmlbot = reader.getNextRobot(-1);
+				break;
+			}
 			case rsLinkbot::Preconfigs::GroupBow: {
 				emit newPreconfig(xmlbot->getID(), xmlbot->getForm(), xmlbot->getShape(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getLED(), xmlbot->getName());
 				xmlbot = reader.getNextRobot(-1);
