@@ -46,6 +46,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names << "Box" <<  "Cylinder" << "Hacky Sack" << "Pullup Bar" << "Sphere" << "Wood Block";
 	icons << "icons/box128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/pullup128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
 	this->build_selector(ui->list_obstacles, names, icons);
+	ui->list_obstacles->setDragEnabled(true);
 
 	// build drawings selector
 	names.clear();
@@ -53,6 +54,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names << "Line" <<  "Point" << "Text";
 	icons << "icons/line128.png" << "icons/point128.png" << "icons/text128.png";
 	this->build_selector(ui->list_markers, names, icons);
+	ui->list_markers->setDragEnabled(true);
 
 	// set robots as first view in toolbox
 	ui->toolBox_config->setCurrentIndex(0);
