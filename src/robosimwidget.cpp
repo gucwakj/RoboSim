@@ -121,31 +121,6 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	}
 
 	// set up RoboPlay Challenges list
-	QTreeWidgetItem *rc14 = new QTreeWidgetItem(ui->tree_challenges);
-	rc14->setText(0, "2014");
-	rc14->setText(1, "2014 RoboPlay Challenges");
-	QTreeWidgetItem *rc14div1 = this->build_challenge_folder(rc14, "Division 01", "Middle School");
-	this->build_challenge(rc14div1, "Hit the Wall", "15 points");
-	this->build_challenge(rc14div1, "Disco", "30 points");
-	this->build_challenge(rc14div1, "Chicken", "30 points");
-	this->build_challenge(rc14div1, "Bounce", "40 points");
-	this->build_challenge(rc14div1, "Speed Racer", "60 points");
-	this->build_challenge(rc14div1, "Racetrack", "60 points");
-	this->build_challenge(rc14div1, "High Five Low Five", "60 points");
-	this->build_challenge(rc14div1, "Steal the Gold", "80 points");
-	this->build_challenge(rc14div1, "The Grid", "95 points");
-	this->build_challenge(rc14div1, "MISSINGTransportMISSING", "115 points");
-	QTreeWidgetItem *rc14div2 = this->build_challenge_folder(rc14, "Division 02", "High School");
-	this->build_challenge(rc14div2, "Bounce", "40 points");
-	this->build_challenge(rc14div2, "Steal the Gold", "50 points");
-	this->build_challenge(rc14div2, "Racetrack", "60 points");
-	this->build_challenge(rc14div2, "C U Soon", "50 points");
-	this->build_challenge(rc14div2, "High Five Low Five", "60 points");
-	this->build_challenge(rc14div2, "Get'n Dizzy Wit It", "80 points");
-	this->build_challenge(rc14div2, "Tortoise and the Hare", "80 points");
-	this->build_challenge(rc14div2, "The Grid", "95 points");
-	this->build_challenge(rc14div2, "MISSINGTransportMISSING", "115 points");
-	this->build_challenge(rc14div2, "MISSINGAlley OopMISSING", "120 points");
 	QTreeWidgetItem *rc15 = new QTreeWidgetItem(ui->tree_challenges);
 	rc15->setText(0, "2015");
 	rc15->setText(1, "2015 RoboPlay Challenges");
@@ -182,9 +157,34 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc15div3, "Retrieving Supplies from Drop Site", "100 points");
 	this->build_challenge(rc15div3, "MISSINGBug ClockMISSING", "100 points");
 	this->build_challenge(rc15div3, "Tired of Wheels", "140 points");
-	ui->tree_challenges->expandItem(rc14);
-	ui->tree_challenges->expandItem(rc14div1);
+	QTreeWidgetItem *rc14 = new QTreeWidgetItem(ui->tree_challenges);
+	rc14->setText(0, "2014");
+	rc14->setText(1, "2014 RoboPlay Challenges");
+	QTreeWidgetItem *rc14div1 = this->build_challenge_folder(rc14, "Division 01", "Middle School");
+	this->build_challenge(rc14div1, "Hit the Wall", "15 points");
+	this->build_challenge(rc14div1, "Disco", "30 points");
+	this->build_challenge(rc14div1, "Chicken", "30 points");
+	this->build_challenge(rc14div1, "Bounce", "40 points");
+	this->build_challenge(rc14div1, "Speed Racer", "60 points");
+	this->build_challenge(rc14div1, "Racetrack", "60 points");
+	this->build_challenge(rc14div1, "High Five Low Five", "60 points");
+	this->build_challenge(rc14div1, "Steal the Gold", "80 points");
+	this->build_challenge(rc14div1, "The Grid", "95 points");
+	this->build_challenge(rc14div1, "MISSINGTransportMISSING", "115 points");
+	QTreeWidgetItem *rc14div2 = this->build_challenge_folder(rc14, "Division 02", "High School");
+	this->build_challenge(rc14div2, "Bounce", "40 points");
+	this->build_challenge(rc14div2, "Steal the Gold", "50 points");
+	this->build_challenge(rc14div2, "Racetrack", "60 points");
+	this->build_challenge(rc14div2, "C U Soon", "50 points");
+	this->build_challenge(rc14div2, "High Five Low Five", "60 points");
+	this->build_challenge(rc14div2, "Get'n Dizzy Wit It", "80 points");
+	this->build_challenge(rc14div2, "Tortoise and the Hare", "80 points");
+	this->build_challenge(rc14div2, "The Grid", "95 points");
+	this->build_challenge(rc14div2, "MISSINGTransportMISSING", "115 points");
+	this->build_challenge(rc14div2, "MISSINGAlley OopMISSING", "120 points");
 	ui->tree_challenges->expandItem(rc15);
+	ui->tree_challenges->expandItem(rc15div1);
+	ui->tree_challenges->expandItem(rc14);
 	ui->tree_challenges->resizeColumnToContents(0);
 
 	// set up osg view
