@@ -49,8 +49,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>280</width>
-            <height>585</height>
+            <width>151</width>
+            <height>242</height>
            </rect>
           </property>
           <attribute name="label">
@@ -300,7 +300,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>280</width>
+            <width>276</width>
             <height>585</height>
            </rect>
           </property>
@@ -438,7 +438,7 @@
               <string>Drawings for the Scene.  These do not interact with the robots.</string>
              </property>
              <property name="title">
-              <string>Drawings (no mass)</string>
+              <string>Drawings (without mass)</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
               <property name="spacing">
@@ -674,7 +674,7 @@
                    <string>Use Metric Units</string>
                   </property>
                   <property name="text">
-                   <string>Metri&amp;c</string>
+                   <string>&amp;Metric</string>
                   </property>
                   <property name="checked">
                    <bool>false</bool>
