@@ -48,7 +48,6 @@
     </property>
     <addaction name="action_UsersGuide"/>
     <addaction name="action_About"/>
-    <addaction name="action_AboutQt"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuHelp"/>
@@ -88,11 +87,6 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
-   </property>
-  </action>
-  <action name="action_AboutQt">
-   <property name="text">
-    <string>About &amp;Qt</string>
    </property>
   </action>
   <action name="action_UsersGuide">
