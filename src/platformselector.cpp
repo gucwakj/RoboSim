@@ -24,6 +24,7 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	_simulated->setToolTipDuration(-1);
 	this->setToolTip("Select the output platform for the robots");
 	this->setToolTipDuration(-1);
+	this->setContentsMargins(0, 0, 0, 0);
 
 	// simulated on by default
 	_simulated->setChecked(true);
@@ -35,6 +36,7 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	groupbox->setLayout(vbox);
 	QVBoxLayout *vbox1 = new QVBoxLayout(this);
 	vbox1->addWidget(groupbox);
+	vbox1->setContentsMargins(0, 0, 0, 0);
 	this->setLayout(vbox1);
 
 	// connect buttons to slots
