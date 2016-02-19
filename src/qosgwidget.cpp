@@ -1134,19 +1134,15 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				  _o_model->data(_o_model->index(i, rsObjectModel::P_Y)).toDouble(),
 				  _o_model->data(_o_model->index(i, rsObjectModel::P_Z)).toDouble());
 
-		// quaternion
-		int axis = _o_model->data(_o_model->index(i, rsObjectModel::AXIS)).toInt();
-		rs::Quat quat;
-		switch (axis) {
-			case 0: // x
-				quat[1] = sin(0.785398);
-				quat[3] = cos(0.785398);
-				break;
-			case 1: // y
-				quat[0] = sin(0.785398);
-				quat[3] = cos(0.785398);
-				break;
-		}
+		// get euler angles
+		double r[3] = {rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
+					   rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
+					   rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble())};
+
+		// calculate quaternion
+		rs::Quat quat(sin(0.5*r[0]), 0, 0, cos(0.5*r[0]));
+		quat.multiply(0, sin(0.5*r[1]), 0, cos(0.5*r[1]));
+		quat.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
 
 		// get led color
 		QColor color(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());

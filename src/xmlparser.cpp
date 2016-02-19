@@ -325,21 +325,17 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				  _o_model->data(_o_model->index(i, rsObjectModel::P_Y)).toDouble(),
 				  _o_model->data(_o_model->index(i, rsObjectModel::P_Z)).toDouble());
 
-		// quaternion
-		int axis = _o_model->data(_o_model->index(i, rsObjectModel::AXIS)).toInt();
-		rs::Quat q;
-		switch (axis) {
-			case 0: // x
-				q[1] = sin(0.785398);
-				q[3] = cos(0.785398);
-				break;
-			case 1: // y
-				q[0] = sin(0.785398);
-				q[3] = cos(0.785398);
-				break;
-		}
+		// get euler angles
+		double r[3] = {rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
+					   rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
+					   rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble())};
 
-		// get led color
+		// calculate quaternion
+		rs::Quat q(sin(0.5*r[0]), 0, 0, cos(0.5*r[0]));
+		q.multiply(0, sin(0.5*r[1]), 0, cos(0.5*r[1]));
+		q.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
+
+		// get body color
 		QColor color(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
 		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
 
@@ -349,7 +345,6 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
-				if (form == rs::Cylinder) dims[2] = axis;
 				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;

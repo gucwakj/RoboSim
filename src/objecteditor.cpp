@@ -1213,6 +1213,19 @@ pullupbarEditor::pullupbarEditor(objectModel *model, QWidget *parent) : QWidget(
 	pYBox->setToolTip("Set the Y position of the hacky sack");
 	pYBox->setToolTipDuration(-1);
 
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("rz");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the robot");
+	_rZBox->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -1229,6 +1242,11 @@ pullupbarEditor::pullupbarEditor(objectModel *model, QWidget *parent) : QWidget(
 	hbox3->addWidget(pYBox, 5);
 	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(_rZBox, 5);
+	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -1241,6 +1259,11 @@ void pullupbarEditor::submitPY(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
 }
 
+void pullupbarEditor::submitRZ(double value) {
+	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
+	_model->setData(_model->index(_row, rsObjectModel::R_PSI), value);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -1249,6 +1272,7 @@ void pullupbarEditor::setIndex(int row) {
 	_row = row;
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsObjectModel::R_PSI), Qt::EditRole).toDouble());
 }
 
 /*!	\brief Slot to set units labels.

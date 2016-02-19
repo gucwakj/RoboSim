@@ -213,9 +213,11 @@ class pullupbarEditor : public QWidget {
 	protected slots:
 		void submitPX(double);
 		void submitPY(double);
+		void submitRZ(double);
 
 	private:
 		objectModel *_model;
+		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		int _row;

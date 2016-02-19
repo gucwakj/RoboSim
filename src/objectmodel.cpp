@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 #include "objectmodel.h"
 
@@ -25,6 +26,7 @@ bool objectModel::addObject(int form, int role) {
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
 		_list[row][P_Y] = QVariant(0).toString();
 		_list[row][P_Z] = QVariant(0).toString();
+		_list[row][R_PSI] = QVariant(0).toString();
 		switch (form) {
 			case rs::HackySack:
 				_list[row][P_Z] = QVariant(0.0275).toString();
@@ -50,6 +52,9 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Line:
 			case rs::Text:
 				_list[row][COLOR] = QString("#ff0000");	// red
+				break;
+			case rs::PullupBar:
+				_list[row][COLOR] = QString("#ffffff");	// white
 				break;
 		}
 		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
@@ -100,6 +105,7 @@ bool objectModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Quat
 		_list[row][P_X] = QVariant(p[0]).toString();
 		_list[row][P_Y] = QVariant(p[1]).toString();
 		_list[row][P_Z] = QVariant(p[2]).toString();
+		_list[row][R_PSI] = QVariant(asin(q[2]) * 180 * 2 / rs::Pi).toString();
 		_list[row][L_1] = QVariant(l[0]).toString();
 		_list[row][L_2] = QVariant(l[1]).toString();
 		_list[row][L_3] = QVariant(l[2]).toString();
