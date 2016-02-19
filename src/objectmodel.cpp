@@ -39,7 +39,19 @@ bool objectModel::addObject(int form, int role) {
 		_list[row][L_1] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
-		_list[row][COLOR] = QString("#00ff00");	// green
+		// match object default color to icon
+		switch (form) {
+			case rs::Box:
+			case rs::Cylinder:
+			case rs::Sphere:
+				_list[row][COLOR] = QString("#0000ff");	// blue
+				break;
+			case rs::Dot:
+			case rs::Line:
+			case rs::Text:
+				_list[row][COLOR] = QString("#ff0000");	// red
+				break;
+		}
 		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
 		_list[row][rsObjectModel::SIZE] = QVariant(1).toString();		// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
