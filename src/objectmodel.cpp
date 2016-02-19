@@ -58,7 +58,7 @@ bool objectModel::addObject(int form, int role) {
 				break;
 		}
 		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
-		_list[row][rsObjectModel::SIZE] = QVariant(1).toString();		// f*$k microsoft
+		_list[row][rsObjectModel::SIZE] = QVariant(5).toString();		// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
