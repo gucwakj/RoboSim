@@ -35,6 +35,7 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 
 	protected slots:
 		void addBackground(void);
+		void addItem(QListWidgetItem*);
 		void changeIndices(int);
 		void closeEvent(QCloseEvent*);
 		void grid_defaults(void);

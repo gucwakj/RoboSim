@@ -241,6 +241,10 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(ui->add_background, SIGNAL(clicked(void)), this, SLOT(addBackground(void)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
 	QWidget::connect(ui->tree_challenges, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*)));
+	QWidget::connect(ui->list_robots, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addItem(QListWidgetItem*)));
+	QWidget::connect(ui->list_preconfig, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addItem(QListWidgetItem*)));
+	QWidget::connect(ui->list_obstacles, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addItem(QListWidgetItem*)));
+	QWidget::connect(ui->list_markers, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(addItem(QListWidgetItem*)));
 
 	// file watcher of background files
 	QWidget::connect(&_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(updateBackgroundList(QString)));
@@ -578,5 +582,56 @@ void roboSimWidget::save_settings(void) {
 void roboSimWidget::closeEvent(QCloseEvent *event) {
 	save_settings();
 	event->accept();
+}
+
+void roboSimWidget::addItem(QListWidgetItem *item) {
+	if (!item->text().compare("Linkbot I"))
+		_rob_model->addRobot(rs::LinkbotI, 2, 2);
+	else if (!item->text().compare("Linkbot L"))
+		_rob_model->addRobot(rs::LinkbotL);
+	else if (!item->text().compare("Mindstorms EV3"))
+		_rob_model->addRobot(rs::EV3);
+	else if (!item->text().compare("Mindstorms NXT"))
+		_rob_model->addRobot(rs::NXT);
+	else if (!item->text().compare("Bow"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Bow);
+	else if (!item->text().compare("Explorer"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Explorer);
+	else if (!item->text().compare("Four Bot Drive"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::FourBotDrive);
+	else if (!item->text().compare("Four Wheel Drive"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::FourWheelDrive);
+	else if (!item->text().compare("Four Wheel Explorer"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::FourWheelExplorer);
+	else if (!item->text().compare("Group Bow"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::GroupBow);
+	else if (!item->text().compare("Inchworm"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Inchworm);
+	else if (!item->text().compare("Lift"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Lift);
+	else if (!item->text().compare("Omnidrive"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Omnidrive);
+	else if (!item->text().compare("Snake"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Snake);
+	else if (!item->text().compare("Stand"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Stand);
+	else if (!item->text().compare("Box"))
+		_obj_model->addObject(rs::Box);
+	else if (!item->text().compare("Cylinder"))
+		_obj_model->addObject(rs::Cylinder);
+	else if (!item->text().compare("Point"))
+		_obj_model->addObject(rs::Dot);
+	else if (!item->text().compare("Hacky Sack"))
+		_obj_model->addObject(rs::HackySack);
+	else if (!item->text().compare("Line"))
+		_obj_model->addObject(rs::Line);
+	else if (!item->text().compare("Pullup Bar"))
+		_obj_model->addObject(rs::PullupBar);
+	else if (!item->text().compare("Sphere"))
+		_obj_model->addObject(rs::Sphere);
+	else if (!item->text().compare("Text"))
+		_obj_model->addObject(rs::Text);
+	else if (!item->text().compare("Wood Block"))
+		_obj_model->addObject(rs::WoodBlock);
 }
 
