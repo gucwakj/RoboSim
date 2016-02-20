@@ -88,18 +88,16 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// parse default path
 	if (_background.empty()) {
 		QString parent(rsXML::getDefaultBackgroundPath().c_str());
-		QStringList dirs;
-		QDirIterator directories(parent, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-		while (directories.hasNext()) {
-			directories.next();
-			dirs << directories.filePath();
-		}
-		for (int i = 0; i < dirs.size(); i++) {
-			QString file(dirs[i]);
-			QFileInfo checkFile(file.append("/background.xml"));
-			if (checkFile.exists() && checkFile.isFile())
-				_background << dirs[i];
-		}
+		QString base(parent);
+		_background << base.append("outdoors");
+		base = parent;
+		_background << base.append("baroboactivitymat");
+		base = parent;
+		_background << base.append("2015RoboPlay");
+		base = parent;
+		_background << base.append("2014RoboPlay");
+		base = parent;
+		_background << base.append("none");
 	}
 	// remove any stale directories
 	for (int i = 0; i < _background.size(); i++) {
