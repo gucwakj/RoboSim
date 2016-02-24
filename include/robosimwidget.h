@@ -43,6 +43,7 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		void grid(std::vector<double>);
 		void setCurrentBackground(std::string);
 		void setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*);
+		void setBackground(QListWidgetItem*, QListWidgetItem*);
 		void updateBackgroundList(const QString&);
 		void about(void);
 		void load(void);

@@ -237,6 +237,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(ui->tab_scene, SIGNAL(currentChanged(int)), this, SLOT(changeIndices(int)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), ui->osgWidget, SLOT(setNewBackground(QListWidgetItem*, QListWidgetItem*)));
 	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), _xml, SLOT(setBackground(QListWidgetItem*, QListWidgetItem*)));
+	QWidget::connect(ui->backgroundListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(setBackground(QListWidgetItem*, QListWidgetItem*)));
 	QWidget::connect(ui->add_background, SIGNAL(clicked(void)), this, SLOT(addBackground(void)));
 	QWidget::connect(ui->tracing, SIGNAL(toggled(bool)), _xml, SLOT(setTrace(bool)));
 	QWidget::connect(ui->tree_challenges, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*)));
@@ -446,6 +447,7 @@ void roboSimWidget::grid_labels(bool si) {
 }
 
 void roboSimWidget::setCurrentBackground(std::string name) {
+	// highlight clicked item
 	for (int i = 0; i < ui->backgroundListWidget->count(); i++) {
 		QListWidgetItem *item = ui->backgroundListWidget->item(i);
 		if ( !item->text().compare(name.c_str()) ) {
@@ -453,6 +455,27 @@ void roboSimWidget::setCurrentBackground(std::string name) {
 			ui->osgWidget->setNewBackground(item, item);
 			break;
 		}
+	}
+
+	// disable all grid options when not using outdoors
+	QObjectList list = ui->group_grid->children();
+	QWidget *item;
+	for (int i = 0; i < list.size(); i++) {
+		if ( (item = dynamic_cast<QWidget*>(list[i])) )
+			item->setEnabled(!name.compare("Outdoors"));
+	}
+}
+
+void roboSimWidget::setBackground(QListWidgetItem *current, QListWidgetItem *previous) {
+	// get name of new item
+	QString name = current->data(Qt::UserRole).toString();
+
+	// disable all grid options when not using outdoors
+	QObjectList list = ui->group_grid->children();
+	QWidget *item;
+	for (int i = 0; i < list.size(); i++) {
+		if ( (item = dynamic_cast<QWidget*>(list[i])) )
+			item->setEnabled(name.contains("outdoors"));
 	}
 }
 
