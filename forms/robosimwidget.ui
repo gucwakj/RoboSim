@@ -52,7 +52,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="robots">
              <property name="enabled">
@@ -62,7 +62,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>260</width>
+               <width>280</width>
                <height>539</height>
               </rect>
              </property>
@@ -130,7 +130,7 @@
                     </sizepolicy>
                    </property>
                    <property name="toolTip">
-                    <string>Drag Robots to the Robot List to add to Scene</string>
+                    <string>Double Click or Drag Robots to the Robot List to add to Scene</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>-1</number>
@@ -239,7 +239,7 @@
                     </sizepolicy>
                    </property>
                    <property name="toolTip">
-                    <string>Drag Pre-Configured Robots to the Robot List to add to Scene</string>
+                    <string>Double Click or Drag Pre-Configured Robots to the Robot List to add to Scene</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>-1</number>
@@ -331,7 +331,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>260</width>
+               <width>280</width>
                <height>539</height>
               </rect>
              </property>
@@ -399,7 +399,7 @@
                     </sizepolicy>
                    </property>
                    <property name="toolTip">
-                    <string>Drag Obstacles to the Obstacles and Drawings List to add to Scene</string>
+                    <string>Double Click or Drag Obstacles to the Obstacles and Drawings List to add to Scene</string>
                    </property>
                    <property name="horizontalScrollBarPolicy">
                     <enum>Qt::ScrollBarAsNeeded</enum>
@@ -514,7 +514,7 @@
                     </sizepolicy>
                    </property>
                    <property name="toolTip">
-                    <string>Drag Drawings to the Obstacles and Drawings List to add to Scene</string>
+                    <string>Double Click or Drag Drawings to the Obstacles and Drawings List to add to Scene</string>
                    </property>
                    <property name="horizontalScrollBarPolicy">
                     <enum>Qt::ScrollBarAsNeeded</enum>
