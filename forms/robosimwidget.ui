@@ -62,7 +62,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>280</width>
+               <width>276</width>
                <height>539</height>
               </rect>
              </property>
@@ -331,7 +331,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>280</width>
+               <width>276</width>
                <height>539</height>
               </rect>
              </property>
@@ -661,7 +661,7 @@
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="movable">
         <bool>true</bool>
@@ -1299,6 +1299,12 @@
         </layout>
        </widget>
        <widget class="QWidget" name="tab_robots">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <attribute name="title">
          <string>Robots</string>
         </attribute>

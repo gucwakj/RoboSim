@@ -13,7 +13,7 @@ robotEditor::robotEditor(robotModel *model, QWidget *parent) : QWidget(parent) {
 	_model = model;
 
 	// set size properties
-	this->setFixedWidth(350);
+	this->setFixedWidth(450);
 
 	// set up editor pages
 	_pages = new QStackedWidget;
@@ -328,7 +328,6 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	QHBoxLayout *hbox0 = new QHBoxLayout();
 	hbox0->addWidget(title, 5, Qt::AlignHCenter);
 	layout->addLayout(hbox0);
-	layout->addStretch(1);
 	QHBoxLayout *hbox1 = new QHBoxLayout();
 	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
 	hbox1->addWidget(formBox, 5);
@@ -343,12 +342,10 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
 	hbox2->addWidget(pXBox, 5);
 	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pYBox, 5);
+	hbox2->addWidget(_pYUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox2);
-	QHBoxLayout *hbox3 = new QHBoxLayout();
-	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
-	hbox3->addWidget(pYBox, 5);
-	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
-	layout->addLayout(hbox3);
 	QHBoxLayout *hbox4 = new QHBoxLayout();
 	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
 	hbox4->addWidget(_rZBox, 5);
@@ -365,7 +362,7 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
-	layout->addStretch(2);
+	layout->addStretch(1);
 	this->setLayout(layout);
 }
 
@@ -562,7 +559,6 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	QHBoxLayout *hbox0 = new QHBoxLayout();
 	hbox0->addWidget(title, 5, Qt::AlignHCenter);
 	layout->addLayout(hbox0);
-	layout->addStretch(1);
 	QHBoxLayout *hbox1 = new QHBoxLayout();
 	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
 	hbox1->addWidget(formBox, 5);
@@ -591,7 +587,7 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
-	layout->addStretch(2);
+	layout->addStretch(1);
 	this->setLayout(layout);
 }
 
@@ -781,7 +777,6 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	QHBoxLayout *hbox0 = new QHBoxLayout();
 	hbox0->addWidget(title, 5, Qt::AlignHCenter);
 	layout->addLayout(hbox0);
-	layout->addStretch(1);
 	QHBoxLayout *hbox1 = new QHBoxLayout();
 	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
 	hbox1->addWidget(formBox, 5);
@@ -818,7 +813,7 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
-	layout->addStretch(2);
+	layout->addStretch(1);
 	this->setLayout(layout);
 }
 
@@ -1031,7 +1026,6 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	QHBoxLayout *hbox0 = new QHBoxLayout();
 	hbox0->addWidget(title, 5, Qt::AlignHCenter);
 	layout->addLayout(hbox0);
-	layout->addStretch(1);
 	QHBoxLayout *hbox1 = new QHBoxLayout();
 	hbox1->addWidget(formLabel, 2, Qt::AlignRight);
 	hbox1->addWidget(formBox, 5);
@@ -1070,7 +1064,7 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	QHBoxLayout *hbox7 = new QHBoxLayout();
 	hbox7->addWidget(_colorPicker);
 	layout->addLayout(hbox7);
-	layout->addStretch(2);
+	layout->addStretch(1);
 	this->setLayout(layout);
 }
 
@@ -1238,7 +1232,6 @@ preconfigEditor::preconfigEditor(robotModel *model, QWidget *parent) : QWidget(p
 	QHBoxLayout *hbox0 = new QHBoxLayout();
 	hbox0->addWidget(title, 5, Qt::AlignHCenter);
 	layout->addLayout(hbox0);
-	layout->addStretch(1);
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(nameLabel, 2, Qt::AlignRight);
 	hbox->addWidget(nameEdit, 5);
@@ -1262,7 +1255,7 @@ preconfigEditor::preconfigEditor(robotModel *model, QWidget *parent) : QWidget(p
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
-	layout->addStretch(2);
+	layout->addStretch(1);
 	this->setLayout(layout);
 }
 
