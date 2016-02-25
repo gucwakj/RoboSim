@@ -41,6 +41,13 @@ bool objectModel::addObject(int form, int role) {
 		_list[row][L_1] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_2] = QVariant(0.0254).toString();	// 1 inch
 		_list[row][L_3] = QVariant(0.0254).toString();	// 1 inch
+		switch (form) {
+			case rs::CompetitionBorder:
+				_list[row][L_1] = QVariant(2.4384).toString();	// 8 feet
+				_list[row][L_2] = QVariant(1.2192).toString();	// 4 feet
+				_list[row][L_3] = QVariant(0.0191).toString();	// 0.75 inch
+			break;
+		}
 		// match object default color to icon
 		switch (form) {
 			case rs::Box:
@@ -53,6 +60,7 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Text:
 				_list[row][COLOR] = QString("#ff0000");	// red
 				break;
+			case rs::CompetitionBorder:
 			case rs::PullupBar:
 				_list[row][COLOR] = QString("#ffffff");	// white
 				break;
@@ -161,6 +169,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 			switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 				case rs::Box:
 					return QString(tr("Box"));
+				case rs::CompetitionBorder:
+					return QString(tr("Competition Border"));
 				case rs::Cylinder:
 					return QString(tr("Cylinder"));
 				case rs::Dot:
@@ -199,6 +209,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 		switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 			case rs::Box:
 				image.load("icons/box32.png");
+				break;
+			case rs::CompetitionBorder:
+				image.load("icons/competitionborder32.png");
 				break;
 			case rs::Cylinder:
 				image.load("icons/cylinder32.png");
@@ -283,6 +296,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 
 	if (!map[0].toString().compare("Box"))
 		this->addObject(rs::Box);
+	else if (!map[0].toString().compare("Competition Border"))
+		this->addObject(rs::CompetitionBorder);
 	else if (!map[0].toString().compare("Cylinder"))
 		this->addObject(rs::Cylinder);
 	else if (!map[0].toString().compare("Point"))

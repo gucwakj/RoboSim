@@ -1155,6 +1155,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 		// draw new object
 		switch (form) {
 			case rs::Box:
+			case rs::CompetitionBorder:
 			case rs::Cylinder:
 			case rs::HackySack:
 			case rs::PullupBar:

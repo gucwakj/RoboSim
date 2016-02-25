@@ -19,6 +19,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages = new QStackedWidget;
 	_pages->addWidget(new emptyEditor());
 	_pages->addWidget(new boxEditor(_model));
+	_pages->addWidget(new competitionborderEditor(_model));
 	_pages->addWidget(new cylinderEditor(_model));
 	_pages->addWidget(new dotEditor(_model));
 	_pages->addWidget(new hackysackEditor(_model));
@@ -84,6 +85,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::Box + 1);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::CompetitionBorder:
+				_pages->setCurrentIndex(rs::CompetitionBorder + 1);
+				dynamic_cast<competitionborderEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<competitionborderEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Cylinder:
 				_pages->setCurrentIndex(rs::Cylinder + 1);
@@ -418,6 +424,209 @@ void boxEditor::setUnits(bool si) {
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
+	_lZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Competition Border Editor
+ *
+ *
+ */
+
+/*!	\brief Competition Border Drawing Editor.
+ *
+ *	Build individual competition border editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+competitionborderEditor::competitionborderEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Competition Border Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the competition border");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the competition border");
+	pYBox->setToolTipDuration(-1);
+
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("rz");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the competition border");
+	_rZBox->setToolTipDuration(-1);
+
+	// length x
+	QLabel *lXLabel = new QLabel(tr("Length X:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("lx");
+	lXBox->setMinimum(-100);
+	lXBox->setMaximum(100);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the X length of the competition border");
+	lXBox->setToolTipDuration(-1);
+
+	// length y
+	QLabel *lYLabel = new QLabel(tr("Length Y:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("ly");
+	lYBox->setMinimum(-100);
+	lYBox->setMaximum(100);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the Y length of the competition border");
+	lYBox->setToolTipDuration(-1);
+
+	// length z
+	QLabel *lZLabel = new QLabel(tr("Radius:"));
+	_lZUnits = new QLabel();
+	QDoubleSpinBox *lZBox = new QDoubleSpinBox();
+	lZBox->setObjectName("lz");
+	lZBox->setMinimum(-100);
+	lZBox->setMaximum(100);
+	lZBox->setSingleStep(0.5);
+	lZLabel->setBuddy(lZBox);
+	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
+	lZBox->setToolTip("Set the radius of the competition border cylinders");
+	lZBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the competition border");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(_rZBox, 5);
+	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	hbox4->addWidget(lZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(lZBox, 5);
+	hbox4->addWidget(_lZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void competitionborderEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void competitionborderEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void competitionborderEditor::submitRZ(double value) {
+	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
+	_model->setData(_model->index(_row, rsObjectModel::R_PSI), value);
+}
+
+void competitionborderEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
+}
+
+void competitionborderEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
+}
+
+void competitionborderEditor::submitL3(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
+}
+
+void competitionborderEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void competitionborderEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsObjectModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lx"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("ly"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("lz"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void competitionborderEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
 	_lXUnits->setText(text);
 	_lYUnits->setText(text);
 	_lZUnits->setText(text);

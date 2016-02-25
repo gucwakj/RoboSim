@@ -43,8 +43,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build obstacles selector
 	names.clear();
 	icons.clear();
-	names << "Box" <<  "Cylinder" << "Hacky Sack" << "Pullup Bar" << "Sphere" << "Wood Block";
-	icons << "icons/box128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/pullup128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
+	names << "Box" << "Competition Border" << "Cylinder" << "Hacky Sack" << "Pullup Bar" << "Sphere" << "Wood Block";
+	icons << "icons/box128.png" << "icons/competitionborder128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/pullup128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
 	this->build_selector(ui->list_obstacles, names, icons);
 	ui->list_obstacles->setDragEnabled(true);
 
@@ -639,6 +639,8 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Stand);
 	else if (!item->text().compare("Box"))
 		_obj_model->addObject(rs::Box);
+	else if (!item->text().compare("Competition Border"))
+		_obj_model->addObject(rs::CompetitionBorder);
 	else if (!item->text().compare("Cylinder"))
 		_obj_model->addObject(rs::Cylinder);
 	else if (!item->text().compare("Point"))
