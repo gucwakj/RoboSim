@@ -29,7 +29,7 @@ objectView::objectView(objectModel *model, QWidget *parent) : QListView(parent) 
 	this->setModelColumn(rsObjectModel::ID);
 	this->setUniformItemSizes(false);
 	this->installEventFilter(this);
-	this->setToolTip("Obstacle and Drawings List\nThe obstacles and drawings within the RoboSim Scene");
+	this->setToolTip("Click on an object to edit.\nUse Backspace Key to delete.");
 	this->setToolTipDuration(-1);
 
 	// drag-drop
