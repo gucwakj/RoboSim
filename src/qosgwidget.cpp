@@ -1252,6 +1252,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 
 	// set level after images are set
 	_scene->setLevel(background.getLevel());
+	_scene->setGrid(_grid, true);
 	_scene->addAndRemoveChildren(true);
 
 	// draw object objects
