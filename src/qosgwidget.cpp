@@ -1024,11 +1024,11 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						}
 						// get wheels
 						for (int i = 0; i < 2; i++) {
-							if (wheelID[i] == 0)		wheel[i] = rsLinkbot::Connectors::None;
-							else if (wheelID[i] == 1)	wheel[i] = rsLinkbot::Connectors::TinyWheel;
+							if (wheelID[i] == 1)		wheel[i] = rsLinkbot::Connectors::TinyWheel;
 							else if (wheelID[i] == 2)	wheel[i] = rsLinkbot::Connectors::SmallWheel;
 							else if (wheelID[i] == 3)	wheel[i] = rsLinkbot::Connectors::BigWheel;
 							else if (wheelID[i] == 4)	wheel[i] = rsLinkbot::Connectors::Wheel;
+							else						wheel[i] = rsLinkbot::Connectors::None;
 						}
 						// tilt for wheels
 						float p2;
@@ -1038,17 +1038,17 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						rsScene::Group *sceneRobot = _scene->createRobot(robot);
 						robot->draw(sceneRobot, p, q, rs::Vec(0, 0, 0), c, 0);
 						// left wheel
-						if (wheelID[0]) {
+						if (wheelID[0] > 0) {
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, -1);
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, radius, 2, wheel[0]);
 						}
 						// caster
-						if (wheelID[0] || wheelID[1]) {
+						if (wheelID[0] > 0 || wheelID[1] > 0) {
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 2, rsLinkbot::Connectors::Caster);
 						}
 						// right wheel
-						if (wheelID[1]) {
+						if (wheelID[1] > 0) {
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, -1);
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, radius, 2, wheel[1]);
 						}

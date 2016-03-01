@@ -376,32 +376,46 @@ void linkbotIEditor::submitForm(int value) {
 }
 
 void linkbotIEditor::submitName(QString value) {
-	_model->setData(_model->index(_row, rsRobotModel::NAME), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::NAME), value);
 }
 
 void linkbotIEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsRobotModel::P_X), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::P_X), value);
 }
 
 void linkbotIEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsRobotModel::P_Y), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::P_Y), value);
 }
 
 void linkbotIEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
-	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
 }
 
 void linkbotIEditor::submitLeftWheel(int value) {
-	_model->setData(_model->index(_row, rsRobotModel::WHEELLEFT), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::WHEELLEFT), value);
 }
 
 void linkbotIEditor::submitRightWheel(int value) {
-	_model->setData(_model->index(_row, rsRobotModel::WHEELRIGHT), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::WHEELRIGHT), value);
 }
 
 void linkbotIEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsRobotModel::COLOR), color);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -601,24 +615,34 @@ void linkbotLEditor::submitForm(int value) {
 }
 
 void linkbotLEditor::submitName(QString value) {
-	_model->setData(_model->index(_row, rsRobotModel::NAME), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotL)
+		_model->setData(_model->index(_row, rsRobotModel::NAME), value);
 }
 
 void linkbotLEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsRobotModel::P_X), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotL)
+		_model->setData(_model->index(_row, rsRobotModel::P_X), value);
 }
 
 void linkbotLEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsRobotModel::P_Y), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotL)
+		_model->setData(_model->index(_row, rsRobotModel::P_Y), value);
 }
 
 void linkbotLEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
-	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotL)
+		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
 }
 
 void linkbotLEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsRobotModel::COLOR), color);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotL)
+		_model->setData(_model->index(_row, rsRobotModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.
@@ -823,36 +847,52 @@ void mindstormsEditor::submitForm(int value) {
 	else if (value == LINKBOTL) form = rs::LinkbotL;
 	else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
-	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
+	int mform = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == mform || mform == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::FORM), form);
 }
 
 void mindstormsEditor::submitName(QString value) {
-	_model->setData(_model->index(_row, rsRobotModel::NAME), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::NAME), value);
 }
 
 void mindstormsEditor::submitPX(double value) {
-	_model->setData(_model->index(_row, rsRobotModel::P_X), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::P_X), value);
 }
 
 void mindstormsEditor::submitPY(double value) {
-	_model->setData(_model->index(_row, rsRobotModel::P_Y), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::P_Y), value);
 }
 
 void mindstormsEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
-	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
 }
 
 void mindstormsEditor::submitLeftWheel(int value) {
-	_model->setData(_model->index(_row, rsRobotModel::WHEELLEFT), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::WHEELLEFT), value);
 }
 
 void mindstormsEditor::submitRightWheel(int value) {
-	_model->setData(_model->index(_row, rsRobotModel::WHEELRIGHT), value);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::WHEELRIGHT), value);
 }
 
 void mindstormsEditor::submitColor(QColor color) {
-	_model->setData(_model->index(_row, rsRobotModel::COLOR), color);
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (rs::EV3 == form || form == rs::NXT)
+		_model->setData(_model->index(_row, rsRobotModel::COLOR), color);
 }
 
 /*!	\brief Slot to nullify all inputs.

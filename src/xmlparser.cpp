@@ -268,6 +268,8 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 								wheel[i] = rsLinkbot::Connectors::BigWheel;
 							else if (wheelID[i] == 4)
 								wheel[i] = rsLinkbot::Connectors::Wheel;
+							else
+								wheel[i] = rsLinkbot::Connectors::None;
 						}
 
 						// done
