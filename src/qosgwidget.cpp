@@ -55,18 +55,6 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	QWidget::connect(mh, SIGNAL(clickedObjectIndex(int)), this, SLOT(clickedObjectIndex(int)));
 	QWidget::connect(mh, SIGNAL(clickedRobotIndex(int, bool)), this, SLOT(clickedRobotIndex(int, bool)));
 
-	// set grid
-	_units = 0;
-	_grid.push_back(1/39.37);
-	_grid.push_back(12/39.37);
-	_grid.push_back(-48/39.37);
-	_grid.push_back(48/39.37);
-	_grid.push_back(-48/39.37);
-	_grid.push_back(48/39.37);
-	_grid.push_back(1);
-	_scene->setUnits(_units);
-	_scene->setGrid(_grid, true);
-
 	// initialize current indices
 	_current[0] = -1;
 	_current[1] = -1;
@@ -77,10 +65,23 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// hide global hud
 	_scene->setHUD(false);
 	// set level to display
-	_level = 1;
+	_level = rs::Level::Outdoors;
 	_scene->setLevel(_level);
 	// hide robot popup labels
 	_scene->setLabel(false);
+
+	// set grid
+	_units = 0;
+	_grid.push_back(1/39.37);
+	_grid.push_back(12/39.37);
+	_grid.push_back(-48/39.37);
+	_grid.push_back(48/39.37);
+	_grid.push_back(-48/39.37);
+	_grid.push_back(48/39.37);
+	_grid.push_back(1.0);
+	_scene->setUnits(_units);
+	_scene->setGrid(_grid, true);
+	_scene->addAndRemoveChildren();
 
 	// create timer to manage redraws
 	QWidget::connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
