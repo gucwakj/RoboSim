@@ -23,7 +23,10 @@ bool objectModel::addObject(int form, int role) {
 		// new object data
 		_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
 		_list[row][FORM] = QVariant(form).toString();
-		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 inches
+		if (_units)
+			_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.2 : 0).toString();	// offset by 20 cm
+		else
+			_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + 0.1524 : 0).toString();	// offset by 6 in
 		_list[row][P_Y] = QVariant(0).toString();
 		_list[row][P_Z] = QVariant(0).toString();
 		_list[row][R_PSI] = QVariant(0).toString();
