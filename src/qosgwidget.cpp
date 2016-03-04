@@ -162,12 +162,12 @@ void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
 void QOsgWidget::gridDefaults(void) {
 	// reset to defaults
 	if (_units) {
-		_grid[0] = 5/100;
-		_grid[1] = 50/100;
-		_grid[2] = -200/100;
-		_grid[3] = 200/100;
-		_grid[4] = -200/100;
-		_grid[5] = 200/100;
+		_grid[0] = 5.0/100;
+		_grid[1] = 50.0/100;
+		_grid[2] = -150.0/100;
+		_grid[3] = 150.0/100;
+		_grid[4] = -150.0/100;
+		_grid[5] = 150.0/100;
 		_grid[6] = 1;
 	}
 	else {

@@ -204,10 +204,10 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	_us.push_back(48);
 	_si.push_back(5);
 	_si.push_back(50);
-	_si.push_back(-200);
-	_si.push_back(200);
-	_si.push_back(-200);
-	_si.push_back(200);
+	_si.push_back(-150);
+	_si.push_back(150);
+	_si.push_back(-150);
+	_si.push_back(150);
 
 	// connect designer elements to slots
 	QWidget::connect(ui->si, SIGNAL(toggled(bool)), _rob_model, SLOT(setUnits(bool)));
@@ -364,14 +364,15 @@ void roboSimWidget::changeIndices(int ind) {
 
 void roboSimWidget::grid_defaults(void) {
 	// reset to proper units
-	if (ui->si->isDown()) {
+	if (ui->si->isChecked()) {
 		ui->grid_on->setChecked(true);
 		ui->spin_grid_tics->setValue(5);
 		ui->spin_grid_hash->setValue(50);
-		ui->spin_grid_x_min->setValue(-200);
-		ui->spin_grid_x_max->setValue(200);
-		ui->spin_grid_y_min->setValue(-200);
-		ui->spin_grid_y_max->setValue(200);
+		ui->spin_grid_x_min->setValue(-150);
+		ui->spin_grid_x_max->setValue(150);
+		ui->spin_grid_y_min->setValue(-150);
+		ui->spin_grid_y_max->setValue(150);
+		ui->osgWidget->setUnits(true);
 	}
 	else {
 		ui->grid_on->setChecked(true);
@@ -381,8 +382,9 @@ void roboSimWidget::grid_defaults(void) {
 		ui->spin_grid_x_max->setValue(48);
 		ui->spin_grid_y_min->setValue(-48);
 		ui->spin_grid_y_max->setValue(48);
+		ui->osgWidget->setUnits(false);
 	}
-	this->grid_labels(ui->si->isDown());
+	this->grid_labels(ui->si->isChecked());
 
 	// change osg grid lines
 	ui->osgWidget->gridDefaults();
@@ -428,7 +430,7 @@ void roboSimWidget::grid(std::vector<double> v) {
 	ui->spin_grid_x_max->setValue(v[3]);
 	ui->spin_grid_y_min->setValue(v[4]);
 	ui->spin_grid_y_max->setValue(v[5]);
-	this->grid_labels(ui->si->isDown());
+	this->grid_labels(ui->si->isChecked());
 }
 
 void roboSimWidget::grid_labels(bool si) {
