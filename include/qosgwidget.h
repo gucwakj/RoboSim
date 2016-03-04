@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 
+#include <osgViewer/Viewer>
 #include <osgQt/GraphicsWindowQt>
 
 #include <rsScene/Scene>
