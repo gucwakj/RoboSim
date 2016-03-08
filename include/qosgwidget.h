@@ -45,6 +45,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void gridMinY(double);
 		void gridTics(double);
 		void objectDataChanged(QModelIndex, QModelIndex);
+		void reidRobot(QModelIndex);
 		void robotDataChanged(QModelIndex, QModelIndex);
 		void setBackgroundImage(int, std::string);
 		void setCurrentBackground(int);

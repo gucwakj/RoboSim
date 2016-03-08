@@ -443,8 +443,10 @@ bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 	endRemoveRows();
 
 	// re-id all subsequent robots
-	for (int i = row; i < _list.size(); i++)
-		this->setData(this->index(i, ID), _list[i][ID].toInt() - 1);
+	for (int i = row; i < _list.size(); i++) {
+		emit reid(index(i, ID));
+		_list[i][ID] = QVariant(_list[i][ID].toInt() - 1).toString();
+	}
 
 	// success
 	return true;

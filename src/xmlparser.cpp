@@ -196,6 +196,19 @@ void xmlParser::parse(const char *name) {
 	}
 }
 
+void xmlParser::reidRobot(QModelIndex index) {
+	// get old data
+	int form = _r_model->data(_r_model->index(index.row(), rsRobotModel::FORM)).toInt();
+	int id = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
+	tinyxml2::XMLElement *robot = Writer::getOrCreateRobot(form, id);
+
+	// reid the robot
+	Writer::reidRobot(robot);
+
+	// save
+	Writer::save();
+}
+
 void xmlParser::setObjectModel(objectModel *model) {
 	// set model
 	_o_model = model;
