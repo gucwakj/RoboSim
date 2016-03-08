@@ -76,6 +76,8 @@ void robotEditor::setCurrentIndex(const QModelIndex &index) {
 	if (index.isValid()) {
 		// set new curent model row
 		_row = index.row();
+		// get new robot form
+		_form = _model->data(_model->index(index.row(), rsRobotModel::FORM)).toInt();
 
 		// load appropriate page
 		if (_form == rs::EV3 || _form == rs::NXT) {
