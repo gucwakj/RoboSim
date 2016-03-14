@@ -1760,7 +1760,7 @@ textEditor::textEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	QDoubleSpinBox *sizeBox = new QDoubleSpinBox();
 	sizeBox->setObjectName("size");
 	sizeBox->setMinimum(0);
-	sizeBox->setMaximum(100);
+	sizeBox->setMaximum(10000);
 	sizeBox->setSingleStep(1);
 	sizeLabel->setBuddy(sizeBox);
 	QWidget::connect(sizeBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
