@@ -65,8 +65,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>151</width>
-               <height>242</height>
+               <width>274</width>
+               <height>552</height>
               </rect>
              </property>
              <property name="font">
@@ -334,8 +334,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>276</width>
-               <height>539</height>
+               <width>274</width>
+               <height>552</height>
               </rect>
              </property>
              <property name="font">
@@ -656,6 +656,9 @@
        </property>
        <property name="acceptDrops">
         <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTabBar::tab { font-weight: bold; width: 13em;}</string>
        </property>
        <property name="tabPosition">
         <enum>QTabWidget::North</enum>

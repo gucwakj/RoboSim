@@ -62,7 +62,6 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// set configuration as first view in scene editor tabwidget
 	ui->tab_scene->setCurrentIndex(0);
 	ui->tab_scene->setFixedHeight(350);
-	ui->tab_scene->setStyleSheet("QTabBar::tab { font-weight: bold; }");
 
 	// set up robot model
 	_rob_model = new robotModel(this);
