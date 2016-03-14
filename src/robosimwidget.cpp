@@ -122,6 +122,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 		// add to watched paths
 		_watcher.addPath(_background[i]);
 	}
+	ui->backgroundListWidget->setDragEnabled(false);
 
 	// set up RoboPlay Challenges list
 	QTreeWidgetItem *rc15 = new QTreeWidgetItem(ui->tree_challenges);
