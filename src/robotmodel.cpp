@@ -361,9 +361,7 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 		this->addRobot(rs::LinkbotI, 2, 2);
 	else if (!map[0].toString().compare("Linkbot L"))
 		this->addRobot(rs::LinkbotL);
-	else if (!map[0].toString().compare("Mindstorms EV3"))
-		this->addRobot(rs::EV3);
-	else if (!map[0].toString().compare("Mindstorms NXT"))
+	else if (!map[0].toString().compare("Mindstorms EV3/NXT"))
 		this->addRobot(rs::NXT);
 	else if (!map[0].toString().compare("Bow"))
 		this->addPreconfig(rsLinkbot::Preconfigs::Bow);

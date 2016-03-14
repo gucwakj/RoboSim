@@ -27,8 +27,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 
 	// build robot selector
 	QStringList names, icons;
-	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
-	icons << "icons/linkbotI128.png" << "icons/linkbotL128.png" << "icons/mindstormsEV3128.png" << "icons/mindstormsNXT128.png";
+	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3/NXT";
+	icons << "icons/linkbotI128.png" << "icons/linkbotL128.png" << "icons/mindstormsNXT128.png";
 	this->build_selector(ui->list_robots, names, icons);
 	ui->list_robots->setDragEnabled(true);
 
