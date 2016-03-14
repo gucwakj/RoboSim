@@ -26,6 +26,9 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	this->setToolTipDuration(-1);
 	this->setContentsMargins(0, 0, 0, 0);
 
+	// bold title
+	groupbox->setStyleSheet("QGroupBox { font-weight: bold; }");
+
 	// simulated on by default
 	_simulated->setChecked(true);
 
