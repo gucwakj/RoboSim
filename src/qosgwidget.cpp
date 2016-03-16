@@ -6,7 +6,6 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <rs/Macros>
-//#include <rsScene/Dof>
 #include <rsScene/Linkbot>
 #include <rsScene/Mindstorms>
 #include <rsXML/BackgroundReader>
