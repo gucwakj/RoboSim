@@ -621,9 +621,7 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_rob_model->addRobot(rs::LinkbotI, 2, 2);
 	else if (!item->text().compare("Linkbot L"))
 		_rob_model->addRobot(rs::LinkbotL);
-	else if (!item->text().compare("Mindstorms EV3"))
-		_rob_model->addRobot(rs::EV3);
-	else if (!item->text().compare("Mindstorms NXT"))
+	else if (!item->text().compare("Mindstorms EV3/NXT"))
 		_rob_model->addRobot(rs::NXT);
 	else if (!item->text().compare("Bow"))
 		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Bow);
