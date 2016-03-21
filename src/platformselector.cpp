@@ -62,7 +62,13 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 		_chhome = "C:/Ch";
     }
     else {
-		_chhome = path;
+		// copy manually to a string to prevent windows from screwing with it
+		char str[256];
+		for (int i = 0; i < size; i++) {
+			sprintf(&str[i], "%c", path[i]);
+		}
+		str[size] = '\0';
+		_chhome = str;
     }
 #else
 	_chhome = "/usr/local/ch";
