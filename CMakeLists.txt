@@ -55,7 +55,11 @@ make_directory (${OUTPUT_BINDIR})
 
 # add Qt
 cmake_policy (SET CMP0020 NEW)
-set (QT_PREFIX "C:/Qt/5.5.1/5.5/msvc2013_64")
+if ("$ENV{PROCESSOR_ARCHITECTURE}" STREQUAL "x86")
+	set (QT_PREFIX "C:/Program Files/Qt/5.5/msvc2013")
+else ()
+	set (QT_PREFIX "C:/Qt/5.5.1/5.5/msvc2013_64")
+endif ()
 if (WIN32)
 	set (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${QT_PREFIX}/lib/cmake")
 endif ()
