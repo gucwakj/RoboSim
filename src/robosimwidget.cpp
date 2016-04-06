@@ -152,7 +152,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc15div2, "Synchronized Roboting", "120 points");
 	QTreeWidgetItem *rc15div3 = this->build_challenge_folder(rc15, "Division 03", "");
 	this->build_challenge(rc15div3, "Newtons Cradle", "40 points");
-	this->build_challenge(rc15div3, "MISSINGRobo PullupsMISSING", "40 points");
+	this->build_challenge(rc15div3, "Robo Pullups", "40 points");
 	this->build_challenge(rc15div3, "Navigate the Figure Eighter", "40 points");
 	this->build_challenge(rc15div3, "Stacking Challenge", "60 points");
 	this->build_challenge(rc15div3, "Synchronized Roboting", "60 points");
