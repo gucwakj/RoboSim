@@ -55,8 +55,8 @@ make_directory (${OUTPUT_BINDIR})
 
 # add Qt
 cmake_policy (SET CMP0020 NEW)
-if ("$ENV{PROCESSOR_ARCHITEW6432}" STREQUAL "x86")
-	set (QT_PREFIX "C:/Program Files/Qt/5.5/msvc2013")
+if ("$ENV{PROCESSOR_ARCHITEW6432}" STREQUAL "")
+	set (QT_PREFIX "C:/Qt/5.6/msvc2013")
 else ()
 	set (QT_PREFIX "C:/Qt/5.5.1/5.5/msvc2013_64")
 endif ()
@@ -162,6 +162,7 @@ qt5_wrap_ui (WIDGET_FORMS_HEADERS forms/robosimwidget.ui)
 # create library
 add_library (robosimwidget SHARED ${SRCS} ${HEADERS} ${WIDGET_FORMS_HEADERS})
 target_link_libraries (robosimwidget ${EXTRA_LIBS})
+set_target_properties (robosimwidget PROPERTIES DEBUG_POSTFIX "d")
 set_target_properties (robosimwidget PROPERTIES COMPILE_DEFINITIONS "ROBOSIMWIDGET_DLL")
 
 #
@@ -170,7 +171,7 @@ set_target_properties (robosimwidget PROPERTIES COMPILE_DEFINITIONS "ROBOSIMWIDG
 
 # add project library into standalone app
 include_directories ("${RoboSim_SOURCE_DIR}/include")
-link_directories ("${RoboSim_BINARY_DIR}/lib")
+link_directories ("${RoboSim_BINARY_DIR}/bin")
 set (EXTRA_LIBS ${EXTRA_LIBS} optimized robosimwidget debug robosimwidgetd)
 
 # set gui form

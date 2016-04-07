@@ -7,8 +7,8 @@
 #include <QKeyEvent>
 #include <QTimer>
 
-#include <osgViewer/Viewer>
 #include <osgQt/GraphicsWindowQt>
+#include <osgViewer/Viewer>
 
 #include <rsScene/Scene>
 
@@ -71,6 +71,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		int _level;
 		std::vector<double> _grid;
 		QTimer _timer;
+		osgQt::GraphicsWindowQt *_gw;
 };
 
 class QMouseHandler : public QObject, virtual public rsScene::MouseHandler {

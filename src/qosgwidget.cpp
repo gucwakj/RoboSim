@@ -32,7 +32,7 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 
 	// set display settings
 	osg::ref_ptr<osg::DisplaySettings> ds = osg::DisplaySettings::instance().get();
-	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
+	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds.get());
 	traits->x = this->x();
 	traits->y = this->y();
 	traits->width = 640;
@@ -43,11 +43,11 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	traits->sampleBuffers = ds->getMultiSamples();
 	traits->samples = ds->getNumMultiSamples();
 	traits->inheritedWindowData = new osgQt::GraphicsWindowQt::WindowData(this);
-	osg::ref_ptr<osgQt::GraphicsWindowQt> gw = new osgQt::GraphicsWindowQt(traits.get());
+	_gw = new osgQt::GraphicsWindowQt(traits.get());
 
 	// create viewer
 	_scene->setupViewer(dynamic_cast<osgViewer::Viewer*>(this));
-	_scene->setupCamera(gw, traits->width, traits->height);
+	_scene->setupCamera(_gw, traits->width, traits->height);
 	_scene->setupScene(traits->width, traits->height, false);
 	QMouseHandler *mh = new QMouseHandler(_scene);
 	_scene->setMouseHandler(mh);
