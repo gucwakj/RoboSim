@@ -187,7 +187,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc14div2, "Tortoise and the Hare", "80 points");
 	this->build_challenge(rc14div2, "The Grid", "95 points");
 	this->build_challenge(rc14div2, "Transport", "115 points");
-	this->build_challenge(rc14div2, "MISSINGAlley OopMISSING", "120 points");
+	this->build_challenge(rc14div2, "Alley Oop", "120 points");
 	//ui->tree_challenges->expandItem(rc15);
 	//ui->tree_challenges->expandItem(rc15div1);
 	ui->tree_challenges->expandItem(rc14);
