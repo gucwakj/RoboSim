@@ -147,7 +147,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc15div2, "Robo Pullups", "60 points");
 	this->build_challenge(rc15div2, "Speed Racer", "60 points");
 	this->build_challenge(rc15div2, "Navigate the Oval", "60 points");
-	this->build_challenge(rc15div2, "MISSINGMeet Ya ThereMISSING", "75 points");
+	this->build_challenge(rc15div2, "Meet Ya There", "75 points");
 	this->build_challenge(rc15div2, "Bug Time", "75 points");
 	this->build_challenge(rc15div2, "Stacking Challenge", "90 points");
 	this->build_challenge(rc15div2, "Retrieve Supplies", "100 points");
