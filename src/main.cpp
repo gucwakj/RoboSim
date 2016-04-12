@@ -4,7 +4,9 @@
 
 int main(int argc, char *argv[]) {
 	// scale for high DPI
-	qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "1");
+	#ifdef Q_OS_WIN
+	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	#endif
 
 	// create main app
 	QApplication a(argc, argv);
