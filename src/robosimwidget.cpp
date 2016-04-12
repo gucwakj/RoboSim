@@ -176,7 +176,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc14div1, "High Five Low Five", "60 points");
 	this->build_challenge(rc14div1, "Steal the Gold", "80 points");
 	this->build_challenge(rc14div1, "The Grid", "95 points");
-	this->build_challenge(rc14div1, "MISSINGTransportMISSING", "115 points");
+	this->build_challenge(rc14div1, "Transport", "115 points");
 	QTreeWidgetItem *rc14div2 = this->build_challenge_folder(rc14, "Division 02", "High School");
 	this->build_challenge(rc14div2, "Bounce", "40 points");
 	this->build_challenge(rc14div2, "Steal the Gold", "50 points");
@@ -186,7 +186,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc14div2, "Get'n Dizzy Wit It", "80 points");
 	this->build_challenge(rc14div2, "Tortoise and the Hare", "80 points");
 	this->build_challenge(rc14div2, "The Grid", "95 points");
-	this->build_challenge(rc14div2, "MISSINGTransportMISSING", "115 points");
+	this->build_challenge(rc14div2, "Transport", "115 points");
 	this->build_challenge(rc14div2, "MISSINGAlley OopMISSING", "120 points");
 	//ui->tree_challenges->expandItem(rc15);
 	//ui->tree_challenges->expandItem(rc15div1);
