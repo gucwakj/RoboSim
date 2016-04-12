@@ -13,7 +13,9 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_model = model;
 
 	// set size properties
-	this->setFixedWidth(350);
+	QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
+	sp.setHorizontalStretch(1);
+	this->setSizePolicy(sp);
 
 	// set up editor pages
 	_pages = new QStackedWidget;

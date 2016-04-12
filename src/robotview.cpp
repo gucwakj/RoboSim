@@ -39,6 +39,11 @@ robotView::robotView(robotModel *model, QWidget *parent) : QListView(parent) {
 	this->setDropIndicatorShown(true);
 	this->setDragDropMode(QAbstractItemView::DropOnly);
 	this->setStyle(new robotViewStyle());
+
+	// set size properties
+	QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
+	sp.setHorizontalStretch(2);
+	this->setSizePolicy(sp);
 }
 
 void robotView::dataChanged(const QModelIndex &/*topLeft*/, const QModelIndex &bottomRight) {

@@ -27,6 +27,12 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	// provide reference count
 	this->ref();
 
+	// set size properties
+	QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
+	sp.setVerticalStretch(2);
+	sp.setHorizontalStretch(3);
+	this->setSizePolicy(sp);
+
 	// handle event inputs
 	this->installEventFilter(this);
 
