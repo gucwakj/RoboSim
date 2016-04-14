@@ -123,7 +123,7 @@ bool robotModel::addPreconfig(int type, int role) {
 		_list[row][R_PSI] = QVariant(0).toString();
 		switch (type) {
 			case rsLinkbot::Preconfigs::Bow:
-				_list[row][P_Z] = QVariant(0.05275).toString();
+				_list[row][P_Z] = QVariant(0.0470).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
 				break;
 			case rsLinkbot::Preconfigs::Explorer:
@@ -144,7 +144,7 @@ bool robotModel::addPreconfig(int type, int role) {
 				_list[row][R_PSI] = QVariant(-90).toString();
 				break;
 			case rsLinkbot::Preconfigs::GroupBow:
-				_list[row][P_Z] = QVariant(0.05275).toString();
+				_list[row][P_Z] = QVariant(0.0470).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
 				break;
 			case rsLinkbot::Preconfigs::Inchworm:
