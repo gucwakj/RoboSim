@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
 	// scale for high DPI
-	#ifdef Q_OS_WIN
+	#ifdef Q_OS_WIN64
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	#endif
 
