@@ -35,8 +35,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build preconfig selector
 	names.clear();
 	icons.clear();
-	names << "Bow" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
-	icons << "icons/bow128.png" << "icons/explorer128.png" << "icons/fourbotdrive128.png" << "icons/fourwheeldrive128.png" << "icons/fourwheelexplorer128.png" << "icons/groupbow128.png" << "icons/inchworm128.png" << "icons/lift128.png" << "icons/omnidrive128.png" << "icons/snake128.png" << "icons/stand128.png";
+	names << "Bow" << "Bug Clock" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
+	icons << "icons/bow128.png" << "icons/bugclock128.png" << "icons/explorer128.png" << "icons/fourbotdrive128.png" << "icons/fourwheeldrive128.png" << "icons/fourwheelexplorer128.png" << "icons/groupbow128.png" << "icons/inchworm128.png" << "icons/lift128.png" << "icons/omnidrive128.png" << "icons/snake128.png" << "icons/stand128.png";
 	this->build_selector(ui->list_preconfig, names, icons);
 	ui->list_preconfig->setDragEnabled(true);
 
@@ -161,7 +161,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc15div3, "Flash Mob", "70 points");
 	this->build_challenge(rc15div3, "Speed Racer", "65 points");
 	this->build_challenge(rc15div3, "Retrieving Supplies from Drop Site", "100 points");
-	this->build_challenge(rc15div3, "MISSINGBug ClockMISSING", "100 points");
+	this->build_challenge(rc15div3, "Bug Clock", "100 points");
 	this->build_challenge(rc15div3, "Tired of Wheels", "140 points");*/
 	QTreeWidgetItem *rc14 = new QTreeWidgetItem(ui->tree_challenges);
 	rc14->setText(0, "2014");
@@ -627,6 +627,8 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_rob_model->addRobot(rs::NXT);
 	else if (!item->text().compare("Bow"))
 		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Bow);
+	else if (!item->text().compare("Bug Clock"))
+		_rob_model->addPreconfig(rsLinkbot::Preconfigs::BugClock);
 	else if (!item->text().compare("Explorer"))
 		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Explorer);
 	else if (!item->text().compare("Four Bot Drive"))

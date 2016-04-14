@@ -8,6 +8,7 @@ using namespace rsRobotModel;
 robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	// set up preconfig
 	_l_preconfig[rsLinkbot::Preconfigs::Bow] = 2;
+	_l_preconfig[rsLinkbot::Preconfigs::BugClock] = 3;
 	_l_preconfig[rsLinkbot::Preconfigs::Explorer] = 5;
 	_l_preconfig[rsLinkbot::Preconfigs::FourBotDrive] = 4;
 	_l_preconfig[rsLinkbot::Preconfigs::FourWheelDrive] = 4;
@@ -126,6 +127,10 @@ bool robotModel::addPreconfig(int type, int role) {
 				_list[row][P_Z] = QVariant(0.0470).toString();
 				_list[row][R_PHI] = QVariant(90).toString();
 				break;
+			case rsLinkbot::Preconfigs::BugClock:
+				_list[row][P_Z] = QVariant(0.0510).toString();
+				_list[row][R_THETA] = QVariant(-90).toString();
+				break;
 			case rsLinkbot::Preconfigs::Explorer:
 				_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + rs::IN2M(12) : 0).toString();
 				_list[row][P_Z] = QVariant(0.05080).toString();
@@ -235,6 +240,9 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 						case rsLinkbot::Preconfigs::Bow:
 							return QString(tr("Bow\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Bow]);
 							break;
+						case rsLinkbot::Preconfigs::BugClock:
+							return QString(tr("Bug Clock\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::BugClock]);
+							break;
 						case rsLinkbot::Preconfigs::Explorer:
 							return QString(tr("Explorer\nRobots %1 - %2")).arg(id + 1).arg(id + _l_preconfig[rsLinkbot::Preconfigs::Explorer]);
 							break;
@@ -291,6 +299,7 @@ QVariant robotModel::data(const QModelIndex &index, int role) const {
 		QPixmap image;
 		switch (_list[index.row()][rsRobotModel::PRECONFIG].toInt()) {
 			case rsLinkbot::Preconfigs::Bow:				image.load("icons/bow32.png"); break;
+			case rsLinkbot::Preconfigs::BugClock:			image.load("icons/bugclock32.png"); break;
 			case rsLinkbot::Preconfigs::Explorer:			image.load("icons/explorer32.png"); break;
 			case rsLinkbot::Preconfigs::FourBotDrive:		image.load("icons/fourbotdrive32.png"); break;
 			case rsLinkbot::Preconfigs::FourWheelDrive:		image.load("icons/fourwheeldrive32.png"); break;
@@ -365,6 +374,8 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 		this->addRobot(rs::NXT);
 	else if (!map[0].toString().compare("Bow"))
 		this->addPreconfig(rsLinkbot::Preconfigs::Bow);
+	else if (!map[0].toString().compare("Bug Clock"))
+		this->addPreconfig(rsLinkbot::Preconfigs::BugClock);
 	else if (!map[0].toString().compare("Explorer"))
 		this->addPreconfig(rsLinkbot::Preconfigs::Explorer);
 	else if (!map[0].toString().compare("Four Bot Drive"))

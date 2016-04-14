@@ -313,6 +313,61 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				delete robot1;
 				break;
 			}
+			case rsLinkbot::Preconfigs::BugClock: {
+				// delete old preconfig
+				_scene->deletePreconfig(id);
+
+				// create preconfig group
+				rsScene::Group *group = _scene->createPreconfig(id);
+
+				// draw base robot
+				rsScene::Linkbot *robot0 = new rsScene::Linkbot(rs::LinkbotI);
+				robot0->setID(id);
+				robot0->setName(name);
+				rsScene::Group *sceneRobot0 = _scene->createRobot(robot0);
+				robot0->draw(sceneRobot0, p, q, rs::Vec(0, 0, 0), c, 0);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face1, rs::Right, 0, 1, rsLinkbot::Connectors::SmallWheel);
+				robot0->drawConnector(sceneRobot0, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, -1);
+
+				// draw second robot
+				rsScene::Linkbot *robot1 = new rsScene::Linkbot(rs::LinkbotI);
+				robot1->setID(id + 1);
+				robot1->setName(name);
+				rs::Pos P = robot0->getRobotFacePosition(rsLinkbot::Bodies::Face3, p, q);
+				rs::Quat Q = robot0->getRobotBodyQuaternion(rsLinkbot::Bodies::Face3, 0, q);
+				P = robot0->getConnFacePosition(rsLinkbot::Connectors::Simple, rsLinkbot::Connectors::Side2, rs::Right, P, Q);
+				Q = robot0->getConnFaceQuaternion(rsLinkbot::Connectors::Simple, rsLinkbot::Connectors::Side2, rs::Right, Q);
+				P = robot1->getRobotCenterPosition(rsLinkbot::Bodies::Face1, P, Q);
+				Q = robot1->getRobotCenterQuaternion(rsLinkbot::Bodies::Face1, rs::Right, 0, Q);
+				rsScene::Group *sceneRobot1 = _scene->createRobot(robot1);
+				robot1->draw(sceneRobot1, P, Q, rs::Vec(0, 0, 0), c, 0);
+				robot1->drawConnector(sceneRobot1, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face3, rs::Right, 0, 1, -1);
+
+				// draw third robot
+				rsScene::Linkbot *robot2 = new rsScene::Linkbot(rs::LinkbotI);
+				robot2->setID(id + 2);
+				robot2->setName(name);
+				rs::Pos P2 = robot1->getRobotFacePosition(rsLinkbot::Bodies::Face3, P, Q);
+				rs::Quat Q2 = robot1->getRobotBodyQuaternion(rsLinkbot::Bodies::Face3, 0, Q);
+				P2 = robot1->getConnFacePosition(rsLinkbot::Connectors::Simple, rsLinkbot::Connectors::Side2, rs::Right, P2, Q2);
+				Q2 = robot1->getConnFaceQuaternion(rsLinkbot::Connectors::Simple, rsLinkbot::Connectors::Side2, rs::Right, Q2);
+				P2 = robot2->getRobotCenterPosition(rsLinkbot::Bodies::Face1, P2, Q2);
+				Q2 = robot2->getRobotCenterQuaternion(rsLinkbot::Bodies::Face1, rs::Right, 0, Q2);
+				rsScene::Group *sceneRobot2 = _scene->createRobot(robot2);
+				robot2->draw(sceneRobot2, P2, Q2, rs::Vec(0, 0, 0), c, 0);
+
+				// add robots to group
+				group->addChild(sceneRobot0);
+				group->addChild(sceneRobot1);
+				group->addChild(sceneRobot2);
+				_scene->stageChild(group);
+
+				// end
+				delete robot0;
+				delete robot1;
+				delete robot2;
+				break;
+			}
 			case rsLinkbot::Preconfigs::Explorer: {
 				// delete old preconfig
 				_scene->deletePreconfig(id);
