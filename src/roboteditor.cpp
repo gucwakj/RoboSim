@@ -232,7 +232,7 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -507,7 +507,7 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -707,7 +707,7 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -980,7 +980,7 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3" << "Mindstorms NXT";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
