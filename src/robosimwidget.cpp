@@ -544,7 +544,7 @@ void roboSimWidget::about(void) {
 	QMessageBox::about(this, tr("About RoboSim"),
 		tr("<h3>About RoboSim</h3><p><b>RoboSim</b> is a robot simulation environment, developed by the UC"
 		"Davis Center for Integrated Computing and STEM Education (C-STEM) <a"
-		"href=\"%1\"</a>%1</a>, for programming Barobo Linkbot and Lego Mindstorms NXT/EV3.  The same Ch"
+		"href=\"%1\"</a>%1</a>, for programming Barobo Linkbot and Lego Mindstorms EV3/NXT.  The same Ch"
 		"program can control hardware robots or virtual robots in RoboSim without any"
 		"modification.</p>"
 		"<p>Copyright (C) %2 The C-STEM Center</p>"

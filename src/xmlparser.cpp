@@ -264,62 +264,62 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 		int wheel[2] = {0};
 
 		if (preconfig == rsLinkbot::Preconfigs::Individual) {
-				// create robot element
-				tinyxml2::XMLElement *robot = Writer::getOrCreateRobot(form, id);
+			// create robot element
+			tinyxml2::XMLElement *robot = Writer::getOrCreateRobot(form, id);
 
-				// save specific robot element
-				switch (form) {
-					case rs::LinkbotI:
-					case rs::LinkbotL: {
-						// joints
-						rs::Vec j;
-						j.allocate(3);
+			// save specific robot element
+			switch (form) {
+				case rs::LinkbotI:
+				case rs::LinkbotL: {
+					// joints
+					rs::Vec j;
+					j.allocate(3);
 
-						// set new robot data
-						Writer::setRobot(robot, name, p, q, j, c);
+					// set new robot data
+					Writer::setRobot(robot, name, p, q, j, c);
 
-						// set wheel sizes
-						for (int i = 0; i < 2; i++) {
-							if (wheelID[i] == 1)
-								wheel[i] = rsLinkbot::Connectors::TinyWheel;
-							else if (wheelID[i] == 2)
-								wheel[i] = rsLinkbot::Connectors::SmallWheel;
-							else if (wheelID[i] == 3)
-								wheel[i] = rsLinkbot::Connectors::BigWheel;
-							else if (wheelID[i] == 4)
-								wheel[i] = rsLinkbot::Connectors::Wheel;
-							else
-								wheel[i] = rsLinkbot::Connectors::None;
-						}
-
-						// done
-						break;
+					// set wheel sizes
+					for (int i = 0; i < 2; i++) {
+						if (wheelID[i] == 1)
+							wheel[i] = rsLinkbot::Connectors::TinyWheel;
+						else if (wheelID[i] == 2)
+							wheel[i] = rsLinkbot::Connectors::SmallWheel;
+						else if (wheelID[i] == 3)
+							wheel[i] = rsLinkbot::Connectors::BigWheel;
+						else if (wheelID[i] == 4)
+							wheel[i] = rsLinkbot::Connectors::Wheel;
+						else
+							wheel[i] = rsLinkbot::Connectors::None;
 					}
-					case rs::EV3:
-					case rs::NXT: {
-						// joints
-						rs::Vec j;
-						j.allocate(2);
 
-						// set new robot data
-						Writer::setRobot(robot, name, p, q, j, c);
-
-						// set wheel sizes
-						for (int i = 0; i < 2; i++) {
-							if (wheelID[i] == 0)
-								wheel[i] = rsMindstorms::Connectors::Small;
-							else if (wheelID[i] == 1)
-								wheel[i] = rsMindstorms::Connectors::Big;
-						}
-
-						// done
-						break;
-					}
+					// done
+					break;
 				}
-				// write wheels
-				Writer::setRobotWheels(robot, wheel[0], radius, wheel[1], radius);
-				// done
-				break;
+				case rs::EV3:
+				case rs::NXT: {
+					// joints
+					rs::Vec j;
+					j.allocate(2);
+
+					// set new robot data
+					Writer::setRobot(robot, name, p, q, j, c);
+
+					// set wheel sizes
+					for (int i = 0; i < 2; i++) {
+						if (wheelID[i] == 0)
+							wheel[i] = rsMindstorms::Connectors::Small;
+						else if (wheelID[i] == 1)
+							wheel[i] = rsMindstorms::Connectors::Big;
+					}
+
+					// done
+					break;
+				}
+			}
+			// write wheels
+			Writer::setRobotWheels(robot, wheel[0], radius, wheel[1], radius);
+			// done
+			break;
 		}
 		else {
 			tinyxml2::XMLElement *pre = Writer::getOrCreatePreconfig(form, preconfig, id);

@@ -232,7 +232,7 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3/NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -374,7 +374,7 @@ void linkbotIEditor::submitForm(int value) {
 	int form = -1;
 	if (value == LINKBOTI) form = rs::LinkbotI;
 	else if (value == LINKBOTL) form = rs::LinkbotL;
-	else if (value == EV3) form = rs::EV3;
+	//else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
 }
@@ -432,7 +432,7 @@ void linkbotIEditor::setIndex(int row) {
 	int ind = -1;
 	if (form == rs::LinkbotI) ind = LINKBOTI;
 	else if (form == rs::LinkbotL) ind = LINKBOTL;
-	else if (form == rs::EV3) ind = EV3;
+	//else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
@@ -507,7 +507,7 @@ linkbotLEditor::linkbotLEditor(robotModel *model, QWidget *parent) : QWidget(par
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3/NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -613,7 +613,7 @@ void linkbotLEditor::submitForm(int value) {
 	int form = -1;
 	if (value == LINKBOTI) form = rs::LinkbotI;
 	else if (value == LINKBOTL) form = rs::LinkbotL;
-	else if (value == EV3) form = rs::EV3;
+	//else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
 }
@@ -659,7 +659,7 @@ void linkbotLEditor::setIndex(int row) {
 	int ind = -1;
 	if (form == rs::LinkbotI) ind = LINKBOTI;
 	else if (form == rs::LinkbotL) ind = LINKBOTL;
-	else if (form == rs::EV3) ind = EV3;
+	//else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
@@ -707,7 +707,7 @@ mindstormsEditor::mindstormsEditor(robotModel *model, QWidget *parent) : QWidget
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3/NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -849,7 +849,7 @@ void mindstormsEditor::submitForm(int value) {
 	int form = -1;
 	if (value == LINKBOTI) form = rs::LinkbotI;
 	else if (value == LINKBOTL) form = rs::LinkbotL;
-	else if (value == EV3) form = rs::EV3;
+	//else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	int mform = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	if (rs::EV3 == mform || mform == rs::NXT)
@@ -909,7 +909,7 @@ void mindstormsEditor::setIndex(int row) {
 	int ind = -1;
 	if (form == rs::LinkbotI) ind = LINKBOTI;
 	else if (form == rs::LinkbotL) ind = LINKBOTL;
-	else if (form == rs::EV3) ind = EV3;
+	//else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
@@ -980,7 +980,7 @@ customEditor::customEditor(robotModel *model, QWidget *parent) : QWidget(parent)
 	// form list
 	QLabel *formLabel = new QLabel(tr("Form:"));
 	QStringList formItems;
-	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms NXT/EV3";
+	formItems << "Linkbot I" << "Linkbot L" << "Mindstorms EV3/NXT";
 	QStringListModel *formModel = new QStringListModel(formItems, this);
 	QComboBox *formBox = new QComboBox();
 	formBox->setObjectName("form");
@@ -1116,7 +1116,7 @@ void customEditor::submitForm(int value) {
 	int form = -1;
 	if (value == LINKBOTI) form = rs::LinkbotI;
 	else if (value == LINKBOTL) form = rs::LinkbotL;
-	else if (value == EV3) form = rs::EV3;
+	//else if (value == EV3) form = rs::EV3;
 	else if (value == NXT) form = rs::NXT;
 	_model->setData(_model->index(_row, rsRobotModel::FORM), form);
 }
@@ -1160,7 +1160,7 @@ void customEditor::setIndex(int row) {
 	int ind = -1;
 	if (form == rs::LinkbotI) ind = LINKBOTI;
 	else if (form == rs::LinkbotL) ind = LINKBOTL;
-	else if (form == rs::EV3) ind = EV3;
+	//else if (form == rs::EV3) ind = EV3;
 	else if (form == rs::NXT) ind = NXT;
 	(this->findChild<QComboBox *>("form"))->setCurrentIndex(ind);
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());

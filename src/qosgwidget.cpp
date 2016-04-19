@@ -1140,11 +1140,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						// remove old robot
 						_scene->deleteRobot(id);
 						// create new one
-						rsScene::Mindstorms *robot = NULL;
-						if (form == rs::EV3)
-							robot = new rsScene::Mindstorms(rs::EV3);
-						else
-							robot = new rsScene::Mindstorms(rs::NXT);
+						rsScene::Mindstorms *robot = new rsScene::Mindstorms(rs::NXT);
 						robot->setID(id);
 						robot->setName(name);
 						// get wheels
