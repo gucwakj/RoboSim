@@ -29,17 +29,24 @@ robotModel::~robotModel(void) {
 
 bool robotModel::addRobot(int form, int left, int right, int role) {
 	if (role == Qt::EditRole) {
-		// add row
+		// check size
 		int row = _list.size();
-		this->insertRows(row, 1);
 
-		// new robot data
+		// new robot id
+		int id = -1;
 		if (row && this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()) {
-			_list[row][ID] = QVariant(this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()]).toString();
+			id = this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()];
 		}
 		else {
-			_list[row][ID] = QVariant((row) ? this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
+			id = (row) ? this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 : 0;
 		}
+		// exit if id is messed up
+		if (id == -1) return false;
+
+		// add row
+		this->insertRows(row, 1);
+		// new robot data
+		_list[row][ID] = QVariant(id).toString();
 		_list[row][FORM] = QVariant(form).toString();
 		_list[row][NAME] = QString("");
 		double offset = 0;
