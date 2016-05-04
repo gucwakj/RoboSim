@@ -173,6 +173,9 @@ void xmlParser::parse(const char *name) {
 						}
 						case rs::EV3:
 						case rs::NXT: {
+							// fake ev3 as an nxt
+							xmlbot->setForm(rs::NXT);
+							// set wheels
 							if (xmlwheels[i] == rsMindstorms::Connectors::Small)
 								wheels[i] = 0;
 							else if (xmlwheels[i] == rsMindstorms::Connectors::Big)
