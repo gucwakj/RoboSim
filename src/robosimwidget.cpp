@@ -110,7 +110,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	for (int i = 0; i < _background.size(); i++) {
 		QString file(_background[i]);
 		QFileInfo checkFile(file.append("/background.xml"));
-		if (!checkFile.exists()) _background.removeAt(1);
+		if (!checkFile.exists()) _background.removeAt(i);
 	}
 	// create view list
 	for (int i = 0; i < _background.size(); i++) {
@@ -333,7 +333,17 @@ void roboSimWidget::addBackground(void) {
 	QString xml(dir);
 	QFileInfo checkFile(xml.append("/background.xml"));
 	if (checkFile.exists()) {
+		// add to list
 		_background << dir;
+		// parse rsXML::BackgroundReader
+		rsXML::BackgroundReader background(dir.toStdString());
+		// make item
+		QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
+		item->setIcon(QIcon(background.getScreenshot().c_str()));
+		item->setText(background.getName().c_str());
+		item->setData(Qt::UserRole, dir);
+		// add to watched paths
+		_watcher.addPath(dir);
 	}
 	else {
 		QMessageBox msgBox;
@@ -459,14 +469,24 @@ void roboSimWidget::grid_labels(bool si) {
 }
 
 void roboSimWidget::setCurrentBackground(std::string name) {
+	// count variable
+	int i = 0;
+
 	// highlight clicked item
-	for (int i = 0; i < ui->backgroundListWidget->count(); i++) {
+	for (i = 0; i < ui->backgroundListWidget->count(); i++) {
 		QListWidgetItem *item = ui->backgroundListWidget->item(i);
 		if ( !item->text().compare(name.c_str()) ) {
 			ui->backgroundListWidget->setCurrentRow(i);
 			ui->osgWidget->setNewBackground(item, item);
 			break;
 		}
+	}
+
+	// default to outdoors if selected one disappeared
+	if (i == ui->backgroundListWidget->count()) {
+		QListWidgetItem *item = ui->backgroundListWidget->item(0);
+		ui->backgroundListWidget->setCurrentRow(0);
+		ui->osgWidget->setNewBackground(item, item);
 	}
 
 	// disable all grid options when not using outdoors
