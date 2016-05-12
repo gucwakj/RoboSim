@@ -3,9 +3,12 @@
 #include "mainwindow.h"
 
 int main(int argc, char *argv[]) {
-	// scale for high DPI
+	// windows specific settings
 	#ifdef Q_OS_WIN64
+	// scale for high DPI
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	// opengl implementation - force it because of surface pro
+	QApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 	#endif
 
 	// create main app
@@ -15,5 +18,6 @@ int main(int argc, char *argv[]) {
 	MainWindow w;
 	w.showMaximized();
 
+	// run app
 	return a.exec();
 }
