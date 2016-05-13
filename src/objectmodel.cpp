@@ -71,7 +71,7 @@ bool objectModel::addObject(int form, int role) {
 		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
 		_list[row][rsObjectModel::SIZE] = QVariant(5).toString();		// f*$k microsoft
 		if (form == rs::Text) {
-			_list[row][rsObjectModel::SIZE] = QVariant(25).toString();		// f*$k microsoft
+			_list[row][rsObjectModel::SIZE] = QVariant(35).toString();		// f*$k microsoft
 		}
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString("HI");
