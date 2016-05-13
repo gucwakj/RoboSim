@@ -89,7 +89,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 
 	// set up background view
 	// if outdoors isn't first, delete and restart
-	if (!_background.empty() && _background[0].toStdString().compare(_background[0].length() - 8, 8, "outdoors")) {
+	if (!_background.empty() && _background[0].toStdString().compare(0, 8, "outdoors")) {
 		_background.clear();
 	}
 	// parse default path
