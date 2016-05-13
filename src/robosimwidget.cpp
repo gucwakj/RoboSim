@@ -94,20 +94,16 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	}
 	// parse default path
 	if (_background.empty()) {
-		QString parent(rsXML::getDefaultBackgroundPath().c_str());
-		QString base(parent);
-		_background << base.append("outdoors");
-		base = parent;
-		_background << base.append("baroboactivitymat");
-		base = parent;
-		_background << base.append("2015RoboPlay");
-		base = parent;
-		_background << base.append("2014RoboPlay");
-		base = parent;
-		_background << base.append("none");
+		_background << QString("outdoors");
+		_background << QString("baroboactivitymat");
+		_background << QString("2015RoboPlay");
+		_background << QString("2014RoboPlay");
+		_background << QString("none");
 	}
-	// remove any stale directories
-	for (int i = 0; i < _background.size(); i++) {
+	// set number of defaults
+	int num_def_backgrounds = 5;
+	// remove any stale custom directories (ignore default ones)
+	for (int i = num_def_backgrounds; i < _background.size(); i++) {
 		QString file(_background[i]);
 		QFileInfo checkFile(file.append("/background.xml"));
 		if (!checkFile.exists()) _background.removeAt(i);
@@ -122,7 +118,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 		item->setText(background.getName().c_str());
 		item->setData(Qt::UserRole, _background[i]);
 		// add to watched paths
-		_watcher.addPath(_background[i]);
+		if (i >= num_def_backgrounds) _watcher.addPath(_background[i]);
 	}
 	ui->backgroundListWidget->setDragEnabled(false);
 
