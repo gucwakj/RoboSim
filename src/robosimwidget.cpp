@@ -123,7 +123,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->backgroundListWidget->setDragEnabled(false);
 
 	// set up RoboPlay Challenges list
-	/*QTreeWidgetItem *rc15 = new QTreeWidgetItem(ui->tree_challenges);
+	QTreeWidgetItem *rc15 = new QTreeWidgetItem(ui->tree_challenges);
 	rc15->setText(0, "2015");
 	rc15->setText(1, "2015 RoboPlay Challenges");
 	QTreeWidgetItem *rc15div1 = this->build_challenge_folder(rc15, "Division 01", "");
@@ -158,7 +158,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc15div3, "Speed Racer", "65 points");
 	this->build_challenge(rc15div3, "Retrieving Supplies from Drop Site", "100 points");
 	this->build_challenge(rc15div3, "Bug Clock", "100 points");
-	this->build_challenge(rc15div3, "Tired of Wheels", "140 points");*/
+	this->build_challenge(rc15div3, "Tired of Wheels", "140 points");
 	QTreeWidgetItem *rc14 = new QTreeWidgetItem(ui->tree_challenges);
 	rc14->setText(0, "2014");
 	rc14->setText(1, "2014 RoboPlay Challenges");
@@ -184,8 +184,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc14div2, "The Grid", "95 points");
 	this->build_challenge(rc14div2, "Transport", "115 points");
 	this->build_challenge(rc14div2, "Alley Oop", "120 points");
-	//ui->tree_challenges->expandItem(rc15);
-	//ui->tree_challenges->expandItem(rc15div1);
+	ui->tree_challenges->expandItem(rc15);
+	ui->tree_challenges->expandItem(rc15div1);
 	ui->tree_challenges->expandItem(rc14);
 	ui->tree_challenges->expandItem(rc14div1);
 	ui->tree_challenges->resizeColumnToContents(0);
