@@ -535,6 +535,7 @@ robot.connect("testrc");
 \newpage
 \appendix
 \section{Appendix: Manual Configuration File Generation}
+\label{app:xml}
 All options available in the RoboSim GUI can be done manually as well as adding
 in more advanced features which are not necessary to be exposed to all users in
 the GUI.  There are four sections to the configuration file.  The header,
@@ -621,6 +622,7 @@ measure of how bouncy a surface is.  Small values correspond to hard surfaces
 while larger values are for softer surfaces.
 
 \subsection{Ground Section}
+\label{app:xml:obstacles}
 The ground section holds the solid bodies which are a part of the ground for
 which the robots to interact.  The objects do not need to be on the ground
 plane.  They can be floating in space but are still a part of the ground
@@ -1081,8 +1083,98 @@ Some example configuration files.
 \end{verbatim}
 
 \newpage
-\section{Appendix: Background XML File Writing}
+\section{Appendix: Background Writing}
 \label{appendix:backgroundxml}
-hi
+The RoboSim backgrounds which are available within the GUI are examples that can
+be copied and modified to create custom background folders.  A full background
+folder consists of the background XML file as well as the associated images to
+be shown.
+
+As an example the Outdoors background from the GUI is used here to show the
+necessary items for a background.  Here is the list of files and folders within
+the outdoors folder.
+\begin{verbatim}
+sky/
+background.xml
+ground.3ds
+screenshot.png
+\end{verbatim}
+
+The sky folder holds all of the images which form the sky around the scene.
+These are referenced in the \texttt{background.xml} file.  This file holds all
+of the specifics for RoboSim to read and parse when loading your background.
+The \texttt{ground.3ds} file is the green floor which is shown in the scene.
+The screenshot is the image that is shown within the RoboSim GUI Backgrounds
+list to show users what the background looks like.
+
+The \texttt{background.xml} file is shown below:
+\begin{verbatim}
+<?RoboSim Background XML?>
+
+<level>outdoors</level>
+
+<name>Outdoors</name>
+
+<screenshot>screenshot.png</screenshot>
+
+<background>
+    <ground>ground.3ds</ground>
+    <front>sky/front.png</front>
+    <left>sky/left.png</left>
+    <back>sky/back.png</back>
+    <right>sky/right.png</right>
+    <top>sky/top.png</top>
+    <bottom>sky/bottom.png</bottom>
+</background>
+\end{verbatim}
+
+\subsection{Level}
+The level is one of the default background options that can be extended with new
+images.  The option goes within the \texttt{<level>} tags.  All of the options
+are shown in Table \ref{tab:levels}.  \texttt{none} doesn't load any images and
+only shows the black background.  \texttt{activitymat} is the small rectangle
+mat from Barobo.  \texttt{board} loads a 4ft by 8ft board similar to the
+RoboPlay Challenge Competition mats. \texttt{outdoors} is the large, expansive
+environment.
+
+\begin{table}[H]
+	\begin{center}
+	\begin{tabular}{c}
+		\hline \hline
+		\verb|none| \\
+		\verb|activitymat| \\
+		\verb|board| \\
+		\verb|outdoors| \\
+		\verb|RPC2016| \\
+		\verb|RPC2015| \\
+		\verb|RPC2014| \\
+		\hline \hline
+	\end{tabular}
+	\caption{Levels}
+	\label{tab:levels}
+	\end{center}
+\end{table}
+
+\subsection{Name}
+This is the name which will show up in the RoboSim GUI.  Pick something fun and
+unique.
+
+\subsection{Screenshot}
+The name of your screenshot file.  The path to the file is relative to the xml
+file location.
+
+\subsection{Background}
+All of the extra images to load for creating the environment are listed here.
+The robots operate within a six-sided cube.  Each side, plus the ground, can
+have an image.  If no image is provided, it will be left blank.
+
+\subsection{Obstacles}
+In addition to the required items shown above, an optional section which mimics
+the RoboSim XML File (see Appendix \ref{app:xml}) is the obstacles tag.  Please
+use the information from Section \ref{app:xml:obstacles} to add obstacles to teh
+background.  All obstacles added here are always loaded into the scene and
+cannot be deleted by the RoboSim GUI.  All of the RoboPlay Challenge mats add
+the border as a background obstacle so that it cannot be modified.
 
 \end{document}
+
