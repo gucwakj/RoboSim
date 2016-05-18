@@ -587,6 +587,7 @@ bool roboSimWidget::saveAs(void) {
 	QFileDialog dialog(this);
 	dialog.setWindowModality(Qt::WindowModal);
 	dialog.setAcceptMode(QFileDialog::AcceptSave);
+	dialog.setNameFilter("RoboSim XML Files (*.xml)");
 	dialog.selectFile("untitled.xml");
 	QStringList files;
 	if (dialog.exec())
