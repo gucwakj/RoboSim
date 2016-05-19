@@ -88,20 +88,28 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->layout_objects->addWidget(o_editor);
 
 	// set up background view
-	// if outdoors isn't first, delete and restart
-	if (!_background.empty() && _background[0].toStdString().compare(0, 8, "outdoors")) {
+	int num_def_backgrounds = 6;
+	// if defaults aren't all there, delete and restart
+	if (!_background.empty() &&
+			(	_background[0].toStdString().compare(0, 8, "outdoors") ||
+				_background[1].toStdString().compare(0, 6, "barobo") ||
+				_background[2].toStdString().compare(0, 4, "2016") ||
+				_background[3].toStdString().compare(0, 4, "2015") ||
+				_background[4].toStdString().compare(0, 4, "2014") ||
+				_background[5].toStdString().compare(0, 4, "none")
+			)
+		) {
 		_background.clear();
 	}
 	// parse default path
 	if (_background.empty()) {
 		_background << QString("outdoors");
 		_background << QString("baroboactivitymat");
+		_background << QString("2016RoboPlay");
 		_background << QString("2015RoboPlay");
 		_background << QString("2014RoboPlay");
 		_background << QString("none");
 	}
-	// set number of defaults
-	int num_def_backgrounds = 5;
 	// remove any stale custom directories (ignore default ones)
 	for (int i = num_def_backgrounds; i < _background.size(); i++) {
 		QString file(_background[i]);
