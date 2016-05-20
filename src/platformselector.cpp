@@ -96,9 +96,9 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 		// get default chrc file
 		QString source(_chhome);
 #ifdef Q_OS_WIN
-		source.append("\\config\\chrc");
+		source.append("\\config\\_chrc");
 #else
-		source.append("/config/chrc");
+		source.append("/config/.chrc");
 #endif
 		// put into place
 		QFile::copy(source, _chrcPath);
