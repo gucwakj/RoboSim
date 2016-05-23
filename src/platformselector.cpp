@@ -90,9 +90,9 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	_chrcPath.append("/.chrc");
 #endif
 	QFileInfo checkCHRC(_chrcPath);
-	if (checkCHRC.size() == 0 || !checkCHRC.exists()) {
+	if (checkCHRC.size() <= 10 || !checkCHRC.exists()) {
 		// delete zero size file
-		if (checkCHRC.size() == 0) QFile::remove(_chrcPath);
+		if (checkCHRC.size() <= 10) QFile::remove(_chrcPath);
 		// get default chrc file
 		QString source(_chhome);
 #ifdef Q_OS_WIN
