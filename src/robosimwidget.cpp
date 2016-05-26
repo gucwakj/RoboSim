@@ -236,6 +236,14 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->tree_challenges->expandItem(rc14div1);
 	ui->tree_challenges->expandItem(rc14div2);
 	ui->tree_challenges->resizeColumnToContents(0);
+	ui->tree_challenges->collapseItem(rc16div1);
+	ui->tree_challenges->collapseItem(rc16div2);
+	ui->tree_challenges->collapseItem(rc16div3);
+	ui->tree_challenges->collapseItem(rc15div1);
+	ui->tree_challenges->collapseItem(rc15div2);
+	ui->tree_challenges->collapseItem(rc15div3);
+	ui->tree_challenges->collapseItem(rc14div1);
+	ui->tree_challenges->collapseItem(rc14div2);
 
 	// set up osg view
 	ui->osgWidget->setRobotModel(_rob_model);
