@@ -48,20 +48,21 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 
 	// get CHHOME directory
 #ifdef Q_OS_WIN
-    DWORD size;
-    HKEY key;
+	DWORD size;
+	HKEY key;
 #if defined(_WIN64)
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\Wow6432Node\\SoftIntegration"), 0, KEY_QUERY_VALUE, &key);
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\Wow6432Node\\SoftIntegration"), 0, KEY_QUERY_VALUE, &key);
 #else
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\SoftIntegration"), 0, KEY_QUERY_VALUE, &key);
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\SoftIntegration"), 0, KEY_QUERY_VALUE, &key);
 #endif
-    char path[1024];
-    RegQueryValueEx(key, TEXT("CHHOME"), NULL, NULL, (LPBYTE)path, &size);
-    path[size] = '\0';
-    if (path[0] == '\0') {
-		_chhome = "C:\\Ch";
-    }
-    else {
+	char path[1024];
+	RegQueryValueEx(key, TEXT("CHHOME"), NULL, NULL, (LPBYTE)path, &size);
+	path[size] = '\0';
+	// if size is zero, use default
+	if (path[0] == '\0') {
+		_chhome = "C:/Ch";
+	}
+	else {
 		// copy manually to a string to prevent windows from screwing with it
 		char str[256];
 		for (int i = 0; i < size; i++) {
@@ -69,7 +70,12 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 		}
 		str[size] = '\0';
 		_chhome = str;
-    }
+		// check if path is good
+		QFileInfo checkCHHOME(_chhome);
+		if (!checkCHHOME.exists()) {
+			_chhome = "C:/Ch";
+		}
+	}
 #else
 	_chhome = "/usr/local/ch";
 #endif
@@ -79,13 +85,14 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	dlpath.append("/package/chrobosim/dl/robosim.dl");
 	QFileInfo checkDL(dlpath);
 	if (!checkDL.exists()) {
+		_chhome = "C:/Ch";
 		qDebug() << "Error: ChRoboSim package not installed correctly";
 	}
 
 	// get chrc filepath
 	_chrcPath = QDir::homePath();
 #ifdef Q_OS_WIN
-	_chrcPath.append("\\_chrc");
+	_chrcPath.append("/_chrc");
 #else
 	_chrcPath.append("/.chrc");
 #endif
@@ -96,13 +103,19 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 		// get default chrc file
 		QString source(_chhome);
 #ifdef Q_OS_WIN
-		source.append("\\config\\_chrc");
+		source.append("/config/_chrc");
 #else
 		source.append("/config/.chrc");
 #endif
 		// put into place
 		bool rc = QFile::copy(source, _chrcPath);
-		qDebug() << "copying " << source << " to " << _chrcPath << " with rc = " << rc;
+		if (rc == false) {
+#ifdef Q_OS_WIN
+			MessageBox(NULL, QString("Failed copying %1 to %2").arg(source).arg(_chrcPath).toStdString().c_str(), "QFile::copy", MB_OK | MB_SYSTEMMODAL | MB_NOFOCUS);
+#else
+			qDebug() << "Failed copying " << source << " to " << _chrcPath;
+#endif
+		}
 	}
 
 	// open chrc
