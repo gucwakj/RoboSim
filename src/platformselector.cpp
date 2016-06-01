@@ -101,7 +101,8 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 		source.append("/config/.chrc");
 #endif
 		// put into place
-		QFile::copy(source, _chrcPath);
+		bool rc = QFile::copy(source, _chrcPath);
+		qDebug() << "copying " << source << " to " << _chrcPath << " with rc = " << rc;
 	}
 
 	// open chrc
