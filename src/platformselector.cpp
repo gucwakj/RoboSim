@@ -59,7 +59,7 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
     RegQueryValueEx(key, TEXT("CHHOME"), NULL, NULL, (LPBYTE)path, &size);
     path[size] = '\0';
     if (path[0] == '\0') {
-		_chhome = "C:/Ch";
+		_chhome = "C:\\Ch";
     }
     else {
 		// copy manually to a string to prevent windows from screwing with it
@@ -85,7 +85,7 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	// get chrc filepath
 	_chrcPath = QDir::homePath();
 #ifdef Q_OS_WIN
-	_chrcPath.append("/_chrc");
+	_chrcPath.append("\\_chrc");
 #else
 	_chrcPath.append("/.chrc");
 #endif
