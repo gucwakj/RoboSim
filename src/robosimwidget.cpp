@@ -143,6 +143,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc16div1, "Satellite Tracking", "65 points");
 	this->build_challenge(rc16div1, "Rescue Retrieval", "70 points");
 	this->build_challenge(rc16div1, "Terrain Excavator", "80 points");
+	this->build_challenge(rc16div1, "Go Robobo", "100 points");
+	this->build_challenge(rc16div1, "Exhaust Port Targeting", "120 points");
 	QTreeWidgetItem *rc16div2 = this->build_challenge_folder(rc16, "Division 2", "");
 	this->build_challenge(rc16div2, "Supply Recovery", "20 points");
 	this->build_challenge(rc16div2, "Newtons Cradle", "25 points");
@@ -153,6 +155,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc16div2, "Habitat Construction", "70 points");
 	this->build_challenge(rc16div2, "Asteroid Orbital", "80 points");
 	this->build_challenge(rc16div2, "Supply Run", "90 points");
+	this->build_challenge(rc16div2, "Exhaust Port Targeting", "120 points");
 	QTreeWidgetItem *rc16div3 = this->build_challenge_folder(rc16, "Division 3", "");
 	this->build_challenge(rc16div3, "Cosmic Billiards", "20 points");
 	this->build_challenge(rc16div3, "Supply Recovery and Delivery", "35 points");
@@ -162,6 +165,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	this->build_challenge(rc16div3, "Earth Moon Orbit", "60 points");
 	this->build_challenge(rc16div3, "Contacting the Martian", "80 points");
 	this->build_challenge(rc16div3, "Asteroid Defense", "80 points");
+	this->build_challenge(rc16div3, "Exhaust Port Targeting", "100 points");
 	this->build_challenge(rc16div3, "Orbital Satellite Repair", "120 points");
 	QTreeWidgetItem *rc15 = new QTreeWidgetItem(ui->tree_challenges);
 	rc15->setText(0, "2015");
