@@ -210,7 +210,12 @@ void xmlParser::reidRobot(QModelIndex index) {
 	// get old data
 	int form = _r_model->data(_r_model->index(index.row(), rsRobotModel::FORM)).toInt();
 	int id = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
-	tinyxml2::XMLElement *robot = Writer::getOrCreateRobot(form, id);
+	int preconfig = _r_model->data(_r_model->index(index.row(), rsRobotModel::PRECONFIG)).toInt();
+	tinyxml2::XMLElement *robot = NULL;
+	if (preconfig)
+		robot = Writer::getOrCreatePreconfig(form, preconfig, id);
+	else
+		robot = Writer::getOrCreateRobot(form, id);
 
 	// reid the robot
 	Writer::reidRobot(robot);
