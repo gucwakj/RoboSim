@@ -7,7 +7,9 @@ int main(int argc, char *argv[]) {
 	#ifdef Q_OS_WIN64
 	// scale for high DPI
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-	// opengl implementation - force it because of surface pro
+	#endif
+	#ifdef Q_OS_WIN
+	// opengl implementation - force for stupid windows drivers
 	QApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 	#endif
 
