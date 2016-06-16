@@ -68,8 +68,8 @@ bool objectModel::addObject(int form, int role) {
 				_list[row][COLOR] = QString("#ffffff");	// white
 				break;
 		}
-		_list[row][MASS] = QVariant(453.593).toString();	// 1lb in grams
-		_list[row][rsObjectModel::SIZE] = QVariant(5).toString();		// f*$k microsoft
+		_list[row][MASS] = QVariant(0.453593).toString();					// 1 lb in kg
+		_list[row][rsObjectModel::SIZE] = QVariant(5).toString();			// f*$k microsoft
 		if (form == rs::Text) {
 			_list[row][rsObjectModel::SIZE] = QVariant(35).toString();		// f*$k microsoft
 		}
@@ -399,11 +399,11 @@ QVariant objectModel::convertLength(double value, bool store) const {
 QVariant objectModel::convertMass(double value, bool store) const {
 	QVariant tmp;
 
-	// convert [kg/lb] -> [g]
+	// convert [kg/lb] -> [kg]
 	if (store)
-		tmp = ((_units) ? value / 1000 : value * 453.593);
+		tmp = ((_units) ? value : value * 0.453593);
 	else
-		tmp = ((_units) ? value * 1000 : value / 453.593);
+		tmp = ((_units) ? value : value / 0.453593);
 
 	return tmp;
 }
