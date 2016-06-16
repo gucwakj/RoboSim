@@ -202,15 +202,15 @@ The background behind the robots can be changed to display different views for
 the Scene.  There are four default options for the robots.  Users can write
 their own and add them to the list if desired.  Details on how to write a
 RoboSim Background are detailed in Appendix \ref{appendix:backgroundxml}.  The
-four default backgrounds are None, RoboPlay 2014, RoboPlay 2015, and Outdoors.
-The 'None' background is a completely black scene with the robots moving through
-the empty space.  The challenge boards from the 2015 and 2015 RoboPlay Challenge
-Competitions are included to easily play on the mats.  The borders are solid
-obstacles so that the robots are not able to run off the sides.  The 'Outdoors'
-background is the original RoboSim Scene consisting of the green grass and blue
-sky.  Selecting each one automatically changes the background in the Scene View.
-The 'Add New Background' button allows users to import their own background
-folders.
+default backgrounds are None, RoboPlay 2014, RoboPlay 2015, RoboPlay 2016,
+Barobo activity mat, and Outdoors.  The 'None' background is a completely black
+scene with the robots moving through the empty space.  The challenge boards from
+the 2014, 2015, and 2016 RoboPlay Challenge Competitions are included to easily
+play on the mats.  The borders are solid obstacles so that the robots are not
+able to run off the sides.  The 'Outdoors' background is the original RoboSim
+Scene consisting of the green grass and blue sky.  Selecting each one
+automatically changes the background in the Scene View.  The 'Add New
+Background' button allows users to import their own background folders.
 
 \subsubsection{Robots}
 All  of the robots in the Scene are configured here.  The Robot List
@@ -250,24 +250,13 @@ same for each robot.  The Previous and Next buttons allow the previous or next
 robot in the list to become the one selected for editing.  The Delete button
 deletes the robot from the Scene.
 
-\subsubsection{Obstacles and Drawings}
-The obstacles and drawings tab is organized in an
-identical manner to the Robots tab.  A list of the objects in the scene are on
-the left.  New ones are dragged from the left of the GUI into this list.  An
-editor for each object is on the right.  The information in the editor has a
-few general sections which change slightly depending upon the specific item
-being edited.  The physical properties of the object, such as the length,
-width, and height of a box or the radius of the sphere, the object's position
-in space in X, Y, and Z directions, mass of the object, and the color.
-
-\iffalse
 \subsection{Preconfigured Robot Configurations}
 In addition to positioning robots independently within the RoboSim, some {\bf
 Preconfigured Robot Configurations}, as shown in Figure \ref{fig:preconfig},
 which represent commonly used Linkbot configurations  are available to the user.
 Selecting one of these options will display a picture of the configuration built
 with the hardware Linkbots and corresponding to a Ch robot program presented in
-Chapter 13 in the book {\em Learning Robot Programming with Linkbot for the
+Chapter $13$ in the book {\em Learning Robot Programming with Linkbot for the
 Absolute Beginner}.  When one of these options is selected, the specific
 configuration for this setup is passed into Ch and robots specified in the
 individual robot configuration are ignored.  To switch back to the individual
@@ -279,7 +268,37 @@ configuration, just unselect the selected preconfigured robot configuration.
 	\caption{Preconfigured Linkbots.}
 	\label{fig:preconfig}
 \end{figure}
-\fi
+
+\subsubsection{Obstacles and Drawings}
+The obstacles and drawings tab is organized in an identical manner to the Robots
+tab.  A list of the objects in the scene are on the left.  New ones are dragged
+from the left of the GUI into this list.  An editor for each object is on the
+right.  The information in the editor has a few general sections which change
+slightly depending upon the specific item being edited.  The physical properties
+of the object, such as the length, width, and height of a box or the radius of
+the sphere, the object's position in space in X, Y, and Z directions, mass of
+the object, and the color.  A few obstacles which were created for the RoboPlay
+Challenge Competitions are included as well as generic blocks and spheres.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=6in]{pictures/gui_obstacles}
+	\end{center}
+	\caption{Linkbot with a Box obstacle.}
+	\label{fig:obstacle}
+\end{figure}
+
+\subsubsection{RoboPlay Challenges}
+All Challenges from the 2014-2016 RoboPlay Challenge Competitions which can be
+completed within RoboSim are included in a separate tab.  These challenges load
+up the Challenge Background, and all of the appropriate robots and obstacles to
+complete the challenge as outlined in the challenge booklets.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=6in]{pictures/gui_challenges}
+	\end{center}
+	\caption{Challenge List.}
+	\label{fig:challenges}
+\end{figure}
 
 %%%%%
 %
@@ -512,19 +531,17 @@ angles.
 %%%%%
 \section{Differences Between Virtual and Hardware Robots}
 RoboSim has some different options which affect the performance of the
-simulation.  These are options which are passed into the connect function of the
+simulation.  These are options which are passed into the constructor of the
 robots that are not available within hardware.  The RoboSim GUI writes all of
 the options into a user configuration file that has to be changed each time a
 new code is to be run.  However, users can manually write configuration files
 specific to each code.  To tell RoboSim to use a custom configuration file over
-the global one, pass the name of the file into the first connect function call
+the global one, pass the name of the file into the first robot constructor call
 in the file.  RoboSim will look in the same folder to find the configuration
 file, if it is not found, then it will use the default one.
 \begin{verbatim}
 #include <linkbot.h>
-CLinkbotI robot;
-
-robot.connect("testrc");
+CLinkbotI robot("testrc");
 \end{verbatim}
 
 %%%%%
@@ -560,39 +577,35 @@ Each one is its own line placed between the starting \verb%<config>% and ending
 
 \subsubsection{Version}
 \begin{verbatim}
-<version val="1"/>
+<version>1</version>
 \end{verbatim}
 The version of the XML configuration file.  Updated internally when new
 non-backwards compatible changes are made.
 
-\subsubsection{Type}
-\begin{verbatim}
-<type val="0"/>
-\end{verbatim}
-There are two options: either preconfigured robots or individual robots.  Used
-to load the right options when launching the GUI.  Can be 0 to show that the
-robots within the \verb%<sim></sim>% are individual.  Any number above that
-represents the preconfigured robots within the GUI.
-
 \subsubsection{Grid}
 \begin{verbatim}
-<grid units="1" major="12" tics="1" minx="-48" maxx="48" miny="-48" maxy="48"/>
+<grid major="12" tics="1" minx="-48" maxx="48" miny="-48" maxy="48"/>
 \end{verbatim}
-The grid boxes from the GUI put their information here.  \verb%units%: 1 for US
-Customary and 0 for Metric.  \verb%major% are the red hashmarks and \verb%tics%
+The grid boxes from the GUI put their information here.   \verb%major% are the red hashmarks and \verb%tics%
 are the gray tick marks.  \verb%minx% and \verb%maxx% are the minimum and
 maximum distances along the X-axis for the grids, respectively.  \verb%miny% and
 \verb%maxy% are the complements for the Y-axis.
 
-\subsubsection{Tracking}
+\subsubsection{Units}
 \begin{verbatim}
-<tracking val="1"/>
+<units>1</units>
 \end{verbatim}
-Setting to track robot location with lines on the ground.  1 for on; 0 for off.
+\verb%units%: 1 for US Customary and 0 for Metric.
+
+\subsubsection{Trace}
+\begin{verbatim}
+<trace>1</trace>
+\end{verbatim}
+Setting to trace robot location with lines on the ground.  1 for on; 0 for off.
 
 \subsubsection{Pause}
 \begin{verbatim}
-<pause val="1"/>
+<pause>1</pause>
 \end{verbatim}
 The simulation can either start paused waiting for a user to press a key to
 start or it will start as soon as it is ready.  Passing 0 to this option starts
@@ -600,7 +613,7 @@ the simulation; while 1 pauses it at the beginning.
 
 \subsubsection{Real Time}
 \begin{verbatim}
-<realtime val="1"/>
+<realtime>1</realtime>
 \end{verbatim}
 The simulation can run faster than real time.  Passing 0 to this option allows
 the simulation to run as fast as the computer can simulate it.
@@ -637,42 +650,54 @@ the \verb%<ground>% tags.
 
 \subsubsection{Box}
 \begin{verbatim}
-<box mass="1">
+<box id="0" mass="1">
     <size x="1" y="1" z="1"/>
+    <color r="0" g="0" b="1" alpha="1"/>
     <position x="1" y="1" z="1"/>
     <rotation psi="1" theta="1" phi="1"/>
 </box>
 \end{verbatim}
-The ground box is configured with the mass, size, position, and rotation
-parameters.  Mass is given as the total mass for the object.  The size gives the
-lengths in the X, Y, and Z directions.  Position gives the X, Y, and Z location
-of the center of the box.  The rotation gives the three Euler Angles of the box.
+The ground box is configured with the mass, color, size, position, and rotation
+parameters.  Each item has an unique id to identify it within the RoboSim GUI.
+Mass is given as the total mass for the object in kilograms.  The size gives the
+lengths in the X, Y, and Z directions.  Color defines the RGB colors as well as
+the alpha transparency of the box.  An alpha of 1 is opaque; 0 is transparent.
+Position gives the X, Y, and Z location of the center of the box.  The rotation
+gives the three Euler Angles of the box.
 
 \subsubsection{Cylinder}
 \begin{verbatim}
-<cylinder mass="1" axis="1">
+<cylinder id="0" mass="1" axis="1">
     <size radius="1" length="10"/>
+    <color r="0" g="0" b="1" alpha="1"/>
     <position x="1" y="1" z="1"/>
     <rotation psi="1" theta="1" phi="1"/>
 </cylinder>
 \end{verbatim}
-The ground cylinder is configured with the mass, axis, size, position, and
-rotation parameters.  Mass is the total mass of the object.  Axis is the long
-axis for the object given the convention 1=X, 2=Y, and 3=Z.  The size gives the
-radius and length of the cylinder.  Position gives the X, Y, and Z location of
-the center of the cylinder.  The rotation gives the three Euler Angles.
+The ground cylinder is configured with the mass, axis, color, size, position,
+and rotation parameters.  Each item has an unique id to identify it within the
+RoboSim GUI.  Mass is the total mass of the object.  Axis is the long axis for
+the object given the convention 1=X, 2=Y, and 3=Z.  The size gives the radius
+and length of the cylinder.  Color defines the RGB colors as well as the alpha
+transparency of the box.  An alpha of 1 is opaque; 0 is transparent.  Position
+gives the X, Y, and Z location of the center of the cylinder.  The rotation
+gives the three Euler Angles.
 
 \subsubsection{Sphere}
 \begin{verbatim}
-<sphere mass="1">
+<sphere id="0" mass="1">
     <size radius="1"/>
+    <color r="0" g="0" b="1" alpha="1"/>
     <position x="1" y="1" z="1"/>
 </sphere>
 \end{verbatim}
-The ground sphere is configured with the mass, size and position parameters.
+The ground sphere is configured with the mass, size, color, and position
+parameters.  Each item has an unique id to identify it within the RoboSim GUI.
 Mass is the total mass of the object.  The size gives the radius of the sphere.
-By default the cylinder is drawn with the long axis along the X-axis.  Position
-gives the X, Y, and Z location of the center of the sphere.
+By default the cylinder is drawn with the long axis along the X-axis.  Color
+defines the RGB colors as well as the alpha transparency of the box.  An alpha
+of 1 is opaque; 0 is transparent.  Position gives the X, Y, and Z location of
+the center of the sphere.
 
 \subsection{Simulation Section}
 The simulation section holds the robots and accessories for the current
