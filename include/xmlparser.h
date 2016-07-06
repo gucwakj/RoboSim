@@ -25,7 +25,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 
 	signals:
 		void backgroundImage(int, std::string);
-		void grid(std::vector<double>);
+		void grid(std::vector<float>);
 		void gridDefaults(void);
 		void level(int);
 		void backgroundName(std::string);
@@ -57,7 +57,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 
 	private:
 		bool _units;
-		std::vector<double> _grid;
+		std::vector<float> _grid;
 		objectModel *_o_model;
 		robotModel *_r_model;
 };

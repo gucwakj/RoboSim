@@ -69,7 +69,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		bool _units;
 		int _current[3];
 		int _level;
-		std::vector<double> _grid;
+		std::vector<float> _grid;
 		QTimer _timer;
 		osgQt::GraphicsWindowQt *_gw;
 };
