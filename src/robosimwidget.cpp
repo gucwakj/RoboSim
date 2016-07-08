@@ -314,7 +314,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 
 	// connect xml parser to gui elements
 	QWidget::connect(_xml, SIGNAL(backgroundImage(int, std::string)), ui->osgWidget, SLOT(setBackgroundImage(int, std::string)));
-	QWidget::connect(_xml, SIGNAL(grid(std::vector<double>)), this, SLOT(grid(std::vector<double>)));
+	QWidget::connect(_xml, SIGNAL(grid(std::vector<float>)), this, SLOT(grid(std::vector<float>)));
 	QWidget::connect(_xml, SIGNAL(gridDefaults()), this, SLOT(grid_defaults()));
 	QWidget::connect(_xml, SIGNAL(level(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(_xml, SIGNAL(backgroundName(std::string)), this, SLOT(setCurrentBackground(std::string)));
@@ -497,7 +497,7 @@ void roboSimWidget::set_units(bool si) {
 	this->grid_labels(si);
 }
 
-void roboSimWidget::grid(std::vector<double> v) {
+void roboSimWidget::grid(std::vector<float> v) {
 	ui->grid_off->setChecked(!(static_cast<bool>(v[6])));
 	ui->spin_grid_tics->setValue(v[0]);
 	ui->spin_grid_hash->setValue(v[1]);
