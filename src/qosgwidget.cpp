@@ -270,6 +270,8 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						  _r_model->data(_r_model->index(i, rsRobotModel::WHEELRIGHT)).toInt()};
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
 		int wheel[2] = {0};
+		int casterID = _r_model->data(_r_model->index(i, rsRobotModel::CASTER)).toInt();
+		int caster = 0;
 
 		// draw new robot
 		switch (preconfig) {
@@ -1089,6 +1091,9 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							else if (wheelID[i] == 4)	wheel[i] = rsLinkbot::Connectors::Wheel;
 							else						wheel[i] = rsLinkbot::Connectors::None;
 						}
+						// get caster
+						if (casterID == 0) caster = rsLinkbot::Connectors::Caster;
+						else if (casterID == 1) caster = rsLinkbot::Connectors::SoccerScoop;
 						// tilt for wheels
 						float p2;
 						q.multiply(robot->tiltForWheels(wheel[0], wheel[1], p2));
@@ -1104,7 +1109,7 @@ void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						// caster
 						if (wheelID[0] > 0 || wheelID[1] > 0) {
 							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 1, -1);
-							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 2, rsLinkbot::Connectors::Caster);
+							robot->drawConnector(sceneRobot, rsLinkbot::Connectors::Simple, rsLinkbot::Bodies::Face2, rs::Right, 0, 2, caster);
 						}
 						// right wheel
 						if (wheelID[1] > 0) {

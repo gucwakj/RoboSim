@@ -320,6 +320,20 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	_wheelRBox->setToolTip("Pick the right wheel of the robot");
 	_wheelRBox->setToolTipDuration(-1);
 
+	// caster list
+	QLabel *casterLabel = new QLabel(tr("Caster Type:"));
+	QStringList casterItems;
+	casterItems << "Caster" << "Soccer Scoop";
+	QStringListModel *casterModel = new QStringListModel(casterItems, this);
+	QComboBox *casterBox = new QComboBox();
+	casterBox->setObjectName("caster");
+	casterBox->setModel(casterModel);
+	casterLabel->setBuddy(casterBox);
+	QWidget::connect(casterBox, SIGNAL(currentIndexChanged(int)), this, SLOT(submitCaster(int)));
+	casterBox->setToolTip("Pick the caster of the robot");
+	casterBox->setToolTipDuration(-1);
+
+
 	// color
 	_colorPicker = new ledColorPicker();
 	_colorPicker->setObjectName("color");
@@ -363,6 +377,10 @@ linkbotIEditor::linkbotIEditor(robotModel *model, QWidget *parent) : QWidget(par
 	hbox5->addWidget(_wheelRBox, 5);
 	hbox5->addWidget(_wheelRUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
+	QHBoxLayout *hbox51 = new QHBoxLayout();
+	hbox51->addWidget(casterLabel, 2, Qt::AlignRight);
+	hbox51->addWidget(casterBox, 5);
+	layout->addLayout(hbox51);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -416,6 +434,12 @@ void linkbotIEditor::submitRightWheel(int value) {
 		_model->setData(_model->index(_row, rsRobotModel::WHEELRIGHT), value);
 }
 
+void linkbotIEditor::submitCaster(int value) {
+	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
+	if (form == rs::LinkbotI)
+		_model->setData(_model->index(_row, rsRobotModel::CASTER), value);
+}
+
 void linkbotIEditor::submitColor(QColor color) {
 	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	if (form == rs::LinkbotI)
@@ -441,6 +465,7 @@ void linkbotIEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
 	(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
 	(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
+	(this->findChild<QComboBox *>("caster"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::CASTER), Qt::EditRole).toInt());
 	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }

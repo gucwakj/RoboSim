@@ -32,6 +32,7 @@ namespace rsRobotModel {
 		RADIUS,
 		WHEELLEFT,
 		WHEELRIGHT,
+		CASTER,
 		PRECONFIG,
 		NUM_COLUMNS
 	};
@@ -68,10 +69,10 @@ class robotModel : public QAbstractTableModel {
 		QVariant findByID(int);
 
 	public slots:
-		bool addRobot(int = 0, int = 0, int = 0, int = Qt::EditRole);
+		bool addRobot(int = 0, int = 0, int = 0, int = 0, int = Qt::EditRole);
 		bool addPreconfig(int = 1, int = Qt::EditRole);
 		void setUnits(bool);
-		bool newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string, int = Qt::EditRole);
+		bool newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, int, std::string, int = Qt::EditRole);
 		bool newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string, int = Qt::EditRole);
 
 	signals:

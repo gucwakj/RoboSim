@@ -184,7 +184,17 @@ void xmlParser::parse(const char *name) {
 						}
 					}
 				}
-				emit newRobot(xmlbot->getID(), xmlbot->getForm(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getJoints(), xmlbot->getLED(), wheels, xmlbot->getName());
+				// parse caster
+				int xmlcaster = xmlbot->getCaster();
+				int caster = 0;
+				if (xmlbot->getForm() == rs::LinkbotI) {
+					if (xmlcaster == rsLinkbot::Connectors::Caster)
+						caster = 0;
+					else if (xmlcaster == rsLinkbot::Connectors::SoccerScoop)
+						caster = 1;
+				}
+				// send new robot
+				emit newRobot(xmlbot->getID(), xmlbot->getForm(), xmlbot->getPosition(), xmlbot->getQuaternion(), xmlbot->getJoints(), xmlbot->getLED(), wheels, caster, xmlbot->getName());
 				xmlbot = reader.getNextRobot(-1);
 				break;
 			}
@@ -270,6 +280,8 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 						  _r_model->data(_r_model->index(i, rsRobotModel::WHEELRIGHT)).toInt()};
 		double radius = _r_model->data(_r_model->index(i, rsRobotModel::RADIUS)).toDouble();
 		int wheel[2] = {0};
+		int casterID = _r_model->data(_r_model->index(i, rsRobotModel::CASTER)).toInt();
+		int caster = 0;
 
 		if (preconfig == rsLinkbot::Preconfigs::Individual) {
 			// create robot element
@@ -299,6 +311,13 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 						else
 							wheel[i] = rsLinkbot::Connectors::None;
 					}
+					// set caster type
+					if (casterID == 0)
+						caster = rsLinkbot::Connectors::Caster;
+					else if (casterID == 1)
+						caster = rsLinkbot::Connectors::SoccerScoop;
+					else
+						caster = rsLinkbot::Connectors::None;
 
 					// done
 					break;
@@ -325,7 +344,7 @@ void xmlParser::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
 				}
 			}
 			// write wheels
-			Writer::setRobotWheels(robot, wheel[0], radius, wheel[1], radius);
+			Writer::setRobotWheels(robot, wheel[0], radius, wheel[1], radius, caster);
 			// done
 			break;
 		}

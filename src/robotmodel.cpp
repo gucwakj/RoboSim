@@ -27,7 +27,7 @@ robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 robotModel::~robotModel(void) {
 }
 
-bool robotModel::addRobot(int form, int left, int right, int role) {
+bool robotModel::addRobot(int form, int left, int right, int caster, int role) {
 	if (role == Qt::EditRole) {
 		// check size
 		int row = _list.size();
@@ -74,6 +74,7 @@ bool robotModel::addRobot(int form, int left, int right, int role) {
 		_list[row][RADIUS] = QVariant(0).toString();
 		_list[row][WHEELLEFT] = QVariant(left).toString();
 		_list[row][WHEELRIGHT] = QVariant(right).toString();
+		_list[row][CASTER] = QVariant(caster).toString();
 		_list[row][PRECONFIG] = QVariant(0).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -81,7 +82,7 @@ bool robotModel::addRobot(int form, int left, int right, int role) {
 	return false;
 }
 
-bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &a, const rs::Vec &c, const rs::Vec &wheels, std::string name, int role) {
+bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q, const rs::Vec &a, const rs::Vec &c, const rs::Vec &wheels, int caster, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -102,6 +103,7 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 		_list[row][RADIUS] = QVariant(0).toString();
 		_list[row][WHEELLEFT] = QVariant(wheels[0]).toString();
 		_list[row][WHEELRIGHT] = QVariant(wheels[1]).toString();
+		_list[row][CASTER] = QVariant(caster).toString();
 		_list[row][PRECONFIG] = QVariant(0).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
@@ -374,7 +376,7 @@ bool robotModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 	QMap<int,  QVariant> map;
 	stream >> r >> c >> map;
 	if (!map[0].toString().compare("Linkbot I"))
-		this->addRobot(rs::LinkbotI, 2, 2);
+		this->addRobot(rs::LinkbotI, 2, 2, 0);
 	else if (!map[0].toString().compare("Linkbot L"))
 		this->addRobot(rs::LinkbotL);
 	else if (!map[0].toString().compare("Mindstorms EV3/NXT"))

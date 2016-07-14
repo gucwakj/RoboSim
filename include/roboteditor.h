@@ -98,6 +98,7 @@ class linkbotIEditor : public QWidget {
 		void submitRZ(double);
 		void submitLeftWheel(int);
 		void submitRightWheel(int);
+		void submitCaster(int);
 		void submitColor(QColor);
 
 	private:

@@ -319,7 +319,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_xml, SIGNAL(level(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(_xml, SIGNAL(backgroundName(std::string)), this, SLOT(setCurrentBackground(std::string)));
 	QWidget::connect(_xml, SIGNAL(newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string)), _rob_model, SLOT(newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string)));
-	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)), _rob_model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, std::string)));
+	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, int, std::string)), _rob_model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, int, std::string)));
 	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)), _obj_model, SLOT(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)));
 	QWidget::connect(_xml, SIGNAL(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)), _obj_model, SLOT(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)));
 	QWidget::connect(_xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
@@ -363,7 +363,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	_xml->parse();
 
 	// if no robots were added, add a token Linkbot-I now
-	if (!_rob_model->rowCount()) _rob_model->addRobot(rs::LinkbotI, 2, 2);
+	if (!_rob_model->rowCount()) _rob_model->addRobot(rs::LinkbotI, 2, 2, 0);
 
 	// highlight and show first robot found
 	ui->osgWidget->setCurrentIndex(0);
@@ -696,7 +696,7 @@ void roboSimWidget::closeEvent(QCloseEvent *event) {
 
 void roboSimWidget::addItem(QListWidgetItem *item) {
 	if (!item->text().compare("Linkbot I"))
-		_rob_model->addRobot(rs::LinkbotI, 2, 2);
+		_rob_model->addRobot(rs::LinkbotI, 2, 2, 0);
 	else if (!item->text().compare("Linkbot L"))
 		_rob_model->addRobot(rs::LinkbotL);
 	else if (!item->text().compare("Mindstorms EV3/NXT"))
