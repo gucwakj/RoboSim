@@ -419,7 +419,7 @@ void linkbotIEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
 	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	if (form == rs::LinkbotI)
-		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value - 90);
 }
 
 void linkbotIEditor::submitLeftWheel(int value) {
@@ -462,7 +462,7 @@ void linkbotIEditor::setIndex(int row) {
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble() + 90);
 	(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
 	(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
 	(this->findChild<QComboBox *>("caster"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::CASTER), Qt::EditRole).toInt());
@@ -665,7 +665,7 @@ void linkbotLEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
 	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	if (form == rs::LinkbotL)
-		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value - 90);
 }
 
 void linkbotLEditor::submitColor(QColor color) {
@@ -690,7 +690,7 @@ void linkbotLEditor::setIndex(int row) {
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble() + 90);
 	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
@@ -903,7 +903,7 @@ void mindstormsEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
 	int form = _model->data(_model->index(_row, rsRobotModel::FORM), Qt::EditRole).toInt();
 	if (rs::EV3 == form || form == rs::NXT)
-		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+		_model->setData(_model->index(_row, rsRobotModel::R_PSI), value - 90);
 }
 
 void mindstormsEditor::submitLeftWheel(int value) {
@@ -940,7 +940,7 @@ void mindstormsEditor::setIndex(int row) {
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble() + 90);
 	(this->findChild<QComboBox *>("wheelLeft"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
 	(this->findChild<QComboBox *>("wheelRight"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELRIGHT), Qt::EditRole).toInt());
 	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
@@ -1160,7 +1160,7 @@ void customEditor::submitPY(double value) {
 
 void customEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
-	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value - 90);
 }
 
 void customEditor::submitLeftWheel(int value) {
@@ -1191,7 +1191,7 @@ void customEditor::setIndex(int row) {
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble() + 90);
 	(this->findChild<QComboBox *>("wheels"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::WHEELLEFT), Qt::EditRole).toInt());
 	(this->findChild<QComboBox *>("radius"))->setCurrentIndex(_model->data(_model->index(row, rsRobotModel::RADIUS), Qt::EditRole).toInt());
 	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
@@ -1342,7 +1342,7 @@ void preconfigEditor::submitPY(double value) {
 
 void preconfigEditor::submitRZ(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
-	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value);
+	_model->setData(_model->index(_row, rsRobotModel::R_PSI), value - 90);
 }
 
 void preconfigEditor::submitColor(QColor color) {
@@ -1358,7 +1358,7 @@ void preconfigEditor::setIndex(int row) {
 	(this->findChild<QLineEdit *>("name"))->setText(_model->data(_model->index(row, rsRobotModel::NAME), Qt::EditRole).toString());
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsRobotModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsRobotModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("rz"))->setValue(_model->data(_model->index(row, rsRobotModel::R_PSI), Qt::EditRole).toDouble() + 90);
 	QColor color(_model->data(_model->index(row, rsRobotModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<ledColorPicker *>("color"))->setColor(color);
 }
