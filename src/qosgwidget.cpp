@@ -69,6 +69,8 @@ QOsgWidget::QOsgWidget(QWidget *parent) : osgQt::GLWidget(parent) {
 	_scene->setHighlight(true);
 	// hide global hud
 	_scene->setHUD(false);
+	// hide global clock
+	_scene->setClock(false);
 	// set level to display
 	_level = rs::Level::Outdoors;
 	_scene->setLevel(_level);
