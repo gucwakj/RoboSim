@@ -545,12 +545,12 @@ void roboSimWidget::setCurrentBackground(std::string name) {
 	}
 
 	// disable all grid options when not using outdoors
-	QObjectList list = ui->group_grid->children();
+	/*QObjectList list = ui->group_grid->children();
 	QWidget *item;
 	for (int i = 0; i < list.size(); i++) {
 		if ( (item = dynamic_cast<QWidget*>(list[i])) )
 			item->setEnabled(!name.compare("Outdoors"));
-	}
+	}*/
 }
 
 void roboSimWidget::setBackground(QListWidgetItem *current, QListWidgetItem *previous) {
@@ -558,12 +558,12 @@ void roboSimWidget::setBackground(QListWidgetItem *current, QListWidgetItem *pre
 	QString name = current->data(Qt::UserRole).toString();
 
 	// disable all grid options when not using outdoors
-	QObjectList list = ui->group_grid->children();
+	/*QObjectList list = ui->group_grid->children();
 	QWidget *item;
 	for (int i = 0; i < list.size(); i++) {
 		if ( (item = dynamic_cast<QWidget*>(list[i])) )
 			item->setEnabled(name.contains("outdoors"));
-	}
+	}*/
 }
 
 void roboSimWidget::updateBackgroundList(const QString &str) {
