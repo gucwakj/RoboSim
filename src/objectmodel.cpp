@@ -49,7 +49,12 @@ bool objectModel::addObject(int form, int role) {
 				_list[row][L_1] = QVariant(2.4384).toString();	// 8 feet
 				_list[row][L_2] = QVariant(1.2192).toString();	// 4 feet
 				_list[row][L_3] = QVariant(0.0191).toString();	// 0.75 inch
-			break;
+				break;
+			case rs::HackySack:
+				_list[row][L_1] = QVariant(0.055).toString();
+				_list[row][L_2] = QVariant(0.055).toString();
+				_list[row][L_3] = QVariant(0.055).toString();
+				break;
 		}
 		// match object default color to icon
 		switch (form) {
