@@ -1230,6 +1230,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				_scene->drawObstacle(id, form, p, led, dims, quat);
 				break;
 			}
+			case rs::Circle:
 			case rs::Dot:
 			case rs::Line:
 			case rs::Rectangle:

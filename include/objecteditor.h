@@ -98,6 +98,28 @@ class boxEditor : public QWidget {
 		int _row;
 };
 
+class circleEditor : public QWidget {
+		Q_OBJECT
+	public:
+		circleEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitColor(QColor);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_pZUnits;
+		bodyColorPicker *_colorPicker;
+		int _row;
+};
+
 class competitionborderEditor : public QWidget {
 		Q_OBJECT
 	public:

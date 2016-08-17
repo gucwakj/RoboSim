@@ -27,6 +27,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 		case rs::WoodBlock:
 			Writer::deleteObstacle(id);
 			break;
+		case rs::Circle:
 		case rs::Dot:
 		case rs::Line:
 		case rs::Rectangle:
@@ -414,6 +415,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;
 			}
+			case rs::Circle:
 			case rs::Dot:
 			case rs::Line:
 			case rs::Rectangle:

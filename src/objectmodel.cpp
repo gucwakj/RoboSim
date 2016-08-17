@@ -63,6 +63,7 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Sphere:
 				_list[row][COLOR] = QString("#0000ff");	// blue
 				break;
+			case rs::Circle:
 			case rs::Dot:
 			case rs::Line:
 			case rs::Rectangle:
@@ -182,6 +183,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 			switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 				case rs::Box:
 					return QString(tr("Box"));
+				case rs::Circle:
+					return QString(tr("Circle"));
 				case rs::CompetitionBorder:
 					return QString(tr("Competition Border"));
 				case rs::Cylinder:
@@ -226,6 +229,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 		switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 			case rs::Box:
 				image.load("icons/box32.png");
+				break;
+			case rs::Circle:
+				image.load("icons/line32.png");
 				break;
 			case rs::CompetitionBorder:
 				image.load("icons/competitionborder32.png");
@@ -319,6 +325,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 
 	if (!map[0].toString().compare("Box"))
 		this->addObject(rs::Box);
+	else if (!map[0].toString().compare("Circle"))
+		this->addObject(rs::Circle);
 	else if (!map[0].toString().compare("Competition Border"))
 		this->addObject(rs::CompetitionBorder);
 	else if (!map[0].toString().compare("Cylinder"))

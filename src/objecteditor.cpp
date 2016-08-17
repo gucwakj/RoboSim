@@ -21,6 +21,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages = new QStackedWidget;
 	_pages->addWidget(new emptyEditor());
 	_pages->addWidget(new boxEditor(_model));
+	_pages->addWidget(new circleEditor(_model));
 	_pages->addWidget(new competitionborderEditor(_model));
 	_pages->addWidget(new cylinderEditor(_model));
 	_pages->addWidget(new dotEditor(_model));
@@ -89,6 +90,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::Box + 1);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<boxEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::Circle:
+				_pages->setCurrentIndex(rs::Circle + 1);
+				dynamic_cast<circleEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<circleEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::CompetitionBorder:
 				_pages->setCurrentIndex(rs::CompetitionBorder + 1);
@@ -441,6 +447,143 @@ void boxEditor::setUnits(bool si) {
 	_lXUnits->setText(text);
 	_lYUnits->setText(text);
 	_lZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Circle Editor
+ *
+ *
+ */
+
+/*!	\brief Circle Obstacle Editor.
+ *
+ *	Build individual circle editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+circleEditor::circleEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Circle Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the circle");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the circle");
+	pYBox->setToolTipDuration(-1);
+
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Radius:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("radius");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the radius of the circle");
+	pZBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the sphere");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox1 = new QHBoxLayout();
+	hbox1->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox1->addWidget(pXBox, 5);
+	hbox1->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox1);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void circleEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void circleEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void circleEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
+}
+
+void circleEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void circleEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void circleEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
 }
 
 /*!
