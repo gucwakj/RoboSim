@@ -30,6 +30,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new rectangleEditor(_model));
 	_pages->addWidget(new sphereEditor(_model));
 	_pages->addWidget(new textEditor(_model));
+	_pages->addWidget(new triangleEditor(_model));
 	_pages->addWidget(new woodblockEditor(_model));
 
 	// set up buttons
@@ -133,6 +134,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::Text + 1);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<textEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::Triangle:
+				_pages->setCurrentIndex(rs::Triangle + 1);
+				dynamic_cast<triangleEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<triangleEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::WoodBlock:
 				_pages->setCurrentIndex(rs::WoodBlock + 1);
@@ -2049,6 +2055,231 @@ void textEditor::setUnits(bool si) {
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Triangle Editor
+ *
+ *
+ */
+
+/*!	\brief Triangle Drawing Editor.
+ *
+ *	Build individual triangle editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+triangleEditor::triangleEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Triangle Editor</span>"));
+
+	// position x1
+	QLabel *pXLabel = new QLabel(tr("X1:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("x1");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X1 position of the triangle");
+	pXBox->setToolTipDuration(-1);
+
+	// position y1
+	QLabel *pYLabel = new QLabel(tr("X2:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("x2");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the X2 position of the triangle");
+	pYBox->setToolTipDuration(-1);
+
+	// position z1
+	QLabel *pZLabel = new QLabel(tr("X3:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("x3");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the X3 position of the triangle");
+	pZBox->setToolTipDuration(-1);
+
+	// position x2
+	QLabel *lXLabel = new QLabel(tr("Y1:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("y1");
+	lXBox->setMinimum(-1000000);
+	lXBox->setMaximum(1000000);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the Y1 position of the triangle");
+	lXBox->setToolTipDuration(-1);
+
+	// position y2
+	QLabel *lYLabel = new QLabel(tr("Y2:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("y2");
+	lYBox->setMinimum(-1000000);
+	lYBox->setMaximum(1000000);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the Y2 position of the triangle");
+	lYBox->setToolTipDuration(-1);
+
+	// position z2
+	QLabel *lZLabel = new QLabel(tr("Y3:"));
+	_lZUnits = new QLabel();
+	QDoubleSpinBox *lZBox = new QDoubleSpinBox();
+	lZBox->setObjectName("y3");
+	lZBox->setMinimum(-1000000);
+	lZBox->setMaximum(1000000);
+	lZBox->setSingleStep(0.5);
+	lZLabel->setBuddy(lZBox);
+	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
+	lZBox->setToolTip("Set the Y3 position of the triangle");
+	lZBox->setToolTipDuration(-1);
+
+	// size
+	QLabel *widthLabel = new QLabel(tr("Size:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the size of the triangle lines");
+	widthBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	hbox4->addWidget(lZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(lZBox, 5);
+	hbox4->addWidget(_lZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	hbox5->addStretch(1);
+	layout->addLayout(hbox5);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void triangleEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void triangleEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void triangleEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
+}
+
+void triangleEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
+}
+
+void triangleEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
+}
+
+void triangleEditor::submitL3(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
+}
+
+void triangleEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
+void triangleEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void triangleEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("x1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("x2"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("x3"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("y1"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("y2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("y3"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void triangleEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
+	_lZUnits->setText(text);
 }
 
 /*!

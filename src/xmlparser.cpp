@@ -31,6 +31,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 		case rs::Line:
 		case rs::Rectangle:
 		case rs::Text:
+		case rs::Triangle:
 			Writer::deleteMarker(id);
 			break;
 	}
@@ -399,7 +400,13 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 
 		// save object
 		switch (form) {
-			case rs::Box: case rs::CompetitionBorder: case rs::Cylinder: case rs::HackySack: case rs::PullupBar: case rs::Sphere: case rs::WoodBlock: {
+			case rs::Box:
+			case rs::CompetitionBorder:
+			case rs::Cylinder:
+			case rs::HackySack:
+			case rs::PullupBar:
+			case rs::Sphere:
+			case rs::WoodBlock: {
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
@@ -407,7 +414,11 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;
 			}
-			case rs::Dot: case rs::Line: case rs::Text: {
+			case rs::Dot:
+			case rs::Line:
+			case rs::Rectangle:
+			case rs::Text:
+			case rs::Triangle: {
 				rs::Pos p2(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
