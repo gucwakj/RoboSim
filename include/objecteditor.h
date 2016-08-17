@@ -251,6 +251,31 @@ class pullupbarEditor : public QWidget {
 		int _row;
 };
 
+class rectangleEditor : public QWidget {
+		Q_OBJECT
+	public:
+		rectangleEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitL1(double);
+		void submitL2(double);
+		void submitSize(double);
+		void submitColor(QColor);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_lXUnits;
+		QLabel *_lYUnits;
+		bodyColorPicker *_colorPicker;
+		int _row;
+};
+
 class sphereEditor : public QWidget {
 		Q_OBJECT
 	public:

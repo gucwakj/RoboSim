@@ -65,6 +65,7 @@ bool objectModel::addObject(int form, int role) {
 				break;
 			case rs::Dot:
 			case rs::Line:
+			case rs::Rectangle:
 			case rs::Text:
 				_list[row][COLOR] = QString("#ff0000");	// red
 				break;
@@ -192,6 +193,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Line"));
 				case rs::PullupBar:
 					return QString(tr("Pullup Bar"));
+				case rs::Rectangle:
+					return QString(tr("Rectangle"));
 				case rs::Sphere:
 					return QString(tr("Sphere"));
 				case rs::Text:
@@ -238,6 +241,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				break;
 			case rs::PullupBar:
 				image.load("icons/pullup32.png");
+				break;
+			case rs::Rectangle:
+				image.load("icons/line32.png");
 				break;
 			case rs::Sphere:
 				image.load("icons/sphere32.png");
@@ -319,6 +325,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::Line);
 	else if (!map[0].toString().compare("Pullup Bar"))
 		this->addObject(rs::PullupBar);
+	else if (!map[0].toString().compare("Rectangle"))
+		this->addObject(rs::Rectangle);
 	else if (!map[0].toString().compare("Sphere"))
 		this->addObject(rs::Sphere);
 	else if (!map[0].toString().compare("Text"))

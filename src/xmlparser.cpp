@@ -18,10 +18,19 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 	int form = _o_model->data(_o_model->index(first, rsObjectModel::FORM)).toInt();
 	// save object
 	switch (form) {
-		case rs::Box: case rs::CompetitionBorder: case rs::Cylinder: case rs::HackySack: case rs::PullupBar: case rs::Sphere: case rs::WoodBlock:
+		case rs::Box:
+		case rs::CompetitionBorder:
+		case rs::Cylinder:
+		case rs::HackySack:
+		case rs::PullupBar:
+		case rs::Sphere:
+		case rs::WoodBlock:
 			Writer::deleteObstacle(id);
 			break;
-		case rs::Dot: case rs::Line: case rs::Text:
+		case rs::Dot:
+		case rs::Line:
+		case rs::Rectangle:
+		case rs::Text:
 			Writer::deleteMarker(id);
 			break;
 	}

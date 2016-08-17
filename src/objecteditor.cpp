@@ -27,6 +27,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new hackysackEditor(_model));
 	_pages->addWidget(new lineEditor(_model));
 	_pages->addWidget(new pullupbarEditor(_model));
+	_pages->addWidget(new rectangleEditor(_model));
 	_pages->addWidget(new sphereEditor(_model));
 	_pages->addWidget(new textEditor(_model));
 	_pages->addWidget(new woodblockEditor(_model));
@@ -117,6 +118,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::PullupBar + 1);
 				dynamic_cast<pullupbarEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<pullupbarEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::Rectangle:
+				_pages->setCurrentIndex(rs::Rectangle + 1);
+				dynamic_cast<rectangleEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<rectangleEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Sphere:
 				_pages->setCurrentIndex(rs::Sphere + 1);
@@ -1496,6 +1502,185 @@ void pullupbarEditor::setUnits(bool si) {
 	else text = tr("in");
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Rectangle Editor
+ *
+ *
+ */
+
+/*!	\brief Rectangle Drawing Editor.
+ *
+ *	Build individual rectangle editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Rectangle Editor</span>"));
+
+	// position x1
+	QLabel *pXLabel = new QLabel(tr("X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the rectangle");
+	pXBox->setToolTipDuration(-1);
+
+	// position y1
+	QLabel *pYLabel = new QLabel(tr("Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pXBox->setToolTip("Set the Y position of the rectangle");
+	pXBox->setToolTipDuration(-1);
+
+	// width
+	QLabel *lXLabel = new QLabel(tr("Width:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("width");
+	lXBox->setMinimum(-1000000);
+	lXBox->setMaximum(1000000);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the width of the rectangle");
+	lXBox->setToolTipDuration(-1);
+
+	// height
+	QLabel *lYLabel = new QLabel(tr("Height:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("height");
+	lYBox->setMinimum(-1000000);
+	lYBox->setMaximum(1000000);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the height of the rectangle");
+	lYBox->setToolTipDuration(-1);
+
+	// size
+	QLabel *widthLabel = new QLabel(tr("Size:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the size of the rectangle lines");
+	widthBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	hbox5->addStretch(1);
+	layout->addLayout(hbox5);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void rectangleEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void rectangleEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void rectangleEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
+}
+
+void rectangleEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
+}
+
+void rectangleEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
+void rectangleEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void rectangleEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("height"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void rectangleEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
 }
 
 /*!
