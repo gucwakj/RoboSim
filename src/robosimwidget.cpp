@@ -51,8 +51,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build drawings selector
 	names.clear();
 	icons.clear();
-	names << "Circle" << "Line" <<  "Point" << "Rectangle" << "Text" << "Triangle";
-	icons << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
+	names << "Circle" << "Line" << "Point" <<  "Polygon" << "Rectangle" << "Text" << "Triangle";
+	icons << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
 	this->build_selector(ui->list_markers, names, icons);
 	ui->list_markers->setDragEnabled(true);
 
@@ -739,6 +739,8 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_obj_model->addObject(rs::HackySack);
 	else if (!item->text().compare("Line"))
 		_obj_model->addObject(rs::Line);
+	else if (!item->text().compare("Polygon"))
+		_obj_model->addObject(rs::Polygon);
 	else if (!item->text().compare("Pullup Bar"))
 		_obj_model->addObject(rs::PullupBar);
 	else if (!item->text().compare("Rectangle"))

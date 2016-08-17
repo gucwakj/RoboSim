@@ -1233,6 +1233,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 			case rs::Circle:
 			case rs::Dot:
 			case rs::Line:
+			case rs::Polygon:
 			case rs::Rectangle:
 			case rs::Text:
 			case rs::Triangle: {
