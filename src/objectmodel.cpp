@@ -65,6 +65,7 @@ bool objectModel::addObject(int form, int role) {
 				break;
 			case rs::Circle:
 			case rs::Dot:
+			case rs::Ellipse:
 			case rs::Line:
 			case rs::Polygon:
 			case rs::Rectangle:
@@ -192,6 +193,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Cylinder"));
 				case rs::Dot:
 					return QString(tr("Point"));
+				case rs::Ellipse:
+					return QString(tr("Ellipse"));
 				case rs::HackySack:
 					return QString(tr("Hacky Sack"));
 				case rs::Line:
@@ -244,6 +247,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				break;
 			case rs::Dot:
 				image.load("icons/point32.png");
+				break;
+			case rs::Ellipse:
+				image.load("icons/line32.png");
 				break;
 			case rs::HackySack:
 				image.load("icons/hackysack32.png");
@@ -339,6 +345,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::Cylinder);
 	else if (!map[0].toString().compare("Point"))
 		this->addObject(rs::Dot);
+	else if (!map[0].toString().compare("Ellipse"))
+		this->addObject(rs::Ellipse);
 	else if (!map[0].toString().compare("Hacky Sack"))
 		this->addObject(rs::HackySack);
 	else if (!map[0].toString().compare("Line"))

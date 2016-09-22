@@ -25,6 +25,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new competitionborderEditor(_model));
 	_pages->addWidget(new cylinderEditor(_model));
 	_pages->addWidget(new dotEditor(_model));
+	_pages->addWidget(new ellipseEditor(_model));
 	_pages->addWidget(new hackysackEditor(_model));
 	_pages->addWidget(new lineEditor(_model));
 	_pages->addWidget(new polygonEditor(_model));
@@ -111,6 +112,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::Dot + 1);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<dotEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::Ellipse:
+				_pages->setCurrentIndex(rs::Ellipse + 1);
+				dynamic_cast<ellipseEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<ellipseEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::HackySack:
 				_pages->setCurrentIndex(rs::HackySack + 1);
@@ -1183,6 +1189,187 @@ void dotEditor::setUnits(bool si) {
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Ellipse Editor
+ *
+ *
+ */
+
+/*!	\brief Ellipse Obstacle Editor.
+ *
+ *	Build individual ellipse editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+ellipseEditor::ellipseEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Ellipse Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the ellipse");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the ellipse");
+	pYBox->setToolTipDuration(-1);
+
+	// width
+	QLabel *lXLabel = new QLabel(tr("Width:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("width");
+	lXBox->setMinimum(-1000000);
+	lXBox->setMaximum(1000000);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	lXBox->setToolTip("Set the width of the ellipse");
+	lXBox->setToolTipDuration(-1);
+
+	// height
+	QLabel *lYLabel = new QLabel(tr("Height:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("height");
+	lYBox->setMinimum(-1000000);
+	lYBox->setMaximum(1000000);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	lYBox->setToolTip("Set the height of the ellipse");
+	lYBox->setToolTipDuration(-1);
+
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("angle");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	_rZBox->setToolTip("Set the rotation of the ellipse");
+	_rZBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the ellipse");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(_rZBox, 5);
+	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void ellipseEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void ellipseEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void ellipseEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
+}
+
+void ellipseEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
+}
+
+void ellipseEditor::submitRZ(double value) {
+	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
+	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
+}
+
+void ellipseEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void ellipseEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("height"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void ellipseEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
 }
 
 /*!

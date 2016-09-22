@@ -200,6 +200,33 @@ class dotEditor : public QWidget {
 		int _row;
 };
 
+class ellipseEditor : public QWidget {
+		Q_OBJECT
+	public:
+		ellipseEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitRZ(double);
+		void submitL1(double);
+		void submitL2(double);
+		void submitColor(QColor);
+
+	private:
+		objectModel *_model;
+		QDoubleSpinBox *_rZBox;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_lXUnits;
+		QLabel *_lYUnits;
+		QLabel *_lZUnits;
+		bodyColorPicker *_colorPicker;
+		int _row;
+};
+
 class emptyEditor : public QWidget {
 		Q_OBJECT
 	public:
