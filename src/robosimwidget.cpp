@@ -52,7 +52,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names.clear();
 	icons.clear();
 	names << "Arc" << "Arc Sector" << "Arc Segment" << "Arrow" << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Quad" << "Rectangle" << "Text" << "Triangle";
-	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
+	icons << "icons/arc128.png" << "icons/arcsector128.png" << "icons/arcsegment128.png" << "icons/arrow128.png" << "icons/circle128.png" << "icons/ellipse128.png" << "icons/line128.png" << "icons/point128.png" << "icons/polygon128.png" << "icons/quad128.png" << "icons/rectangle128.png" << "icons/text128.png" << "icons/triangle128.png";
 	this->build_selector(ui->list_markers, names, icons);
 	ui->list_markers->setDragEnabled(true);
 

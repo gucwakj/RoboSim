@@ -259,22 +259,22 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 		QPixmap image;
 		switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
 			case rs::Arc:
-				image.load("icons/line32.png");
+				image.load("icons/arc32.png");
 				break;
 			case rs::ArcSector:
-				image.load("icons/line32.png");
+				image.load("icons/arcsector32.png");
 				break;
 			case rs::ArcSegment:
-				image.load("icons/line32.png");
+				image.load("icons/arcsegment32.png");
 				break;
 			case rs::Arrow:
-				image.load("icons/line32.png");
+				image.load("icons/arrow32.png");
 				break;
 			case rs::Box:
 				image.load("icons/box32.png");
 				break;
 			case rs::Circle:
-				image.load("icons/line32.png");
+				image.load("icons/circle32.png");
 				break;
 			case rs::CompetitionBorder:
 				image.load("icons/competitionborder32.png");
@@ -286,7 +286,7 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				image.load("icons/point32.png");
 				break;
 			case rs::Ellipse:
-				image.load("icons/line32.png");
+				image.load("icons/ellipse32.png");
 				break;
 			case rs::HackySack:
 				image.load("icons/hackysack32.png");
@@ -295,16 +295,16 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				image.load("icons/line32.png");
 				break;
 			case rs::Polygon:
-				image.load("icons/line32.png");
+				image.load("icons/polygon32.png");
 				break;
 			case rs::PullupBar:
 				image.load("icons/pullup32.png");
 				break;
 			case rs::Quad:
-				image.load("icons/line32.png");
+				image.load("icons/quad32.png");
 				break;
 			case rs::Rectangle:
-				image.load("icons/line32.png");
+				image.load("icons/rectangle32.png");
 				break;
 			case rs::Sphere:
 				image.load("icons/sphere32.png");
@@ -313,7 +313,7 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				image.load("icons/text32.png");
 				break;
 			case rs::Triangle:
-				image.load("icons/line32.png");
+				image.load("icons/triangle32.png");
 				break;
 			case rs::WoodBlock:
 				image.load("icons/woodblock32.png");
