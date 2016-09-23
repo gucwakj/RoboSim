@@ -29,6 +29,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 			break;
 		case rs::Arc:
 		case rs::ArcSector:
+		case rs::Arrow:
 		case rs::Circle:
 		case rs::Dot:
 		case rs::Ellipse:
@@ -426,6 +427,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Writer::setMarker(marker, name, p, p2, led, size);
 				break;
 			}
+			case rs::Arrow:
 			case rs::Circle:
 			case rs::Dot:
 			case rs::Ellipse:

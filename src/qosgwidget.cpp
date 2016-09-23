@@ -1238,6 +1238,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				_scene->drawMarker(id, form, p, dims, led, size, name);
 				break;
 			}
+			case rs::Arrow:
 			case rs::Circle:
 			case rs::Dot:
 			case rs::Ellipse:

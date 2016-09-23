@@ -22,6 +22,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new emptyEditor());
 	_pages->addWidget(new arcEditor(_model));
 	_pages->addWidget(new arcSectorEditor(_model));
+	_pages->addWidget(new arrowEditor(_model));
 	_pages->addWidget(new boxEditor(_model));
 	_pages->addWidget(new circleEditor(_model));
 	_pages->addWidget(new competitionborderEditor(_model));
@@ -99,6 +100,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::ArcSector + 1);
 				dynamic_cast<arcSectorEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<arcSectorEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::Arrow:
+				_pages->setCurrentIndex(rs::Arrow + 1);
+				dynamic_cast<arrowEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<arrowEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Box:
 				_pages->setCurrentIndex(rs::Box + 1);
@@ -597,6 +603,163 @@ void arcSectorEditor::setUnits(bool si) {
 	_pXUnits->setText(text);
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Arrow Editor
+ *
+ *
+ */
+
+/*!	\brief Arrow Drawing Editor.
+ *
+ *	Build individual arrow editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+arrowEditor::arrowEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Arrow Editor</span>"));
+
+	// position x1
+	QLabel *pXLabel = new QLabel(tr("Start X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px1");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the starting X position of the line");
+	pXBox->setToolTipDuration(-1);
+
+	// position y1
+	QLabel *pYLabel = new QLabel(tr("Start Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py1");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pXBox->setToolTip("Set the starting Y position of the line");
+	pXBox->setToolTipDuration(-1);
+
+	// position x2
+	QLabel *lXLabel = new QLabel(tr("End X:"));
+	_lXUnits = new QLabel();
+	QDoubleSpinBox *lXBox = new QDoubleSpinBox();
+	lXBox->setObjectName("px2");
+	lXBox->setMinimum(-1000000);
+	lXBox->setMaximum(1000000);
+	lXBox->setSingleStep(0.5);
+	lXLabel->setBuddy(lXBox);
+	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
+	pXBox->setToolTip("Set the ending X position of the line");
+	pXBox->setToolTipDuration(-1);
+
+	// position y2
+	QLabel *lYLabel = new QLabel(tr("End Y:"));
+	_lYUnits = new QLabel();
+	QDoubleSpinBox *lYBox = new QDoubleSpinBox();
+	lYBox->setObjectName("py2");
+	lYBox->setMinimum(-1000000);
+	lYBox->setMaximum(1000000);
+	lYBox->setSingleStep(0.5);
+	lYLabel->setBuddy(lYBox);
+	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
+	pXBox->setToolTip("Set the ending Y position of the line");
+	pXBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(lXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(lXBox, 5);
+	hbox2->addWidget(_lXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	hbox3->addWidget(lYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(lYBox, 5);
+	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void arrowEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void arrowEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void arrowEditor::submitL1(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_1), value);
+}
+
+void arrowEditor::submitL2(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
+}
+
+void arrowEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void arrowEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void arrowEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_lXUnits->setText(text);
+	_lYUnits->setText(text);
 }
 
 /*!

@@ -65,6 +65,7 @@ bool objectModel::addObject(int form, int role) {
 				break;
 			case rs::Arc:
 			case rs::ArcSector:
+			case rs::Arrow:
 			case rs::Circle:
 			case rs::Dot:
 			case rs::Ellipse:
@@ -192,6 +193,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Arc"));
 				case rs::ArcSector:
 					return QString(tr("Arc Sector"));
+				case rs::Arrow:
+					return QString(tr("Arrow"));
 				case rs::Box:
 					return QString(tr("Box"));
 				case rs::Circle:
@@ -246,6 +249,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				image.load("icons/line32.png");
 				break;
 			case rs::ArcSector:
+				image.load("icons/line32.png");
+				break;
+			case rs::Arrow:
 				image.load("icons/line32.png");
 				break;
 			case rs::Box:
@@ -354,6 +360,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::Arc);
 	else if (!map[0].toString().compare("Arc Sector"))
 		this->addObject(rs::ArcSector);
+	else if (!map[0].toString().compare("Arrow"))
+		this->addObject(rs::Arrow);
 	else if (!map[0].toString().compare("Box"))
 		this->addObject(rs::Box);
 	else if (!map[0].toString().compare("Circle"))
