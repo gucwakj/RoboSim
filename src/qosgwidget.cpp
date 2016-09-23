@@ -1230,6 +1230,13 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				_scene->drawObstacle(id, form, p, led, dims, quat);
 				break;
 			}
+			case rs::Arc: {
+				rs::Pos dims(rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
+							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
+							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
+				_scene->drawMarker(id, form, p, dims, led, size, name);
+				break;
+			}
 			case rs::Circle:
 			case rs::Dot:
 			case rs::Ellipse:

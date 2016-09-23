@@ -51,8 +51,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build drawings selector
 	names.clear();
 	icons.clear();
-	names << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Rectangle" << "Text" << "Triangle";
-	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
+	names << "Arc" << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Rectangle" << "Text" << "Triangle";
+	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
 	this->build_selector(ui->list_markers, names, icons);
 	ui->list_markers->setDragEnabled(true);
 
@@ -725,6 +725,8 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Snake);
 	else if (!item->text().compare("Stand"))
 		_rob_model->addPreconfig(rsLinkbot::Preconfigs::Stand);
+	else if (!item->text().compare("Arc"))
+		_obj_model->addObject(rs::Arc);
 	else if (!item->text().compare("Box"))
 		_obj_model->addObject(rs::Box);
 	else if (!item->text().compare("Circle"))

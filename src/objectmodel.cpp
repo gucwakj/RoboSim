@@ -63,6 +63,7 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Sphere:
 				_list[row][COLOR] = QString("#0000ff");	// blue
 				break;
+			case rs::Arc:
 			case rs::Circle:
 			case rs::Dot:
 			case rs::Ellipse:
@@ -103,6 +104,9 @@ bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &
 		_list[row][P_X] = QVariant(p1[0]).toString();
 		_list[row][P_Y] = QVariant(p1[1]).toString();
 		_list[row][P_Z] = QVariant(p1[2]).toString();
+		_list[row][R_PHI] = QVariant(p2[0]).toString();
+		_list[row][R_THETA] = QVariant(p2[1]).toString();
+		_list[row][R_PSI] = QVariant(p2[2]).toString();
 		_list[row][L_1] = QVariant(p2[0]).toString();
 		_list[row][L_2] = QVariant(p2[1]).toString();
 		_list[row][L_3] = QVariant(p2[2]).toString();
@@ -183,6 +187,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 	if (role == Qt::DisplayRole) {
 		if (index.column() == rsObjectModel::ID) {
 			switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
+				case rs::Arc:
+					return QString(tr("Arc"));
 				case rs::Box:
 					return QString(tr("Box"));
 				case rs::Circle:
@@ -233,6 +239,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 	else if (role == Qt::DecorationRole) {
 		QPixmap image;
 		switch (_list[index.row()][rsObjectModel::FORM].toInt()) {
+			case rs::Arc:
+				image.load("icons/line32.png");
+				break;
 			case rs::Box:
 				image.load("icons/box32.png");
 				break;
@@ -335,7 +344,9 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 	QMap<int,  QVariant> map;
 	stream >> r >> c >> map;
 
-	if (!map[0].toString().compare("Box"))
+	if (!map[0].toString().compare("Arc"))
+		this->addObject(rs::Arc);
+	else if (!map[0].toString().compare("Box"))
 		this->addObject(rs::Box);
 	else if (!map[0].toString().compare("Circle"))
 		this->addObject(rs::Circle);
