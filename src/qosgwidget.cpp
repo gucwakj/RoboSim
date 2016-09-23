@@ -1230,7 +1230,8 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				_scene->drawObstacle(id, form, p, led, dims, quat);
 				break;
 			}
-			case rs::Arc: {
+			case rs::Arc:
+			case rs::ArcSector: {
 				rs::Pos dims(rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));

@@ -28,6 +28,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 			Writer::deleteObstacle(id);
 			break;
 		case rs::Arc:
+		case rs::ArcSector:
 		case rs::Circle:
 		case rs::Dot:
 		case rs::Ellipse:
@@ -418,7 +419,8 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
 				break;
 			}
-			case rs::Arc: {
+			case rs::Arc:
+			case rs::ArcSector: {
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
 				rs::Pos p2(r[0], r[1], r[2]);
 				Writer::setMarker(marker, name, p, p2, led, size);

@@ -92,6 +92,30 @@ class arcEditor : public QWidget {
 		int _row;
 };
 
+class arcSectorEditor : public QWidget {
+		Q_OBJECT
+	public:
+		arcSectorEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitRX(double);
+		void submitRY(double);
+		void submitColor(QColor);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_pZUnits;
+		bodyColorPicker *_colorPicker;
+		int _row;
+};
+
 class boxEditor : public QWidget {
 		Q_OBJECT
 	public:
