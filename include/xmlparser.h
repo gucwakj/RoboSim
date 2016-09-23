@@ -29,7 +29,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void gridDefaults(void);
 		void level(int);
 		void backgroundName(std::string);
-		void newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string);
+		void newMarker(int, int, rs::Pos, rs::Pos, rs::Pos, rs::Vec, int, std::string);
 		void newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double);
 		void newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string);
 		void newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, int, std::string);

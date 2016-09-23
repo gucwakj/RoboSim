@@ -51,8 +51,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build drawings selector
 	names.clear();
 	icons.clear();
-	names << "Arc" << "Arc Sector" << "Arc Segment" << "Arrow" << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Rectangle" << "Text" << "Triangle";
-	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
+	names << "Arc" << "Arc Sector" << "Arc Segment" << "Arrow" << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Quad" << "Rectangle" << "Text" << "Triangle";
+	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
 	this->build_selector(ui->list_markers, names, icons);
 	ui->list_markers->setDragEnabled(true);
 
@@ -321,7 +321,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_xml, SIGNAL(newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string)), _rob_model, SLOT(newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string)));
 	QWidget::connect(_xml, SIGNAL(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, int, std::string)), _rob_model, SLOT(newRobot(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, const rs::Vec&, int, std::string)));
 	QWidget::connect(_xml, SIGNAL(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)), _obj_model, SLOT(newObstacle(int, int, rs::Pos, rs::Quat, rs::Vec, rs::Vec, double)));
-	QWidget::connect(_xml, SIGNAL(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)), _obj_model, SLOT(newMarker(int, int, rs::Pos, rs::Pos, rs::Vec, int, std::string)));
+	QWidget::connect(_xml, SIGNAL(newMarker(int, int, rs::Pos, rs::Pos, rs::Pos, rs::Vec, int, std::string)), _obj_model, SLOT(newMarker(int, int, rs::Pos, rs::Pos, rs::Pos, rs::Vec, int, std::string)));
 	QWidget::connect(_xml, SIGNAL(trace(bool)), ui->tracing, SLOT(setChecked(bool)));
 	QWidget::connect(_xml, SIGNAL(units(bool)), ui->si, SLOT(setChecked(bool)));
 
@@ -753,6 +753,8 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_obj_model->addObject(rs::Polygon);
 	else if (!item->text().compare("Pullup Bar"))
 		_obj_model->addObject(rs::PullupBar);
+	else if (!item->text().compare("Quad"))
+		_obj_model->addObject(rs::Quad);
 	else if (!item->text().compare("Rectangle"))
 		_obj_model->addObject(rs::Rectangle);
 	else if (!item->text().compare("Sphere"))

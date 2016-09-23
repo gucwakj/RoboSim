@@ -72,6 +72,7 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Ellipse:
 			case rs::Line:
 			case rs::Polygon:
+			case rs::Quad:
 			case rs::Rectangle:
 			case rs::Text:
 			case rs::Triangle:
@@ -95,7 +96,7 @@ bool objectModel::addObject(int form, int role) {
 	return false;
 }
 
-bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Vec &c, int size, std::string name, int role) {
+bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Pos &pt, const rs::Vec &c, int size, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -107,9 +108,16 @@ bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &
 		_list[row][P_X] = QVariant(p1[0]).toString();
 		_list[row][P_Y] = QVariant(p1[1]).toString();
 		_list[row][P_Z] = QVariant(p1[2]).toString();
-		_list[row][R_PHI] = QVariant(rs::R2D(p2[0])).toString();
-		_list[row][R_THETA] = QVariant(rs::R2D(p2[1])).toString();
-		_list[row][R_PSI] = QVariant(rs::R2D(p2[2])).toString();
+		if (form == rs::Quad) {
+			_list[row][R_PHI] = QVariant(rs::R2D(pt[0])).toString();
+			_list[row][R_THETA] = QVariant(rs::R2D(pt[1])).toString();
+			_list[row][R_PSI] = QVariant(rs::R2D(pt[2])).toString();
+		}
+		else {
+			_list[row][R_PHI] = QVariant(rs::R2D(p2[0])).toString();
+			_list[row][R_THETA] = QVariant(rs::R2D(p2[1])).toString();
+			_list[row][R_PSI] = QVariant(rs::R2D(p2[2])).toString();
+		}
 		_list[row][L_1] = QVariant(p2[0]).toString();
 		_list[row][L_2] = QVariant(p2[1]).toString();
 		_list[row][L_3] = QVariant(p2[2]).toString();
@@ -218,6 +226,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Polygon"));
 				case rs::PullupBar:
 					return QString(tr("Pullup Bar"));
+				case rs::Quad:
+					return QString(tr("Quad"));
 				case rs::Rectangle:
 					return QString(tr("Rectangle"));
 				case rs::Sphere:
@@ -289,6 +299,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				break;
 			case rs::PullupBar:
 				image.load("icons/pullup32.png");
+				break;
+			case rs::Quad:
+				image.load("icons/line32.png");
 				break;
 			case rs::Rectangle:
 				image.load("icons/line32.png");
@@ -390,6 +403,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::Polygon);
 	else if (!map[0].toString().compare("Pullup Bar"))
 		this->addObject(rs::PullupBar);
+	else if (!map[0].toString().compare("Quad"))
+		this->addObject(rs::Quad);
 	else if (!map[0].toString().compare("Rectangle"))
 		this->addObject(rs::Rectangle);
 	else if (!map[0].toString().compare("Sphere"))

@@ -36,6 +36,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 		case rs::Ellipse:
 		case rs::Line:
 		case rs::Polygon:
+		case rs::Quad:
 		case rs::Rectangle:
 		case rs::Text:
 		case rs::Triangle:
@@ -228,7 +229,7 @@ void xmlParser::parse(const char *name) {
 	// add all markers
 	rsXML::Marker *xmlm = reader.getNextMarker();
 	while (xmlm) {
-		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getColor(), xmlm->getSize(), xmlm->getLabel());
+		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getPoint(), xmlm->getColor(), xmlm->getSize(), xmlm->getLabel());
 		xmlm = reader.getNextMarker();
 	}
 }
@@ -426,7 +427,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 			case rs::ArcSegment: {
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
 				rs::Pos p2(r[0], r[1], r[2]);
-				Writer::setMarker(marker, name, p, p2, led, size);
+				Writer::setMarker(marker, name, p, p2, led, size, rs::Pos());
 				break;
 			}
 			case rs::Arrow:
@@ -442,7 +443,18 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, p, p2, led, size);
+				Writer::setMarker(marker, name, p, p2, led, size, rs::Pos());
+				break;
+			}
+			case rs::Quad: {
+				rs::Pos p2(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
+						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
+						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
+				rs::Pos pt(rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
+						   rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
+						   rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
+				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
+				Writer::setMarker(marker, name, p, p2, led, size, pt);
 				break;
 			}
 		}
