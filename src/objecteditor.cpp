@@ -22,6 +22,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new emptyEditor());
 	_pages->addWidget(new arcEditor(_model));
 	_pages->addWidget(new arcSectorEditor(_model));
+	_pages->addWidget(new arcSegmentEditor(_model));
 	_pages->addWidget(new arrowEditor(_model));
 	_pages->addWidget(new boxEditor(_model));
 	_pages->addWidget(new circleEditor(_model));
@@ -100,6 +101,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::ArcSector + 1);
 				dynamic_cast<arcSectorEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<arcSectorEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::ArcSegment:
+				_pages->setCurrentIndex(rs::ArcSegment + 1);
+				dynamic_cast<arcSegmentEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<arcSegmentEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Arrow:
 				_pages->setCurrentIndex(rs::Arrow + 1);
@@ -597,6 +603,185 @@ void arcSectorEditor::setIndex(int row) {
  *	\param		si Units are SI (true) or US (false).
  */
 void arcSectorEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Arc Secgment Editor
+ *
+ *
+ */
+
+/*!	\brief Arc Segment Obstacle Editor.
+ *
+ *	Build individual arc segment editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Arc Segment Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the arc sector");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the arc sector");
+	pYBox->setToolTipDuration(-1);
+
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Radius:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("radius");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the radius of the arc sector");
+	pZBox->setToolTipDuration(-1);
+
+	// rotation psi
+	QLabel *l1Label = new QLabel(tr("Start:"));
+	QLabel *l1Units = new QLabel(QString::fromUtf8("°"));
+	QDoubleSpinBox *l1Box = new QDoubleSpinBox();
+	l1Box->setObjectName("start");
+	l1Box->setMinimum(-360);
+	l1Box->setMaximum(360);
+	l1Box->setSingleStep(0.5);
+	l1Label->setBuddy(l1Box);
+	QWidget::connect(l1Box, SIGNAL(valueChanged(double)), this, SLOT(submitRX(double)));
+	l1Box->setToolTip("Set the starting angle of the arc sector");
+	l1Box->setToolTipDuration(-1);
+
+	// rotation psi
+	QLabel *l2Label = new QLabel(tr("End:"));
+	QLabel *l2Units = new QLabel(QString::fromUtf8("°"));
+	QDoubleSpinBox *l2Box = new QDoubleSpinBox();
+	l2Box->setObjectName("end");
+	l2Box->setMinimum(-360);
+	l2Box->setMaximum(360);
+	l2Box->setSingleStep(0.5);
+	l2Label->setBuddy(l2Box);
+	QWidget::connect(l2Box, SIGNAL(valueChanged(double)), this, SLOT(submitRY(double)));
+	l2Box->setToolTip("Set the ending angle of the arc sector");
+	l2Box->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the arc sector");
+	_colorPicker->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pXBox, 5);
+	hbox2->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	hbox2->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(pYBox, 5);
+	hbox2->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(l1Label, 2, Qt::AlignRight);
+	hbox3->addWidget(l1Box, 5);
+	hbox3->addWidget(l1Units, 1, Qt::AlignLeft);
+	hbox3->addWidget(l2Label, 2, Qt::AlignRight);
+	hbox3->addWidget(l2Box, 5);
+	hbox3->addWidget(l2Units, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void arcSegmentEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void arcSegmentEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void arcSegmentEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
+}
+
+void arcSegmentEditor::submitRX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::R_PHI), value);
+}
+
+void arcSegmentEditor::submitRY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::R_THETA), value);
+}
+
+void arcSegmentEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void arcSegmentEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("start"))->setValue(_model->data(_model->index(row, rsObjectModel::R_PHI), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("end"))->setValue(_model->data(_model->index(row, rsObjectModel::R_THETA), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void arcSegmentEditor::setUnits(bool si) {
 	QString text;
 	if (si) text = tr("cm");
 	else text = tr("in");

@@ -1231,7 +1231,8 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				break;
 			}
 			case rs::Arc:
-			case rs::ArcSector: {
+			case rs::ArcSector:
+			case rs::ArcSegment: {
 				rs::Pos dims(rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));

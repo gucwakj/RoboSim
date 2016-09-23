@@ -51,8 +51,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build drawings selector
 	names.clear();
 	icons.clear();
-	names << "Arc" << "Arc Sector" << "Arrow" << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Rectangle" << "Text" << "Triangle";
-	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
+	names << "Arc" << "Arc Sector" << "Arc Segment" << "Arrow" << "Circle" << "Ellipse" << "Line" << "Point" <<  "Polygon" << "Rectangle" << "Text" << "Triangle";
+	icons << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/line128.png" << "icons/point128.png" << "icons/line128.png" << "icons/line128.png" << "icons/text128.png" << "icons/text128.png";
 	this->build_selector(ui->list_markers, names, icons);
 	ui->list_markers->setDragEnabled(true);
 
@@ -729,6 +729,8 @@ void roboSimWidget::addItem(QListWidgetItem *item) {
 		_obj_model->addObject(rs::Arc);
 	else if (!item->text().compare("Arc Sector"))
 		_obj_model->addObject(rs::ArcSector);
+	else if (!item->text().compare("Arc Segment"))
+		_obj_model->addObject(rs::ArcSegment);
 	else if (!item->text().compare("Arrow"))
 		_obj_model->addObject(rs::Arrow);
 	else if (!item->text().compare("Box"))

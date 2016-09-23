@@ -29,6 +29,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 			break;
 		case rs::Arc:
 		case rs::ArcSector:
+		case rs::ArcSegment:
 		case rs::Arrow:
 		case rs::Circle:
 		case rs::Dot:
@@ -421,7 +422,8 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 				break;
 			}
 			case rs::Arc:
-			case rs::ArcSector: {
+			case rs::ArcSector:
+			case rs::ArcSegment: {
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
 				rs::Pos p2(r[0], r[1], r[2]);
 				Writer::setMarker(marker, name, p, p2, led, size);
