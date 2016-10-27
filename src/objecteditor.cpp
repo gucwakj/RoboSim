@@ -3752,7 +3752,7 @@ void triangleEditor::setIndex(int row) {
 	_row = row;
 	(this->findChild<QDoubleSpinBox *>("x1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("x2"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("x3"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("x3"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("y1"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("y2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("y3"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());

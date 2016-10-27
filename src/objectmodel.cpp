@@ -90,6 +90,64 @@ bool objectModel::addObject(int form, int role) {
 		}
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString("HI");
+
+		// set defaults for all drawings
+		switch (form) {
+			case rs::Arc:
+			case rs::ArcSector:
+			case rs::ArcSegment:
+				_list[row][P_Z] = QVariant(rs::IN2M(6)).toString();
+				_list[row][R_PHI] = QVariant(0).toString();
+				_list[row][R_THETA] = QVariant(135).toString();
+				break;
+			case rs::Arrow:
+				_list[row][L_1] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_2] = QVariant(rs::IN2M(6)).toString();
+				break;
+			case rs::Circle:
+				_list[row][P_Z] = QVariant(rs::IN2M(6)).toString();
+				break;
+			case rs::Ellipse:
+				_list[row][L_1] = QVariant(rs::IN2M(12)).toString();
+				_list[row][L_2] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_3] = QVariant(0).toString();
+				break;
+			case rs::Line:
+				_list[row][P_X] = QVariant(0).toString();
+				_list[row][P_Y] = QVariant(0).toString();
+				_list[row][P_Z] = QVariant(0).toString();
+				_list[row][L_1] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_2] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_3] = QVariant(0).toString();
+				break;
+			case rs::Polygon:
+				_list[row][P_Z] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_1] = QVariant(rs::IN2M(6)).toString();
+				break;
+			case rs::Quad:
+				_list[row][P_X] = QVariant(0).toString();
+				_list[row][P_Y] = QVariant(rs::IN2M(6)).toString();
+				_list[row][P_Z] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_1] = QVariant(0).toString();
+				_list[row][L_2] = QVariant(0).toString();
+				_list[row][L_3] = QVariant(rs::IN2M(12)).toString();
+				_list[row][R_PHI] = QVariant(0).toString();
+				_list[row][R_THETA] = QVariant(6).toString();
+				break;
+			case rs::Rectangle:
+				_list[row][L_1] = QVariant(rs::IN2M(12)).toString();
+				_list[row][L_2] = QVariant(rs::IN2M(6)).toString();
+				break;
+			case rs::Triangle:
+				_list[row][P_X] = QVariant(0).toString();
+				_list[row][P_Y] = QVariant(rs::IN2M(6)).toString();
+				_list[row][P_Z] = QVariant(rs::IN2M(6)).toString();
+				_list[row][L_1] = QVariant(0).toString();
+				_list[row][L_2] = QVariant(0).toString();
+				_list[row][L_3] = QVariant(rs::IN2M(6)).toString();
+				break;
+		}
+
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
