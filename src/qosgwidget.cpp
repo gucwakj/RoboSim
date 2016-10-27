@@ -166,6 +166,15 @@ void QOsgWidget::deleteRobotIndex(QModelIndex index, int first, int last) {
 	_scene->addAndRemoveChildren();
 }
 
+void QOsgWidget::grid(std::vector<float> v) {
+	_grid[0] = convert(v[0]);
+	_grid[1] = convert(v[1]);
+	_grid[2] = convert(v[2]);
+	_grid[3] = convert(v[3]);
+	_grid[4] = convert(v[4]);
+	_grid[5] = convert(v[5]);
+}
+
 void QOsgWidget::gridDefaults(void) {
 	// reset to defaults
 	if (_units) {
@@ -206,25 +215,37 @@ void QOsgWidget::gridHash(double value) {
 }
 
 void QOsgWidget::gridMinX(double value) {
+	// set proper lower limit
 	_grid[2] = convert(value);
+
+	// pass to scene
 	_scene->setGrid(_grid, true);
 	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMaxX(double value) {
+	// set proper lower limit
 	_grid[3] = convert(value);
+
+	// pass to scene
 	_scene->setGrid(_grid, true);
 	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMinY(double value) {
+	// set proper lower limit
 	_grid[4] = convert(value);
+
+	// pass to scene
 	_scene->setGrid(_grid, true);
 	_scene->addAndRemoveChildren();
 }
 
 void QOsgWidget::gridMaxY(double value) {
+	// set proper lower limit
 	_grid[5] = convert(value);
+
+	// pass to scene
 	_scene->setGrid(_grid, true);
 	_scene->addAndRemoveChildren();
 }
@@ -1338,7 +1359,28 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 	}
 
 	// set level after images are set
-	_scene->setLevel(background.getLevel());
+	_level = background.getLevel();
+	_scene->setLevel(_level);
+
+	// set grid
+	if (_level == rs::Level::RPC2014) {
+		_grid[2] = 0;
+		_grid[3] = convert(96);
+		_grid[4] = 0;
+		_grid[5] = convert(48);
+	}
+	else if (_level == rs::Level::RPC2015 || _level == rs::Level::RPC2016) {
+		_grid[2] = 0;
+		_grid[3] = convert(84);
+		_grid[4] = 0;
+		_grid[5] = convert(42);
+	}
+	else if (_level == rs::Level::ActivityMat) {
+		_grid[2] = convert(-24);
+		_grid[3] = convert(24);
+		_grid[4] = convert(-12);
+		_grid[5] = convert(12);
+	}
 	_scene->setGrid(_grid, true);
 	_scene->addAndRemoveChildren(true);
 

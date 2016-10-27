@@ -315,6 +315,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// connect xml parser to gui elements
 	QWidget::connect(_xml, SIGNAL(backgroundImage(int, std::string)), ui->osgWidget, SLOT(setBackgroundImage(int, std::string)));
 	QWidget::connect(_xml, SIGNAL(grid(std::vector<float>)), this, SLOT(grid(std::vector<float>)));
+	QWidget::connect(_xml, SIGNAL(grid(std::vector<float>)), ui->osgWidget, SLOT(grid(std::vector<float>)));
 	QWidget::connect(_xml, SIGNAL(gridDefaults()), this, SLOT(grid_defaults()));
 	QWidget::connect(_xml, SIGNAL(level(int)), ui->osgWidget, SLOT(setCurrentBackground(int)));
 	QWidget::connect(_xml, SIGNAL(backgroundName(std::string)), this, SLOT(setCurrentBackground(std::string)));
@@ -543,27 +544,59 @@ void roboSimWidget::setCurrentBackground(std::string name) {
 		ui->backgroundListWidget->setCurrentRow(0);
 		ui->osgWidget->setNewBackground(item, item);
 	}
-
-	// disable all grid options when not using outdoors
-	/*QObjectList list = ui->group_grid->children();
-	QWidget *item;
-	for (int i = 0; i < list.size(); i++) {
-		if ( (item = dynamic_cast<QWidget*>(list[i])) )
-			item->setEnabled(!name.compare("Outdoors"));
-	}*/
 }
 
 void roboSimWidget::setBackground(QListWidgetItem *current, QListWidgetItem *previous) {
 	// get name of new item
 	QString name = current->data(Qt::UserRole).toString();
 
-	// disable all grid options when not using outdoors
-	/*QObjectList list = ui->group_grid->children();
-	QWidget *item;
-	for (int i = 0; i < list.size(); i++) {
-		if ( (item = dynamic_cast<QWidget*>(list[i])) )
-			item->setEnabled(name.contains("outdoors"));
-	}*/
+	// set spinners based upon background
+	if (!name.compare("2014RoboPlay")) {
+		ui->spin_grid_x_min->setValue(0);
+		ui->spin_grid_x_min->setEnabled(false);
+		ui->spin_grid_x_max->setValue(96);
+		ui->spin_grid_x_max->setEnabled(false);
+		ui->spin_grid_y_min->setValue(0);
+		ui->spin_grid_y_min->setEnabled(false);
+		ui->spin_grid_y_max->setValue(48);
+		ui->spin_grid_y_max->setEnabled(false);
+	}
+	else if (!name.compare("2015RoboPlay")) {
+		ui->spin_grid_x_min->setValue(0);
+		ui->spin_grid_x_min->setEnabled(false);
+		ui->spin_grid_x_max->setValue(84);
+		ui->spin_grid_x_max->setEnabled(false);
+		ui->spin_grid_y_min->setValue(0);
+		ui->spin_grid_y_min->setEnabled(false);
+		ui->spin_grid_y_max->setValue(42);
+		ui->spin_grid_y_max->setEnabled(false);
+	}
+	else if (!name.compare("2016RoboPlay")) {
+		ui->spin_grid_x_min->setValue(0);
+		ui->spin_grid_x_min->setEnabled(false);
+		ui->spin_grid_x_max->setValue(84);
+		ui->spin_grid_x_max->setEnabled(false);
+		ui->spin_grid_y_min->setValue(0);
+		ui->spin_grid_y_min->setEnabled(false);
+		ui->spin_grid_y_max->setValue(42);
+		ui->spin_grid_y_max->setEnabled(false);
+	}
+	else if (!name.compare("baroboactivitymat")) {
+		ui->spin_grid_x_min->setValue(-24);
+		ui->spin_grid_x_min->setEnabled(false);
+		ui->spin_grid_x_max->setValue(24);
+		ui->spin_grid_x_max->setEnabled(false);
+		ui->spin_grid_y_min->setValue(-12);
+		ui->spin_grid_y_min->setEnabled(false);
+		ui->spin_grid_y_max->setValue(12);
+		ui->spin_grid_y_max->setEnabled(false);
+	}
+	else {
+		ui->spin_grid_x_min->setEnabled(true);
+		ui->spin_grid_x_max->setEnabled(true);
+		ui->spin_grid_y_min->setEnabled(true);
+		ui->spin_grid_y_max->setEnabled(true);
+	}
 }
 
 void roboSimWidget::updateBackgroundList(const QString &str) {

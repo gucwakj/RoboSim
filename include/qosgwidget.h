@@ -36,6 +36,7 @@ class QOsgWidget : public osgQt::GLWidget, public osgViewer::Viewer {
 		void clickedRobotIndex(int, bool = true);
 		void deleteObjectIndex(QModelIndex, int, int);
 		void deleteRobotIndex(QModelIndex, int, int);
+		void grid(std::vector<float>);
 		void gridDefaults(void);
 		void gridEnabled(bool);
 		void gridHash(double);
