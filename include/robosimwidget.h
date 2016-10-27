@@ -42,8 +42,9 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		void set_units(bool);
 		void grid(std::vector<float>);
 		void setCurrentBackground(std::string);
-		void setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*);
+		void setGridEnabled(bool);
 		void setBackground(QListWidgetItem*, QListWidgetItem*);
+		void setNewChallenge(QTreeWidgetItem*, QTreeWidgetItem*);
 		void updateBackgroundList(const QString&);
 		void about(void);
 		void load(void);

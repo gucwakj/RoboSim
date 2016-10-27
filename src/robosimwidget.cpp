@@ -294,6 +294,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(ui->spin_grid_y_max, SIGNAL(valueChanged(double)), _xml, SLOT(setGridMaxY(double)));
 	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), ui->osgWidget, SLOT(gridEnabled(bool)));
 	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), _xml, SLOT(setGridEnabled(bool)));
+	QWidget::connect(ui->grid_on, SIGNAL(toggled(bool)), this, SLOT(setGridEnabled(bool)));
 	QWidget::connect(ui->button_grid_defaults, SIGNAL(clicked()), this, SLOT(grid_defaults()));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->tab_scene, SLOT(setCurrentIndex(int)));
 	QWidget::connect(ui->osgWidget, SIGNAL(currentTab(int)), ui->toolBox_config, SLOT(setCurrentIndex(int)));
@@ -597,6 +598,16 @@ void roboSimWidget::setBackground(QListWidgetItem *current, QListWidgetItem *pre
 		ui->spin_grid_y_min->setEnabled(true);
 		ui->spin_grid_y_max->setEnabled(true);
 	}
+}
+
+void roboSimWidget::setGridEnabled(bool enabled) {
+	ui->spin_grid_tics->setEnabled(enabled);
+	ui->spin_grid_hash->setEnabled(enabled);
+	ui->spin_grid_x_min->setEnabled(enabled);
+	ui->spin_grid_x_max->setEnabled(enabled);
+	ui->spin_grid_y_min->setEnabled(enabled);
+	ui->spin_grid_y_max->setEnabled(enabled);
+	ui->button_grid_defaults->setEnabled(enabled);
 }
 
 void roboSimWidget::updateBackgroundList(const QString &str) {
