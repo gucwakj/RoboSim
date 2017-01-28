@@ -28,7 +28,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	// build robot selector
 	QStringList names, icons;
 	names << "Linkbot I" <<  "Linkbot L" << "Mindstorms EV3/NXT";
-	icons << "icons/linkbotI128.png" << "icons/linkbotL128.png" << "icons/mindstormsNXT128.png";
+	icons << ":/icons/linkbotI128.png" << ":/icons/linkbotL128.png" << ":/icons/mindstormsNXT128.png";
 	this->build_selector(ui->list_robots, names, icons);
 	ui->list_robots->setDragEnabled(true);
 
@@ -36,7 +36,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names.clear();
 	icons.clear();
 	names << "Bow" << "Bug Clock" << "Explorer" << "Four Bot Drive" << "Four Wheel Drive" << "Four Wheel Explorer" << "Group Bow" << "Inchworm" << "Lift" << "Omnidrive" << "Snake" << "Stand";
-	icons << "icons/bow128.png" << "icons/bugclock128.png" << "icons/explorer128.png" << "icons/fourbotdrive128.png" << "icons/fourwheeldrive128.png" << "icons/fourwheelexplorer128.png" << "icons/groupbow128.png" << "icons/inchworm128.png" << "icons/lift128.png" << "icons/omnidrive128.png" << "icons/snake128.png" << "icons/stand128.png";
+	icons << ":/icons/bow128.png" << ":/icons/bugclock128.png" << ":/icons/explorer128.png" << ":/icons/fourbotdrive128.png" << ":/icons/fourwheeldrive128.png" << ":/icons/fourwheelexplorer128.png" << ":/icons/groupbow128.png" << ":/icons/inchworm128.png" << ":/icons/lift128.png" << ":/icons/omnidrive128.png" << ":/icons/snake128.png" << ":/icons/stand128.png";
 	this->build_selector(ui->list_preconfig, names, icons);
 	ui->list_preconfig->setDragEnabled(true);
 
@@ -44,7 +44,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	names.clear();
 	icons.clear();
 	names << "Box" << "Competition Border" << "Cylinder" << "Hacky Sack" << "Pullup Bar" << "Sphere" << "Wood Block";
-	icons << "icons/box128.png" << "icons/competitionborder128.png" << "icons/cylinder128.png" << "icons/hackysack128.png" << "icons/pullup128.png" << "icons/sphere128.png" << "icons/woodblock128.png";
+	icons << ":/icons/box128.png" << ":/icons/competitionborder128.png" << ":/icons/cylinder128.png" << ":/icons/hackysack128.png" << ":/icons/pullup128.png" << ":/icons/sphere128.png" << ":/icons/woodblock128.png";
 	this->build_selector(ui->list_obstacles, names, icons);
 	ui->list_obstacles->setDragEnabled(true);
 

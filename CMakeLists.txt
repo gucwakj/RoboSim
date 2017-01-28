@@ -159,8 +159,11 @@ set (HEADERS
 # set gui form
 qt5_wrap_ui (WIDGET_FORMS_HEADERS forms/robosimwidget.ui)
 
+# add resources files
+qt5_add_resources (UI_RESOURCES resources.qrc)
+
 # create library
-add_library (robosimwidget SHARED ${SRCS} ${HEADERS} ${WIDGET_FORMS_HEADERS})
+add_library (robosimwidget SHARED ${SRCS} ${HEADERS} ${WIDGET_FORMS_HEADERS} ${UI_RESOURCES})
 target_link_libraries (robosimwidget ${EXTRA_LIBS})
 set_target_properties (robosimwidget PROPERTIES DEBUG_POSTFIX "d")
 set_target_properties (robosimwidget PROPERTIES COMPILE_DEFINITIONS "ROBOSIMWIDGET_DLL")
@@ -187,6 +190,8 @@ add_executable (RoboSim WIN32
 	include/mainwindow.h
 	${APP_FORMS_HEADERS}
 	${RC_FILES}
+	${rs_ICON}
+	${UI_RESOURCES}
 )
 set_target_properties (RoboSim PROPERTIES DEBUG_POSTFIX "d")
 target_link_libraries (RoboSim ${EXTRA_LIBS})
