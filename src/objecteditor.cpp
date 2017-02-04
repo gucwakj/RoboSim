@@ -345,11 +345,23 @@ arcEditor::arcEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	l2Box->setToolTip("Set the ending angle of the arc");
 	l2Box->setToolTipDuration(-1);
 
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the arc");
+	widthBox->setToolTipDuration(-1);
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the ellipse");
+	_colorPicker->setToolTip("Choose the color of the arc");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -379,6 +391,10 @@ arcEditor::arcEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -406,6 +422,10 @@ void arcEditor::submitRY(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::R_THETA), value);
 }
 
+void arcEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
 void arcEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
@@ -421,6 +441,7 @@ void arcEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("start"))->setValue(_model->data(_model->index(row, rsObjectModel::R_PHI), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("end"))->setValue(_model->data(_model->index(row, rsObjectModel::R_THETA), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -524,6 +545,18 @@ arcSectorEditor::arcSectorEditor(objectModel *model, QWidget *parent) : QWidget(
 	l2Box->setToolTip("Set the ending angle of the arc sector");
 	l2Box->setToolTipDuration(-1);
 
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the arc sector");
+	widthBox->setToolTipDuration(-1);
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
@@ -558,6 +591,10 @@ arcSectorEditor::arcSectorEditor(objectModel *model, QWidget *parent) : QWidget(
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -585,6 +622,10 @@ void arcSectorEditor::submitRY(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::R_THETA), value);
 }
 
+void arcSectorEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
 void arcSectorEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
@@ -600,6 +641,7 @@ void arcSectorEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("start"))->setValue(_model->data(_model->index(row, rsObjectModel::R_PHI), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("end"))->setValue(_model->data(_model->index(row, rsObjectModel::R_THETA), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -648,7 +690,7 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
-	pXBox->setToolTip("Set the X position of the arc sector");
+	pXBox->setToolTip("Set the X position of the arc segment");
 	pXBox->setToolTipDuration(-1);
 
 	// position y
@@ -661,7 +703,7 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
-	pYBox->setToolTip("Set the Y position of the arc sector");
+	pYBox->setToolTip("Set the Y position of the arc segment");
 	pYBox->setToolTipDuration(-1);
 
 	// position z
@@ -674,7 +716,7 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
-	pZBox->setToolTip("Set the radius of the arc sector");
+	pZBox->setToolTip("Set the radius of the arc segment");
 	pZBox->setToolTipDuration(-1);
 
 	// rotation psi
@@ -687,7 +729,7 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	l1Box->setSingleStep(0.5);
 	l1Label->setBuddy(l1Box);
 	QWidget::connect(l1Box, SIGNAL(valueChanged(double)), this, SLOT(submitRX(double)));
-	l1Box->setToolTip("Set the starting angle of the arc sector");
+	l1Box->setToolTip("Set the starting angle of the arc segment");
 	l1Box->setToolTipDuration(-1);
 
 	// rotation psi
@@ -700,14 +742,26 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	l2Box->setSingleStep(0.5);
 	l2Label->setBuddy(l2Box);
 	QWidget::connect(l2Box, SIGNAL(valueChanged(double)), this, SLOT(submitRY(double)));
-	l2Box->setToolTip("Set the ending angle of the arc sector");
+	l2Box->setToolTip("Set the ending angle of the arc segment");
 	l2Box->setToolTipDuration(-1);
+
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the arc segment");
+	widthBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the arc sector");
+	_colorPicker->setToolTip("Choose the color of the arc segment");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -737,6 +791,10 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -764,6 +822,10 @@ void arcSegmentEditor::submitRY(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::R_THETA), value);
 }
 
+void arcSegmentEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
 void arcSegmentEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
@@ -779,6 +841,7 @@ void arcSegmentEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("start"))->setValue(_model->data(_model->index(row, rsObjectModel::R_PHI), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("end"))->setValue(_model->data(_model->index(row, rsObjectModel::R_THETA), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -827,7 +890,7 @@ arrowEditor::arrowEditor(objectModel *model, QWidget *parent) : QWidget(parent) 
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
-	pXBox->setToolTip("Set the starting X position of the line");
+	pXBox->setToolTip("Set the starting X position of the arrow");
 	pXBox->setToolTipDuration(-1);
 
 	// position y1
@@ -840,7 +903,7 @@ arrowEditor::arrowEditor(objectModel *model, QWidget *parent) : QWidget(parent) 
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
-	pXBox->setToolTip("Set the starting Y position of the line");
+	pXBox->setToolTip("Set the starting Y position of the arrow");
 	pXBox->setToolTipDuration(-1);
 
 	// position x2
@@ -853,7 +916,7 @@ arrowEditor::arrowEditor(objectModel *model, QWidget *parent) : QWidget(parent) 
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
-	pXBox->setToolTip("Set the ending X position of the line");
+	pXBox->setToolTip("Set the ending X position of the arrow");
 	pXBox->setToolTipDuration(-1);
 
 	// position y2
@@ -866,14 +929,26 @@ arrowEditor::arrowEditor(objectModel *model, QWidget *parent) : QWidget(parent) 
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
-	pXBox->setToolTip("Set the ending Y position of the line");
+	pXBox->setToolTip("Set the ending Y position of the arrow");
 	pXBox->setToolTipDuration(-1);
+
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the arrow");
+	widthBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTip("Choose the color of the arrow");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -898,6 +973,10 @@ arrowEditor::arrowEditor(objectModel *model, QWidget *parent) : QWidget(parent) 
 	hbox3->addWidget(lYBox, 5);
 	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox3);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -921,6 +1000,10 @@ void arrowEditor::submitL2(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
 }
 
+void arrowEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
 void arrowEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
@@ -935,6 +1018,7 @@ void arrowEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("py1"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -1245,11 +1329,23 @@ circleEditor::circleEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	pZBox->setToolTip("Set the radius of the circle");
 	pZBox->setToolTipDuration(-1);
 
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the circle");
+	widthBox->setToolTipDuration(-1);
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the sphere");
+	_colorPicker->setToolTip("Choose the color of the circle");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -1273,6 +1369,10 @@ circleEditor::circleEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -1292,6 +1392,10 @@ void circleEditor::submitPZ(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
+void circleEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
 void circleEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
@@ -1305,6 +1409,7 @@ void circleEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("radius"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -2001,6 +2106,18 @@ ellipseEditor::ellipseEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	_rZBox->setToolTip("Set the rotation of the ellipse");
 	_rZBox->setToolTipDuration(-1);
 
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the ellipse");
+	widthBox->setToolTipDuration(-1);
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
@@ -2035,6 +2152,10 @@ ellipseEditor::ellipseEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	hbox4->addWidget(_rZBox, 5);
 	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -2063,6 +2184,10 @@ void ellipseEditor::submitRZ(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
 }
 
+void ellipseEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
 void ellipseEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
@@ -2078,6 +2203,7 @@ void ellipseEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("height"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -2324,9 +2450,9 @@ lineEditor::lineEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	pXBox->setToolTipDuration(-1);
 
 	// width
-	QLabel *widthLabel = new QLabel(tr("Width:"));
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
-	widthBox->setObjectName("width");
+	widthBox->setObjectName("size");
 	widthBox->setMinimum(0);
 	widthBox->setMaximum(100);
 	widthBox->setSingleStep(1);
@@ -2428,7 +2554,7 @@ void lineEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -2522,11 +2648,23 @@ polygonEditor::polygonEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	lXBox->setToolTip("Set the number of polygon sides");
 	lXBox->setToolTipDuration(-1);
 
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the polygon");
+	widthBox->setToolTipDuration(-1);
+
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the sphere");
+	_colorPicker->setToolTip("Choose the color of the polygon");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -2555,6 +2693,10 @@ polygonEditor::polygonEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	hbox5->addWidget(lXBox, 5);
 	hbox5->addWidget(_lXUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox7->addWidget(widthBox, 5);
+	layout->addLayout(hbox7);
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
@@ -2596,6 +2738,7 @@ void polygonEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("n"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -2765,7 +2908,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	pXBox->setSingleStep(0.5);
 	pXLabel->setBuddy(pXBox);
 	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
-	pXBox->setToolTip("Set the starting X position of the line");
+	pXBox->setToolTip("Set the starting X position of the quad");
 	pXBox->setToolTipDuration(-1);
 
 	// position y1
@@ -2778,7 +2921,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	pYBox->setSingleStep(0.5);
 	pYLabel->setBuddy(pYBox);
 	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
-	pXBox->setToolTip("Set the starting Y position of the line");
+	pXBox->setToolTip("Set the starting Y position of the quad");
 	pXBox->setToolTipDuration(-1);
 
 	// position z1
@@ -2791,7 +2934,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	pZBox->setSingleStep(0.5);
 	pZLabel->setBuddy(pZBox);
 	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
-	pXBox->setToolTip("Set the starting Z position of the line");
+	pXBox->setToolTip("Set the starting Z position of the quad");
 	pXBox->setToolTipDuration(-1);
 
 	// position x2
@@ -2804,7 +2947,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	lXBox->setSingleStep(0.5);
 	lXLabel->setBuddy(lXBox);
 	QWidget::connect(lXBox, SIGNAL(valueChanged(double)), this, SLOT(submitL1(double)));
-	pXBox->setToolTip("Set the ending X position of the line");
+	pXBox->setToolTip("Set the ending X position of the quad");
 	pXBox->setToolTipDuration(-1);
 
 	// position y2
@@ -2817,7 +2960,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	lYBox->setSingleStep(0.5);
 	lYLabel->setBuddy(lYBox);
 	QWidget::connect(lYBox, SIGNAL(valueChanged(double)), this, SLOT(submitL2(double)));
-	pXBox->setToolTip("Set the ending Y position of the line");
+	pXBox->setToolTip("Set the ending Y position of the quad");
 	pXBox->setToolTipDuration(-1);
 
 	// position z2
@@ -2830,7 +2973,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	lZBox->setSingleStep(0.5);
 	lZLabel->setBuddy(lZBox);
 	QWidget::connect(lZBox, SIGNAL(valueChanged(double)), this, SLOT(submitL3(double)));
-	pXBox->setToolTip("Set the ending Z position of the line");
+	pXBox->setToolTip("Set the ending Z position of the quad");
 	pXBox->setToolTipDuration(-1);
 
 	// position y1
@@ -2843,7 +2986,7 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	rXBox->setSingleStep(0.5);
 	rXLabel->setBuddy(rXBox);
 	QWidget::connect(rXBox, SIGNAL(valueChanged(double)), this, SLOT(submitRX(double)));
-	rXBox->setToolTip("Set the starting Y position of the line");
+	rXBox->setToolTip("Set the starting Y position of the quad");
 	rXBox->setToolTipDuration(-1);
 
 	// position z1
@@ -2856,26 +2999,26 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	rYBox->setSingleStep(0.5);
 	rYLabel->setBuddy(rYBox);
 	QWidget::connect(rYBox, SIGNAL(valueChanged(double)), this, SLOT(submitRY(double)));
-	rYBox->setToolTip("Set the starting Z position of the line");
+	rYBox->setToolTip("Set the starting Z position of the quad");
 	rYBox->setToolTipDuration(-1);
 
 	// width
-	QLabel *widthLabel = new QLabel(tr("Width:"));
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
-	widthBox->setObjectName("width");
+	widthBox->setObjectName("size");
 	widthBox->setMinimum(0);
 	widthBox->setMaximum(100);
 	widthBox->setSingleStep(1);
 	widthLabel->setBuddy(widthBox);
 	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
-	widthBox->setToolTip("Set the width of the line");
+	widthBox->setToolTip("Set the line width of the quad");
 	widthBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTip("Choose the color of the quad");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -2982,7 +3125,7 @@ void quadEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("pz2"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
 }
@@ -3079,7 +3222,7 @@ rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(
 	lYBox->setToolTipDuration(-1);
 
 	// size
-	QLabel *widthLabel = new QLabel(tr("Size:"));
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
 	widthBox->setObjectName("size");
 	widthBox->setMinimum(0);
@@ -3087,14 +3230,14 @@ rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(
 	widthBox->setSingleStep(1);
 	widthLabel->setBuddy(widthBox);
 	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
-	widthBox->setToolTip("Set the size of the rectangle lines");
+	widthBox->setToolTip("Set the line width of the rectangle");
 	widthBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTip("Choose the color of the rectangle");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -3459,7 +3602,7 @@ textEditor::textEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the box");
+	_colorPicker->setToolTip("Choose the color of the text");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid
@@ -3652,7 +3795,7 @@ triangleEditor::triangleEditor(objectModel *model, QWidget *parent) : QWidget(pa
 	lZBox->setToolTipDuration(-1);
 
 	// size
-	QLabel *widthLabel = new QLabel(tr("Size:"));
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
 	widthBox->setObjectName("size");
 	widthBox->setMinimum(0);
@@ -3660,14 +3803,14 @@ triangleEditor::triangleEditor(objectModel *model, QWidget *parent) : QWidget(pa
 	widthBox->setSingleStep(1);
 	widthLabel->setBuddy(widthBox);
 	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
-	widthBox->setToolTip("Set the size of the triangle lines");
+	widthBox->setToolTip("Set the line width of the triangle");
 	widthBox->setToolTipDuration(-1);
 
 	// color
 	_colorPicker = new bodyColorPicker();
 	_colorPicker->setObjectName("color");
 	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
-	_colorPicker->setToolTip("Choose the color of the line");
+	_colorPicker->setToolTip("Choose the color of the triangle");
 	_colorPicker->setToolTipDuration(-1);
 
 	// lay out grid

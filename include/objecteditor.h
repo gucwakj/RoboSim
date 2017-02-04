@@ -81,6 +81,7 @@ class arcEditor : public QWidget {
 		void submitPZ(double);
 		void submitRX(double);
 		void submitRY(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -105,6 +106,7 @@ class arcSectorEditor : public QWidget {
 		void submitPZ(double);
 		void submitRX(double);
 		void submitRY(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -129,6 +131,7 @@ class arcSegmentEditor : public QWidget {
 		void submitPZ(double);
 		void submitRX(double);
 		void submitRY(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -152,6 +155,7 @@ class arrowEditor : public QWidget {
 		void submitPY(double);
 		void submitL1(double);
 		void submitL2(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -205,6 +209,7 @@ class circleEditor : public QWidget {
 		void submitPX(double);
 		void submitPY(double);
 		void submitPZ(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
@@ -309,6 +314,7 @@ class ellipseEditor : public QWidget {
 		void submitRZ(double);
 		void submitL1(double);
 		void submitL2(double);
+		void submitSize(double);
 		void submitColor(QColor);
 
 	private:
