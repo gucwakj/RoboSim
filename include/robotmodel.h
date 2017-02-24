@@ -76,7 +76,7 @@ class robotModel : public QAbstractTableModel {
 		bool newPreconfig(int, int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, std::string, int = Qt::EditRole);
 
 	signals:
-		void reid(QModelIndex);
+		void reid(QModelIndex, int);
 
 	private:
 		QVariant convert(double, bool) const;

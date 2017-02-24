@@ -234,7 +234,7 @@ void xmlParser::parse(const char *name) {
 	}
 }
 
-void xmlParser::reidRobot(QModelIndex index) {
+void xmlParser::reidRobot(QModelIndex index, int num) {
 	// get old data
 	int form = _r_model->data(_r_model->index(index.row(), rsRobotModel::FORM)).toInt();
 	int id = _r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt();
@@ -246,7 +246,7 @@ void xmlParser::reidRobot(QModelIndex index) {
 		robot = Writer::getOrCreateRobot(form, id);
 
 	// reid the robot
-	Writer::reidRobot(robot);
+	Writer::reidRobot(robot, num);
 
 	// save
 	Writer::save();

@@ -349,8 +349,8 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	QWidget::connect(_rob_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)), _xml, SLOT(robotDataChanged(QModelIndex, QModelIndex)));
 	QWidget::connect(_rob_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), ui->osgWidget, SLOT(deleteRobotIndex(QModelIndex, int, int)));
 	QWidget::connect(_rob_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)), _xml, SLOT(deleteRobotIndex(QModelIndex, int, int)));
-	QWidget::connect(_rob_model, SIGNAL(reid(QModelIndex)), _xml, SLOT(reidRobot(QModelIndex)));
-	QWidget::connect(_rob_model, SIGNAL(reid(QModelIndex)), ui->osgWidget, SLOT(reidRobot(QModelIndex)));
+	QWidget::connect(_rob_model, SIGNAL(reid(QModelIndex, int)), _xml, SLOT(reidRobot(QModelIndex, int)));
+	QWidget::connect(_rob_model, SIGNAL(reid(QModelIndex, int)), ui->osgWidget, SLOT(reidRobot(QModelIndex, int)));
 
 	// connect object pieces together
 	QWidget::connect(o_view, SIGNAL(clicked(const QModelIndex&)), o_editor, SLOT(setCurrentIndex(const QModelIndex&)));

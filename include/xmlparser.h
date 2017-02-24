@@ -40,7 +40,7 @@ class xmlParser : public QObject, public rsXML::Writer {
 		void deleteObjectIndex(QModelIndex, int, int);
 		void deleteRobotIndex(QModelIndex, int, int);
 		void objectDataChanged(QModelIndex, QModelIndex);
-		void reidRobot(QModelIndex);
+		void reidRobot(QModelIndex, int);
 		void robotDataChanged(QModelIndex, QModelIndex);
 		int save(void);
 		int saveFile(const QString&);

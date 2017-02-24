@@ -454,6 +454,8 @@ bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 	beginRemoveRows(parent, row, row + count - 1);
 
 	// delete items from the list
+	int num = _l_preconfig[this->data(createIndex(row, PRECONFIG), Qt::EditRole).toInt()];
+qDebug() << "num: " << num;
 	for (int i = 0; i < count; i++)
 		_list.removeAt(row);
 
@@ -462,8 +464,8 @@ bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 
 	// re-id all subsequent robots
 	for (int i = row; i < _list.size(); i++) {
-		emit reid(index(i, ID));
-		_list[i][ID] = QVariant(_list[i][ID].toInt() - 1).toString();
+		emit reid(index(i, ID), num);
+		_list[i][ID] = QVariant(_list[i][ID].toInt() - num).toString();
 	}
 
 	// success

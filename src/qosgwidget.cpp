@@ -256,8 +256,8 @@ void QOsgWidget::gridEnabled(bool enabled) {
 	_scene->addAndRemoveChildren();
 }
 
-void QOsgWidget::reidRobot(QModelIndex index) {
-	_scene->reidRobot(_r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt());
+void QOsgWidget::reidRobot(QModelIndex index, int num) {
+	_scene->reidRobot(_r_model->data(_r_model->index(index.row(), rsRobotModel::ID), Qt::EditRole).toInt(), num);
 }
 
 void QOsgWidget::robotDataChanged(QModelIndex topLeft, QModelIndex bottomRight) {
