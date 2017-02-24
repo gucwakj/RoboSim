@@ -229,7 +229,7 @@ void xmlParser::parse(const char *name) {
 	// add all markers
 	rsXML::Marker *xmlm = reader.getNextMarker();
 	while (xmlm) {
-		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getPoint(), xmlm->getColor(), xmlm->getSize(), xmlm->getLabel());
+		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getPoint(), xmlm->getColor(), xmlm->getFill(), xmlm->getSize(), xmlm->getLabel());
 		xmlm = reader.getNextMarker();
 	}
 }

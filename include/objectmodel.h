@@ -72,7 +72,7 @@ class objectModel : public QAbstractTableModel {
 
 	public slots:
 		bool addObject(int = 0, int = Qt::EditRole);
-		bool newMarker(int, int, const rs::Pos&, const rs::Pos&, const rs::Pos&, const rs::Vec&, int, std::string, int = Qt::EditRole);
+		bool newMarker(int, int, const rs::Pos&, const rs::Pos&, const rs::Pos&, const rs::Vec&, const rs::Vec&, int, std::string, int = Qt::EditRole);
 		bool newObstacle(int, int, const rs::Pos&, const rs::Quat&, const rs::Vec&, const rs::Vec&, double, int = Qt::EditRole);
 		void setUnits(bool);
 

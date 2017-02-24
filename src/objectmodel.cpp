@@ -154,7 +154,7 @@ bool objectModel::addObject(int form, int role) {
 	return false;
 }
 
-bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Pos &pt, const rs::Vec &c, int size, std::string name, int role) {
+bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Pos &pt, const rs::Vec &c, const rs::Vec &f, int size, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -181,7 +181,7 @@ bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &
 		_list[row][L_3] = QVariant(p2[2]).toString();
 		QColor qtc(c[0] * 255, c[1] * 255, c[2] * 255, c[3] * 255);
 		_list[row][COLOR] = QString(qtc.name());
-		QColor qtf(c[0] * 255, c[1] * 255, c[2] * 255, 0);
+		QColor qtf(f[0] * 255, f[1] * 255, f[2] * 255, f[3] * 255);
 		_list[row][FILL] = QString(qtf.name());
 		_list[row][rsObjectModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
