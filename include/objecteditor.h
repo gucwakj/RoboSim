@@ -108,6 +108,7 @@ class arcSectorEditor : public QWidget {
 		void submitRY(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
@@ -133,6 +134,7 @@ class arcSegmentEditor : public QWidget {
 		void submitRY(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
@@ -317,6 +319,7 @@ class ellipseEditor : public QWidget {
 		void submitL2(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
@@ -397,6 +400,7 @@ class polygonEditor : public QWidget {
 		void submitL1(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
@@ -446,6 +450,7 @@ class quadEditor : public QWidget {
 		void submitL3(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
@@ -475,6 +480,7 @@ class rectangleEditor : public QWidget {
 		void submitL2(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
@@ -552,6 +558,7 @@ class triangleEditor : public QWidget {
 		void submitL3(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;

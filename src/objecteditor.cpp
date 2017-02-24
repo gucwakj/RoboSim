@@ -564,6 +564,13 @@ arcSectorEditor::arcSectorEditor(objectModel *model, QWidget *parent) : QWidget(
 	_colorPicker->setToolTip("Choose the color of the arc sector");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -598,6 +605,9 @@ arcSectorEditor::arcSectorEditor(objectModel *model, QWidget *parent) : QWidget(
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -630,6 +640,10 @@ void arcSectorEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void arcSectorEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -644,6 +658,8 @@ void arcSectorEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -764,6 +780,13 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	_colorPicker->setToolTip("Choose the color of the arc segment");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -798,6 +821,9 @@ arcSegmentEditor::arcSegmentEditor(objectModel *model, QWidget *parent) : QWidge
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -830,6 +856,10 @@ void arcSegmentEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void arcSegmentEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -844,6 +874,8 @@ void arcSegmentEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -2141,6 +2173,13 @@ ellipseEditor::ellipseEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	_colorPicker->setToolTip("Choose the color of the ellipse");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -2175,6 +2214,9 @@ ellipseEditor::ellipseEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -2208,6 +2250,10 @@ void ellipseEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void ellipseEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -2222,6 +2268,8 @@ void ellipseEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -2683,6 +2731,13 @@ polygonEditor::polygonEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	_colorPicker->setToolTip("Choose the color of the polygon");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -2716,6 +2771,9 @@ polygonEditor::polygonEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox8 = new QHBoxLayout();
+	hbox8->addWidget(fill);
+	layout->addLayout(hbox8);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -2744,6 +2802,10 @@ void polygonEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void polygonEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -2757,6 +2819,8 @@ void polygonEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -3037,6 +3101,13 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	_colorPicker->setToolTip("Choose the color of the quad");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -3083,6 +3154,9 @@ quadEditor::quadEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox8 = new QHBoxLayout();
+	hbox8->addWidget(fill);
+	layout->addLayout(hbox8);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -3127,6 +3201,10 @@ void quadEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void quadEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -3144,6 +3222,8 @@ void quadEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -3256,6 +3336,13 @@ rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(
 	_colorPicker->setToolTip("Choose the color of the rectangle");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -3286,6 +3373,9 @@ rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -3314,6 +3404,10 @@ void rectangleEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void rectangleEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -3327,6 +3421,8 @@ void rectangleEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -3829,6 +3925,13 @@ triangleEditor::triangleEditor(objectModel *model, QWidget *parent) : QWidget(pa
 	_colorPicker->setToolTip("Choose the color of the triangle");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -3867,6 +3970,9 @@ triangleEditor::triangleEditor(objectModel *model, QWidget *parent) : QWidget(pa
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -3903,6 +4009,10 @@ void triangleEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void triangleEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -3918,6 +4028,8 @@ void triangleEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
