@@ -1228,9 +1228,13 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 		quat.multiply(0, sin(0.5*r[1]), 0, cos(0.5*r[1]));
 		quat.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
 
-		// get led color
-		QColor color(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
-		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
+		// get color
+		QColor qcolor(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
+		rs::Vec color(qcolor.red()/255.0, qcolor.green()/255.0, qcolor.blue()/255.0, qcolor.alpha()/255.0);
+
+		// get fill color
+		QColor qfill(_o_model->data(_o_model->index(i, rsObjectModel::FILL)).toString());
+		rs::Vec fill(qfill.red()/255.0, qfill.green()/255.0, qfill.blue()/255.0, qfill.alpha()/255.0);
 
 		// delete old object
 		_scene->deleteObstacle(id);
@@ -1248,7 +1252,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Vec dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
-				_scene->drawObstacle(id, form, p, led, dims, quat);
+				_scene->drawObstacle(id, form, p, color, dims, quat);
 				break;
 			}
 			case rs::Arc:
@@ -1257,7 +1261,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Pos dims(rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
-				_scene->drawMarker(id, form, p, dims, rs::Pos(), led, size, name);
+				_scene->drawMarker(id, form, p, dims, rs::Pos(), color, fill, size, name);
 				break;
 			}
 			case rs::Arrow:
@@ -1272,7 +1276,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Pos dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
-				_scene->drawMarker(id, form, p, dims, rs::Pos(), led, size, name);
+				_scene->drawMarker(id, form, p, dims, rs::Pos(), color, fill, size, name);
 				break;
 			}
 			case rs::Quad: {
@@ -1282,7 +1286,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Pos point(rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
 							  rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 							  rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
-				_scene->drawMarker(id, form, p, dims, point, led, size, name);
+				_scene->drawMarker(id, form, p, dims, point, color, fill, size, name);
 				break;
 			}
 		}
@@ -1392,7 +1396,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 	// draw marker objects
 	for (int i = 0; i < background.getNumMarkers(); i++) {
 		rsXML::Marker *marker = background.getMarker(i);
-		_scene->drawMarker(0, marker->getForm(), marker->getStart(), marker->getEnd(), marker->getPoint(), marker->getColor(), marker->getSize(), marker->getLabel());
+		_scene->drawMarker(0, marker->getForm(), marker->getStart(), marker->getEnd(), marker->getPoint(), marker->getColor(), marker->getFill(), marker->getSize(), marker->getLabel());
 	}
 
 	// add children to background after level is set

@@ -30,6 +30,7 @@ namespace rsObjectModel {
 		L_2,
 		L_3,
 		COLOR,
+		FILL,
 		MASS,
 		SIZE,
 		AXIS,

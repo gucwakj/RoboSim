@@ -181,6 +181,8 @@ bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &
 		_list[row][L_3] = QVariant(p2[2]).toString();
 		QColor qtc(c[0] * 255, c[1] * 255, c[2] * 255, c[3] * 255);
 		_list[row][COLOR] = QString(qtc.name());
+		QColor qtf(c[0] * 255, c[1] * 255, c[2] * 255, 0);
+		_list[row][FILL] = QString(qtf.name());
 		_list[row][rsObjectModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString(name.c_str());

@@ -1348,6 +1348,13 @@ circleEditor::circleEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_colorPicker->setToolTip("Choose the color of the circle");
 	_colorPicker->setToolTipDuration(-1);
 
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the circle");
+	fill->setToolTipDuration(-1);
+
 	// lay out grid
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *hbox0 = new QHBoxLayout();
@@ -1376,6 +1383,9 @@ circleEditor::circleEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	QHBoxLayout *hbox6 = new QHBoxLayout();
 	hbox6->addWidget(_colorPicker);
 	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
 	layout->addStretch(2);
 	this->setLayout(layout);
 }
@@ -1400,6 +1410,10 @@ void circleEditor::submitColor(QColor color) {
 	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
 }
 
+void circleEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
 /*!	\brief Slot to nullify all inputs.
  *
  *	\param		nullify To nullify inputs or not.
@@ -1412,6 +1426,8 @@ void circleEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
 }
 
 /*!	\brief Slot to set units labels.
@@ -4116,18 +4132,17 @@ void woodblockEditor::setUnits(bool si) {
  *
  *
  */
-bodyColorPicker::bodyColorPicker(QWidget *parent) : QWidget(parent) {
+bodyColorPicker::bodyColorPicker(QString string, QWidget *parent) : QWidget(parent) {
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 
-	QLabel *label = new QLabel(tr("Color:"));
+	QLabel *label = new QLabel(string.append(":"));
 	hbox->addWidget(label, 2, Qt::AlignRight);
 
 	_color = QColor(0, 255, 0);
 
 	_button = new QPushButton(this);
 	_button->setObjectName("colorbutton");
-	QString s = "background-color: ";
-	_button->setStyleSheet(s + _color.name());
+	_button->setStyleSheet(QString("border-style: outset;border-width: 2px;border-color: black;background-color: rgba(%1,%2,%3,%4)").arg(_color.red()).arg(_color.green()).arg(_color.blue()).arg(_color.alpha()));
 	hbox->addWidget(_button, 5);
 	hbox->addStretch(1);
 
@@ -4144,13 +4159,12 @@ void bodyColorPicker::setColor(const QColor color) {
 		return;
 
 	_color = color;
-	QString s = "background-color: ";
-	_button->setStyleSheet(s + _color.name());
+	_button->setStyleSheet(QString("border-style: outset;border-width: 2px;border-color: black;background-color: rgba(%1,%2,%3,%4)").arg(_color.red()).arg(_color.green()).arg(_color.blue()).arg(_color.alpha()));
 	emit colorChanged(color);
 }
 
 void bodyColorPicker::onButtonClicked(void) {
-	const QColor color = QColorDialog::getColor(_color, this);
+	const QColor color = QColorDialog::getColor(_color, this, QString(), QColorDialog::ShowAlphaChannel);
 	if (!color.isValid())
 		return;
 

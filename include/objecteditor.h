@@ -21,7 +21,7 @@ class bodyColorPicker : public QWidget {
 		Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 	public:
-		explicit bodyColorPicker(QWidget* = 0);
+		explicit bodyColorPicker(QString = "Color", QWidget* = 0);
 		virtual ~bodyColorPicker(void) {};
 
 		QColor color(void) const;
@@ -211,6 +211,7 @@ class circleEditor : public QWidget {
 		void submitPZ(double);
 		void submitSize(double);
 		void submitColor(QColor);
+		void submitFill(QColor);
 
 	private:
 		objectModel *_model;

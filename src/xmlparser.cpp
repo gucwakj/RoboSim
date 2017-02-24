@@ -402,9 +402,13 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		q.multiply(0, sin(0.5*r[1]), 0, cos(0.5*r[1]));
 		q.multiply(0, 0, sin(0.5*r[2]), cos(0.5*r[2]));
 
-		// get body color
-		QColor color(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
-		rs::Vec led(color.red()/255.0, color.green()/255.0, color.blue()/255.0, color.alpha()/255.0);
+		// get color
+		QColor qcolor(_o_model->data(_o_model->index(i, rsObjectModel::COLOR)).toString());
+		rs::Vec color(qcolor.red()/255.0, qcolor.green()/255.0, qcolor.blue()/255.0, qcolor.alpha()/255.0);
+
+		// get fill color
+		QColor qfill(_o_model->data(_o_model->index(i, rsObjectModel::FILL)).toString());
+		rs::Vec fill(qfill.red()/255.0, qfill.green()/255.0, qfill.blue()/255.0, qfill.alpha()/255.0);
 
 		// save object
 		switch (form) {
@@ -419,7 +423,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				tinyxml2::XMLElement *obstacle = Writer::getOrCreateObstacle(form, id);
-				Writer::setObstacle(obstacle, name, p, q, dims, led, mass);
+				Writer::setObstacle(obstacle, name, p, q, dims, color, mass);
 				break;
 			}
 			case rs::Arc:
@@ -427,7 +431,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 			case rs::ArcSegment: {
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
 				rs::Pos p2(r[0], r[1], r[2]);
-				Writer::setMarker(marker, name, p, p2, led, size, rs::Pos());
+				Writer::setMarker(marker, name, p, p2, color, fill, size, rs::Pos());
 				break;
 			}
 			case rs::Arrow:
@@ -443,7 +447,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, p, p2, led, size, rs::Pos());
+				Writer::setMarker(marker, name, p, p2, color, fill, size, rs::Pos());
 				break;
 			}
 			case rs::Quad: {
@@ -454,7 +458,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						   rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 						   rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, p, p2, led, size, pt);
+				Writer::setMarker(marker, name, p, p2, color, fill, size, pt);
 				break;
 			}
 		}
