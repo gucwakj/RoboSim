@@ -83,6 +83,8 @@ bool objectModel::addObject(int form, int role) {
 				_list[row][COLOR] = QString("#ffffff");	// white
 				break;
 		}
+		QColor qtf(255, 255, 255, 0);
+		_list[row][FILL] = QString(qtf.name(QColor::HexArgb));
 		_list[row][MASS] = QVariant(0.453593).toString();					// 1 lb in kg
 		_list[row][rsObjectModel::SIZE] = QVariant(5).toString();			// f*$k microsoft
 		if (form == rs::Text) {
