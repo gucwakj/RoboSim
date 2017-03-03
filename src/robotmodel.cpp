@@ -7,6 +7,7 @@ using namespace rsRobotModel;
 
 robotModel::robotModel(QObject *parent) : QAbstractTableModel(parent) {
 	// set up preconfig
+	_l_preconfig[rsLinkbot::Preconfigs::Individual] = 1;
 	_l_preconfig[rsLinkbot::Preconfigs::Bow] = 2;
 	_l_preconfig[rsLinkbot::Preconfigs::BugClock] = 3;
 	_l_preconfig[rsLinkbot::Preconfigs::Explorer] = 5;
@@ -455,7 +456,6 @@ bool robotModel::removeRows(int row, int count, const QModelIndex &parent) {
 
 	// delete items from the list
 	int num = _l_preconfig[this->data(createIndex(row, PRECONFIG), Qt::EditRole).toInt()];
-qDebug() << "num: " << num;
 	for (int i = 0; i < count; i++)
 		_list.removeAt(row);
 
@@ -484,7 +484,7 @@ QVariant robotModel::convert(double value, bool store) const {
 }
 
 void robotModel::clear(void) {
-	for (int i = _list.size(); i >= 0; i--) {
+	for (int i = _list.size() - 1; i >= 0; i--) {
 		this->removeRows(i, 1);
 	}
 }
