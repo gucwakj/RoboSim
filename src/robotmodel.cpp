@@ -35,12 +35,8 @@ bool robotModel::addRobot(int form, int left, int right, int caster, int role) {
 
 		// new robot id
 		int id = -1;
-		if (row && this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()) {
-			id = this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()];
-		}
-		else {
-			id = (row) ? this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + 1 : 0;
-		}
+		if (row) id = this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()];
+		else id = 0;
 		// exit if id is messed up
 		if (id == -1) return false;
 
@@ -113,16 +109,21 @@ bool robotModel::newRobot(int id, int form, const rs::Pos &p, const rs::Quat &q,
 }
 
 bool robotModel::addPreconfig(int type, int role) {
-	int row = _list.size();
-	this->insertRows(row, 1);
-
 	if (role == Qt::EditRole) {
-		if (row && this->data(createIndex(row-1, PRECONFIG), Qt::EditRole).toInt()) {
-			_list[row][ID] = QVariant(this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + _l_preconfig[type]).toString();
-		}
-		else {
-			_list[row][ID] = QVariant((row) ? this->data(createIndex(row-1, ID), Qt::EditRole).toInt() + 1 : 0).toString();
-		}
+		// check size
+		int row = _list.size();
+
+		// new robot id
+		int id = -1;
+		if (row) id = this->data(createIndex(row - 1, ID), Qt::EditRole).toInt() + _l_preconfig[this->data(createIndex(row - 1, PRECONFIG), Qt::EditRole).toInt()];
+		else id = 0;
+		// exit if id is messed up
+		if (id == -1) return false;
+
+		// add row
+		this->insertRows(row, 1);
+		// new robot data
+		_list[row][ID] = QVariant(id).toString();
 		_list[row][FORM] = QVariant(rs::LinkbotI).toString();
 		_list[row][NAME] = QString("");
 		_list[row][P_X] = QVariant((row) ? this->data(createIndex(row-1, P_X)).toDouble() + rs::IN2M(6) : 0).toString();	// offset by 6 inches
