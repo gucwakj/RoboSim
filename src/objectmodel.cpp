@@ -74,6 +74,7 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Polygon:
 			case rs::Quad:
 			case rs::Rectangle:
+			case rs::Star:
 			case rs::Text:
 			case rs::Triangle:
 				_list[row][COLOR] = QString("#ff0000");	// red
@@ -139,6 +140,9 @@ bool objectModel::addObject(int form, int role) {
 			case rs::Rectangle:
 				_list[row][L_1] = QVariant(rs::IN2M(12)).toString();
 				_list[row][L_2] = QVariant(rs::IN2M(6)).toString();
+				break;
+			case rs::Star:
+				_list[row][P_Z] = QVariant(rs::IN2M(6)).toString();
 				break;
 			case rs::Triangle:
 				_list[row][P_X] = QVariant(0).toString();
@@ -294,6 +298,8 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 					return QString(tr("Rectangle"));
 				case rs::Sphere:
 					return QString(tr("Sphere"));
+				case rs::Star:
+					return QString(tr("Star"));
 				case rs::Text:
 					return QString(tr("Text"));
 				case rs::Triangle:
@@ -367,6 +373,9 @@ QVariant objectModel::data(const QModelIndex &index, int role) const {
 				break;
 			case rs::Rectangle:
 				image.load("icons/rectangle32.png");
+				break;
+			case rs::Star:
+				image.load(":/icons/star32.png");
 				break;
 			case rs::Sphere:
 				image.load("icons/sphere32.png");
@@ -471,6 +480,8 @@ bool objectModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int
 		this->addObject(rs::Rectangle);
 	else if (!map[0].toString().compare("Sphere"))
 		this->addObject(rs::Sphere);
+	else if (!map[0].toString().compare("Star"))
+		this->addObject(rs::Star);
 	else if (!map[0].toString().compare("Text"))
 		this->addObject(rs::Text);
 	else if (!map[0].toString().compare("Triangle"))

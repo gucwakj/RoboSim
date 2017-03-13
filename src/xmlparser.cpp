@@ -38,6 +38,7 @@ void xmlParser::deleteObjectIndex(QModelIndex index, int first, int last) {
 		case rs::Polygon:
 		case rs::Quad:
 		case rs::Rectangle:
+		case rs::Star:
 		case rs::Text:
 		case rs::Triangle:
 			Writer::deleteMarker(id);
@@ -441,6 +442,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 			case rs::Line:
 			case rs::Polygon:
 			case rs::Rectangle:
+			case rs::Star:
 			case rs::Text:
 			case rs::Triangle: {
 				rs::Pos p2(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),

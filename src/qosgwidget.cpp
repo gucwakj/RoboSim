@@ -1271,6 +1271,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 			case rs::Line:
 			case rs::Polygon:
 			case rs::Rectangle:
+			case rs::Star:
 			case rs::Text:
 			case rs::Triangle: {
 				rs::Pos dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),

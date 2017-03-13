@@ -37,6 +37,7 @@ objectEditor::objectEditor(objectModel *model, QWidget *parent) : QWidget(parent
 	_pages->addWidget(new quadEditor(_model));
 	_pages->addWidget(new rectangleEditor(_model));
 	_pages->addWidget(new sphereEditor(_model));
+	_pages->addWidget(new starEditor(_model));
 	_pages->addWidget(new textEditor(_model));
 	_pages->addWidget(new triangleEditor(_model));
 	_pages->addWidget(new woodblockEditor(_model));
@@ -177,6 +178,11 @@ void objectEditor::setCurrentIndex(const QModelIndex &index) {
 				_pages->setCurrentIndex(rs::Sphere + 1);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setUnits(_units);
 				dynamic_cast<sphereEditor *>(_pages->currentWidget())->setIndex(_row);
+				break;
+			case rs::Star:
+				_pages->setCurrentIndex(rs::Star + 1);
+				dynamic_cast<starEditor *>(_pages->currentWidget())->setUnits(_units);
+				dynamic_cast<starEditor *>(_pages->currentWidget())->setIndex(_row);
 				break;
 			case rs::Text:
 				_pages->setCurrentIndex(rs::Text + 1);
@@ -3627,6 +3633,180 @@ void sphereEditor::setUnits(bool si) {
 	_pYUnits->setText(text);
 	_pZUnits->setText(text);
 	_lXUnits->setText(text);
+}
+
+/*!
+ *
+ *
+ *	Star Editor
+ *
+ *
+ */
+
+/*!	\brief Star Obstacle Editor.
+ *
+ *	Build individual circle editor with relevant pieces of information.
+ *
+ *	\param		model data model from objectEditor model.
+ */
+starEditor::starEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
+	// save model
+	_model = model;
+
+	// set title
+	QLabel *title = new QLabel(tr("<span style=\" font-size: 10pt; font-weight:bold;\">Star Editor</span>"));
+
+	// position x
+	QLabel *pXLabel = new QLabel(tr("Pos X:"));
+	_pXUnits = new QLabel();
+	QDoubleSpinBox *pXBox = new QDoubleSpinBox();
+	pXBox->setObjectName("px");
+	pXBox->setMinimum(-1000000);
+	pXBox->setMaximum(1000000);
+	pXBox->setSingleStep(0.5);
+	pXLabel->setBuddy(pXBox);
+	QWidget::connect(pXBox, SIGNAL(valueChanged(double)), this, SLOT(submitPX(double)));
+	pXBox->setToolTip("Set the X position of the star");
+	pXBox->setToolTipDuration(-1);
+
+	// position y
+	QLabel *pYLabel = new QLabel(tr("Pos Y:"));
+	_pYUnits = new QLabel();
+	QDoubleSpinBox *pYBox = new QDoubleSpinBox();
+	pYBox->setObjectName("py");
+	pYBox->setMinimum(-1000000);
+	pYBox->setMaximum(1000000);
+	pYBox->setSingleStep(0.5);
+	pYLabel->setBuddy(pYBox);
+	QWidget::connect(pYBox, SIGNAL(valueChanged(double)), this, SLOT(submitPY(double)));
+	pYBox->setToolTip("Set the Y position of the star");
+	pYBox->setToolTipDuration(-1);
+
+	// position z
+	QLabel *pZLabel = new QLabel(tr("Length:"));
+	_pZUnits = new QLabel();
+	QDoubleSpinBox *pZBox = new QDoubleSpinBox();
+	pZBox->setObjectName("length");
+	pZBox->setMinimum(-1000000);
+	pZBox->setMaximum(1000000);
+	pZBox->setSingleStep(0.5);
+	pZLabel->setBuddy(pZBox);
+	QWidget::connect(pZBox, SIGNAL(valueChanged(double)), this, SLOT(submitPZ(double)));
+	pZBox->setToolTip("Set the length of the star");
+	pZBox->setToolTipDuration(-1);
+
+	// width
+	QLabel *widthLabel = new QLabel(tr("Line Width:"));
+	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
+	widthBox->setObjectName("size");
+	widthBox->setMinimum(0);
+	widthBox->setMaximum(100);
+	widthBox->setSingleStep(1);
+	widthLabel->setBuddy(widthBox);
+	QWidget::connect(widthBox, SIGNAL(valueChanged(double)), this, SLOT(submitSize(double)));
+	widthBox->setToolTip("Set the line width of the star");
+	widthBox->setToolTipDuration(-1);
+
+	// color
+	_colorPicker = new bodyColorPicker();
+	_colorPicker->setObjectName("color");
+	QWidget::connect(_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(submitColor(QColor)));
+	_colorPicker->setToolTip("Choose the color of the star");
+	_colorPicker->setToolTipDuration(-1);
+
+	// fill
+	bodyColorPicker *fill = new bodyColorPicker("Fill Color");
+	fill->setObjectName("fill");
+	QWidget::connect(fill, SIGNAL(colorChanged(QColor)), this, SLOT(submitFill(QColor)));
+	fill->setToolTip("Choose the fill color of the star");
+	fill->setToolTipDuration(-1);
+
+	// lay out grid
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	QHBoxLayout *hbox0 = new QHBoxLayout();
+	hbox0->addWidget(title, 5, Qt::AlignHCenter);
+	layout->addLayout(hbox0);
+	layout->addStretch(1);
+	QHBoxLayout *hbox1 = new QHBoxLayout();
+	hbox1->addWidget(pXLabel, 2, Qt::AlignRight);
+	hbox1->addWidget(pXBox, 5);
+	hbox1->addWidget(_pXUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox1);
+	QHBoxLayout *hbox3 = new QHBoxLayout();
+	hbox3->addWidget(pYLabel, 2, Qt::AlignRight);
+	hbox3->addWidget(pYBox, 5);
+	hbox3->addWidget(_pYUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(pZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(pZBox, 5);
+	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
+	QHBoxLayout *hbox5 = new QHBoxLayout();
+	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
+	hbox5->addWidget(widthBox, 5);
+	layout->addLayout(hbox5);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(_colorPicker);
+	layout->addLayout(hbox6);
+	QHBoxLayout *hbox7 = new QHBoxLayout();
+	hbox7->addWidget(fill);
+	layout->addLayout(hbox7);
+	layout->addStretch(2);
+	this->setLayout(layout);
+}
+
+void starEditor::submitPX(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_X), value);
+}
+
+void starEditor::submitPY(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void starEditor::submitPZ(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
+}
+
+void starEditor::submitSize(double value) {
+	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
+}
+
+void starEditor::submitColor(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::COLOR), color);
+}
+
+void starEditor::submitFill(QColor color) {
+	_model->setData(_model->index(_row, rsObjectModel::FILL), color);
+}
+
+/*!	\brief Slot to nullify all inputs.
+ *
+ *	\param		nullify To nullify inputs or not.
+ */
+void starEditor::setIndex(int row) {
+	_row = row;
+	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
+	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
+	QColor fill(_model->data(_model->index(row, rsObjectModel::FILL), Qt::EditRole).toString());
+	(this->findChild<bodyColorPicker *>("fill"))->setColor(fill);
+}
+
+/*!	\brief Slot to set units labels.
+ *
+ *	\param		si Units are SI (true) or US (false).
+ */
+void starEditor::setUnits(bool si) {
+	QString text;
+	if (si) text = tr("cm");
+	else text = tr("in");
+	_pXUnits->setText(text);
+	_pYUnits->setText(text);
+	_pZUnits->setText(text);
 }
 
 /*!

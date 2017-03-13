@@ -518,6 +518,30 @@ class sphereEditor : public QWidget {
 		int _row;
 };
 
+class starEditor : public QWidget {
+		Q_OBJECT
+	public:
+		starEditor(objectModel*, QWidget* = 0);
+		void setIndex(int);
+		void setUnits(bool);
+
+	protected slots:
+		void submitPX(double);
+		void submitPY(double);
+		void submitPZ(double);
+		void submitSize(double);
+		void submitColor(QColor);
+		void submitFill(QColor);
+
+	private:
+		objectModel *_model;
+		QLabel *_pXUnits;
+		QLabel *_pYUnits;
+		QLabel *_pZUnits;
+		bodyColorPicker *_colorPicker;
+		int _row;
+};
+
 class textEditor : public QWidget {
 		Q_OBJECT
 	public:
