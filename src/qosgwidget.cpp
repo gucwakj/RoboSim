@@ -1209,6 +1209,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 		int form = _o_model->data(_o_model->index(i, rsObjectModel::FORM)).toInt();
 		int id = _o_model->data(_o_model->index(i, rsObjectModel::ID), Qt::EditRole).toInt();
 		int size = _o_model->data(_o_model->index(i, rsObjectModel::SIZE)).toInt();
+		float angle = _o_model->data(_o_model->index(i, rsObjectModel::ANGLE)).toDouble();
 
 		// get name
 		std::string name = _o_model->data(_o_model->index(i, rsObjectModel::TEXT)).toString().toStdString();
@@ -1261,7 +1262,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Pos dims(rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 							 rs::D2R(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
-				_scene->drawMarker(id, form, p, dims, rs::Pos(), color, fill, size, name);
+				_scene->drawMarker(id, form, p, dims, rs::Pos(), color, fill, angle, size, name);
 				break;
 			}
 			case rs::Arrow:
@@ -1277,7 +1278,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Pos dims(_o_model->data(_o_model->index(i, rsObjectModel::L_1)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 							 _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
-				_scene->drawMarker(id, form, p, dims, rs::Pos(), color, fill, size, name);
+				_scene->drawMarker(id, form, p, dims, rs::Pos(), color, fill, angle, size, name);
 				break;
 			}
 			case rs::Quad: {
@@ -1287,7 +1288,7 @@ void QOsgWidget::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight)
 				rs::Pos point(rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PHI)).toDouble()),
 							  rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 							  rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
-				_scene->drawMarker(id, form, p, dims, point, color, fill, size, name);
+				_scene->drawMarker(id, form, p, dims, point, color, fill, angle, size, name);
 				break;
 			}
 		}
@@ -1397,7 +1398,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 	// draw marker objects
 	for (int i = 0; i < background.getNumMarkers(); i++) {
 		rsXML::Marker *marker = background.getMarker(i);
-		_scene->drawMarker(0, marker->getForm(), marker->getStart(), marker->getEnd(), marker->getPoint(), marker->getColor(), marker->getFill(), marker->getSize(), marker->getLabel());
+		_scene->drawMarker(0, marker->getForm(), marker->getStart(), marker->getEnd(), marker->getPoint(), marker->getColor(), marker->getFill(), marker->getAngle(), marker->getSize(), marker->getLabel());
 	}
 
 	// add children to background after level is set

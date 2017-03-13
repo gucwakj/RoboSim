@@ -230,7 +230,7 @@ void xmlParser::parse(const char *name) {
 	// add all markers
 	rsXML::Marker *xmlm = reader.getNextMarker();
 	while (xmlm) {
-		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getPoint(), xmlm->getColor(), xmlm->getFill(), xmlm->getSize(), xmlm->getLabel());
+		emit newMarker(xmlm->getID(), xmlm->getForm(), xmlm->getStart(), xmlm->getEnd(), xmlm->getPoint(), xmlm->getColor(), xmlm->getFill(), xmlm->getAngle(), xmlm->getSize(), xmlm->getLabel());
 		xmlm = reader.getNextMarker();
 	}
 }
@@ -384,6 +384,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 		int id = _o_model->data(_o_model->index(i, rsObjectModel::ID), Qt::EditRole).toInt();
 		double mass = _o_model->data(_o_model->index(i, rsObjectModel::MASS)).toDouble();
 		int size = _o_model->data(_o_model->index(i, rsObjectModel::SIZE)).toInt();
+		float angle = _o_model->data(_o_model->index(i, rsObjectModel::ANGLE)).toDouble();
 
 		// get name
 		std::string name = _o_model->data(_o_model->index(i, rsObjectModel::TEXT)).toString().toStdString();
@@ -432,7 +433,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 			case rs::ArcSegment: {
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
 				rs::Pos p2(r[0], r[1], r[2]);
-				Writer::setMarker(marker, name, p, p2, color, fill, size, rs::Pos());
+				Writer::setMarker(marker, name, p, p2, color, fill, angle, size, rs::Pos());
 				break;
 			}
 			case rs::Arrow:
@@ -449,7 +450,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_2)).toDouble(),
 						   _o_model->data(_o_model->index(i, rsObjectModel::L_3)).toDouble());
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, p, p2, color, fill, size, rs::Pos());
+				Writer::setMarker(marker, name, p, p2, color, fill, angle, size, rs::Pos());
 				break;
 			}
 			case rs::Quad: {
@@ -460,7 +461,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 						   rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_THETA)).toDouble()),
 						   rs::IN2M(_o_model->data(_o_model->index(i, rsObjectModel::R_PSI)).toDouble()));
 				tinyxml2::XMLElement *marker = Writer::getOrCreateMarker(form, id);
-				Writer::setMarker(marker, name, p, p2, color, fill, size, pt);
+				Writer::setMarker(marker, name, p, p2, color, fill, angle, size, pt);
 				break;
 			}
 		}

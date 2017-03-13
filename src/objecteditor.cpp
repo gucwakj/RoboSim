@@ -2156,7 +2156,7 @@ ellipseEditor::ellipseEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	_rZBox->setMaximum(360);
 	_rZBox->setSingleStep(0.5);
 	rZLabel->setBuddy(_rZBox);
-	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitRZ(double)));
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitAngle(double)));
 	_rZBox->setToolTip("Set the rotation of the ellipse");
 	_rZBox->setToolTipDuration(-1);
 
@@ -2243,9 +2243,9 @@ void ellipseEditor::submitL2(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::L_2), value);
 }
 
-void ellipseEditor::submitRZ(double value) {
+void ellipseEditor::submitAngle(double value) {
 	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
-	_model->setData(_model->index(_row, rsObjectModel::L_3), value);
+	_model->setData(_model->index(_row, rsObjectModel::ANGLE), value);
 }
 
 void ellipseEditor::submitSize(double value) {
@@ -2270,7 +2270,7 @@ void ellipseEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("height"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
-	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::L_3), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::ANGLE), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
@@ -2718,6 +2718,19 @@ polygonEditor::polygonEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	lXBox->setToolTip("Set the number of polygon sides");
 	lXBox->setToolTipDuration(-1);
 
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("angle");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitAngle(double)));
+	_rZBox->setToolTip("Set the rotation of the polygon");
+	_rZBox->setToolTipDuration(-1);
+
 	// width
 	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
@@ -2770,13 +2783,18 @@ polygonEditor::polygonEditor(objectModel *model, QWidget *parent) : QWidget(pare
 	hbox5->addWidget(lXBox, 5);
 	hbox5->addWidget(_lXUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox5);
+	QHBoxLayout *hbox6 = new QHBoxLayout();
+	hbox6->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox6->addWidget(_rZBox, 5);
+	hbox6->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox6);
 	QHBoxLayout *hbox7 = new QHBoxLayout();
 	hbox7->addWidget(widthLabel, 2, Qt::AlignRight);
 	hbox7->addWidget(widthBox, 5);
 	layout->addLayout(hbox7);
-	QHBoxLayout *hbox6 = new QHBoxLayout();
-	hbox6->addWidget(_colorPicker);
-	layout->addLayout(hbox6);
+	QHBoxLayout *hbox9 = new QHBoxLayout();
+	hbox9->addWidget(_colorPicker);
+	layout->addLayout(hbox9);
 	QHBoxLayout *hbox8 = new QHBoxLayout();
 	hbox8->addWidget(fill);
 	layout->addLayout(hbox8);
@@ -2794,6 +2812,11 @@ void polygonEditor::submitPY(double value) {
 
 void polygonEditor::submitPZ(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
+}
+
+void polygonEditor::submitAngle(double value) {
+	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
+	_model->setData(_model->index(_row, rsObjectModel::ANGLE), value);
 }
 
 void polygonEditor::submitL1(double value) {
@@ -2822,6 +2845,7 @@ void polygonEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("n"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::ANGLE), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
@@ -3323,6 +3347,19 @@ rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(
 	lYBox->setToolTip("Set the height of the rectangle");
 	lYBox->setToolTipDuration(-1);
 
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("angle");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitAngle(double)));
+	_rZBox->setToolTip("Set the rotation of the rectangle");
+	_rZBox->setToolTipDuration(-1);
+
 	// size
 	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
@@ -3371,6 +3408,11 @@ rectangleEditor::rectangleEditor(objectModel *model, QWidget *parent) : QWidget(
 	hbox3->addWidget(lYBox, 5);
 	hbox3->addWidget(_lYUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox3);
+	QHBoxLayout *hbox4 = new QHBoxLayout();
+	hbox4->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox4->addWidget(_rZBox, 5);
+	hbox4->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox4);
 	QHBoxLayout *hbox5 = new QHBoxLayout();
 	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
 	hbox5->addWidget(widthBox, 5);
@@ -3392,6 +3434,11 @@ void rectangleEditor::submitPX(double value) {
 
 void rectangleEditor::submitPY(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::P_Y), value);
+}
+
+void rectangleEditor::submitAngle(double value) {
+	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
+	_model->setData(_model->index(_row, rsObjectModel::ANGLE), value);
 }
 
 void rectangleEditor::submitL1(double value) {
@@ -3424,6 +3471,7 @@ void rectangleEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("width"))->setValue(_model->data(_model->index(row, rsObjectModel::L_1), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("height"))->setValue(_model->data(_model->index(row, rsObjectModel::L_2), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::ANGLE), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);
@@ -3695,6 +3743,19 @@ starEditor::starEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	pZBox->setToolTip("Set the length of the star");
 	pZBox->setToolTipDuration(-1);
 
+	// rotation psi
+	QLabel *rZLabel = new QLabel(tr("Angle:"));
+	QLabel *rZUnits = new QLabel(QString::fromUtf8("°"));
+	_rZBox = new QDoubleSpinBox();
+	_rZBox->setObjectName("angle");
+	_rZBox->setMinimum(-360);
+	_rZBox->setMaximum(360);
+	_rZBox->setSingleStep(0.5);
+	rZLabel->setBuddy(_rZBox);
+	QWidget::connect(_rZBox, SIGNAL(valueChanged(double)), this, SLOT(submitAngle(double)));
+	_rZBox->setToolTip("Set the rotation of the star");
+	_rZBox->setToolTipDuration(-1);
+
 	// width
 	QLabel *widthLabel = new QLabel(tr("Line Width:"));
 	QDoubleSpinBox *widthBox = new QDoubleSpinBox();
@@ -3742,6 +3803,11 @@ starEditor::starEditor(objectModel *model, QWidget *parent) : QWidget(parent) {
 	hbox4->addWidget(pZBox, 5);
 	hbox4->addWidget(_pZUnits, 1, Qt::AlignLeft);
 	layout->addLayout(hbox4);
+	QHBoxLayout *hbox2 = new QHBoxLayout();
+	hbox2->addWidget(rZLabel, 2, Qt::AlignRight);
+	hbox2->addWidget(_rZBox, 5);
+	hbox2->addWidget(rZUnits, 1, Qt::AlignLeft);
+	layout->addLayout(hbox2);
 	QHBoxLayout *hbox5 = new QHBoxLayout();
 	hbox5->addWidget(widthLabel, 2, Qt::AlignRight);
 	hbox5->addWidget(widthBox, 5);
@@ -3768,6 +3834,11 @@ void starEditor::submitPZ(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::P_Z), value);
 }
 
+void starEditor::submitAngle(double value) {
+	_rZBox->setValue(value - static_cast<int>(value / 360) * 360);
+	_model->setData(_model->index(_row, rsObjectModel::ANGLE), value);
+}
+
 void starEditor::submitSize(double value) {
 	_model->setData(_model->index(_row, rsObjectModel::SIZE), value);
 }
@@ -3789,6 +3860,7 @@ void starEditor::setIndex(int row) {
 	(this->findChild<QDoubleSpinBox *>("px"))->setValue(_model->data(_model->index(row, rsObjectModel::P_X), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("py"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Y), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("length"))->setValue(_model->data(_model->index(row, rsObjectModel::P_Z), Qt::EditRole).toDouble());
+	(this->findChild<QDoubleSpinBox *>("angle"))->setValue(_model->data(_model->index(row, rsObjectModel::ANGLE), Qt::EditRole).toDouble());
 	(this->findChild<QDoubleSpinBox *>("size"))->setValue(_model->data(_model->index(row, rsObjectModel::SIZE), Qt::EditRole).toDouble());
 	QColor color(_model->data(_model->index(row, rsObjectModel::COLOR), Qt::EditRole).toString());
 	(this->findChild<bodyColorPicker *>("color"))->setColor(color);

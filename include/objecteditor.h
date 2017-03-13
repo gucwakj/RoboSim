@@ -314,7 +314,7 @@ class ellipseEditor : public QWidget {
 	protected slots:
 		void submitPX(double);
 		void submitPY(double);
-		void submitRZ(double);
+		void submitAngle(double);
 		void submitL1(double);
 		void submitL2(double);
 		void submitSize(double);
@@ -397,6 +397,7 @@ class polygonEditor : public QWidget {
 		void submitPX(double);
 		void submitPY(double);
 		void submitPZ(double);
+		void submitAngle(double);
 		void submitL1(double);
 		void submitSize(double);
 		void submitColor(QColor);
@@ -404,6 +405,7 @@ class polygonEditor : public QWidget {
 
 	private:
 		objectModel *_model;
+		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;
@@ -476,6 +478,7 @@ class rectangleEditor : public QWidget {
 	protected slots:
 		void submitPX(double);
 		void submitPY(double);
+		void submitAngle(double);
 		void submitL1(double);
 		void submitL2(double);
 		void submitSize(double);
@@ -484,6 +487,7 @@ class rectangleEditor : public QWidget {
 
 	private:
 		objectModel *_model;
+		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_lXUnits;
@@ -529,12 +533,14 @@ class starEditor : public QWidget {
 		void submitPX(double);
 		void submitPY(double);
 		void submitPZ(double);
+		void submitAngle(double);
 		void submitSize(double);
 		void submitColor(QColor);
 		void submitFill(QColor);
 
 	private:
 		objectModel *_model;
+		QDoubleSpinBox *_rZBox;
 		QLabel *_pXUnits;
 		QLabel *_pYUnits;
 		QLabel *_pZUnits;

@@ -93,6 +93,7 @@ bool objectModel::addObject(int form, int role) {
 		}
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString("HI");
+		_list[row][ANGLE] = QVariant(0).toString();
 
 		// set defaults for all drawings
 		switch (form) {
@@ -160,7 +161,7 @@ bool objectModel::addObject(int form, int role) {
 	return false;
 }
 
-bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Pos &pt, const rs::Vec &c, const rs::Vec &f, int size, std::string name, int role) {
+bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &p2, const rs::Pos &pt, const rs::Vec &c, const rs::Vec &f, float angle, int size, std::string name, int role) {
 	if (role == Qt::EditRole) {
 		// add row
 		int row = _list.size();
@@ -192,6 +193,7 @@ bool objectModel::newMarker(int id, int form, const rs::Pos &p1, const rs::Pos &
 		_list[row][rsObjectModel::SIZE] = QVariant(size).toString();	// f*$k microsoft
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString(name.c_str());
+		_list[row][ANGLE] = QVariant(angle).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
@@ -219,6 +221,7 @@ bool objectModel::newObstacle(int id, int form, const rs::Pos &p, const rs::Quat
 		_list[row][MASS] = QVariant(mass).toString();
 		_list[row][AXIS] = QVariant(2).toString();
 		_list[row][TEXT] = QString();
+		_list[row][ANGLE] = QVariant(0).toString();
 		emit dataChanged(createIndex(row, 0), createIndex(row, NUM_COLUMNS));
 		return true;
 	}
