@@ -465,7 +465,7 @@ void xmlParser::objectDataChanged(QModelIndex topLeft, QModelIndex bottomRight) 
 }
 
 void xmlParser::setBackground(QListWidgetItem *current, QListWidgetItem *previous) {
-	Writer::setBackground(current->data(Qt::UserRole).toString().toStdString());
+	Writer::setBackground(current->data(Qt::UserRole).toString().toStdString(), current->data(Qt::ToolTipRole).toString().toStdString());
 }
 
 void xmlParser::setGridEnabled(bool enabled) {

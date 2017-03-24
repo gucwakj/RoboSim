@@ -1293,10 +1293,10 @@
            <item>
             <widget class="QPushButton" name="add_background">
              <property name="toolTip">
-              <string>Add new RoboSim Background</string>
+              <string>Add new RoboSim Background directory</string>
              </property>
              <property name="text">
-              <string>Add Background</string>
+              <string>Add New Background Directory</string>
              </property>
             </widget>
            </item>

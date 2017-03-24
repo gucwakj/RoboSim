@@ -91,43 +91,50 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	int num_def_backgrounds = 6;
 	// if defaults aren't all there, delete and restart
 	if (!_background.empty() &&
-			(	_background[0].toStdString().compare(0, 8, "outdoors") ||
-				_background[1].toStdString().compare(0, 6, "barobo") ||
-				_background[2].toStdString().compare(0, 4, "2016") ||
-				_background[3].toStdString().compare(0, 4, "2015") ||
-				_background[4].toStdString().compare(0, 4, "2014") ||
-				_background[5].toStdString().compare(0, 4, "none")
+			(	_background[0].second.toStdString().compare(0, 8, "outdoors") ||
+				_background[1].second.toStdString().compare(0, 6, "barobo") ||
+				_background[2].second.toStdString().compare(0, 4, "2016") ||
+				_background[3].second.toStdString().compare(0, 4, "2015") ||
+				_background[4].second.toStdString().compare(0, 4, "2014") ||
+				_background[5].second.toStdString().compare(0, 4, "none")
 			)
 		) {
 		_background.clear();
 	}
 	// parse default path
 	if (_background.empty()) {
-		_background << QString("outdoors");
-		_background << QString("baroboactivitymat");
-		_background << QString("2016RoboPlay");
-		_background << QString("2015RoboPlay");
-		_background << QString("2014RoboPlay");
-		_background << QString("none");
+		_background << qMakePair(QString("CHHOME"), QString("outdoors"));
+		_background << qMakePair(QString("CHHOME"), QString("baroboactivitymat"));
+		_background << qMakePair(QString("CHHOME"), QString("2016RoboPlay"));
+		_background << qMakePair(QString("CHHOME"), QString("2015RoboPlay"));
+		_background << qMakePair(QString("CHHOME"), QString("2014RoboPlay"));
+		_background << qMakePair(QString("CHHOME"), QString("none"));
 	}
 	// remove any stale custom directories (ignore default ones)
-	for (int i = num_def_backgrounds; i < _background.size(); i++) {
-		QString file(_background[i]);
-		QFileInfo checkFile(file.append("/background.xml"));
+	for (int i = _background.size() - 1; i >= num_def_backgrounds; i--) {
+		QString file(_background[i].first);
+		QFileInfo checkFile(file.append(_background[i].second).append("/background.xml"));
 		if (!checkFile.exists()) _background.removeAt(i);
 	}
 	// create view list
 	for (int i = 0; i < _background.size(); i++) {
 		// parse rsXML::BackgroundReader
-		rsXML::BackgroundReader background(_background[i].toStdString());
+		rsXML::BackgroundReader background(_background[i].first.toStdString(), _background[i].second.toStdString());
 		// make item
 		QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
 		item->setIcon(QIcon(background.getScreenshot().c_str()));
 		item->setText(background.getName().c_str());
-		item->setData(Qt::UserRole, _background[i]);
+		item->setToolTip(_background[i].second);
+		item->setData(Qt::UserRole, _background[i].first);
 		// add to watched paths
-		if (i >= num_def_backgrounds) _watcher.addPath(_background[i]);
+		if (i >= num_def_backgrounds) _watcher.addPath(_background[i].first);
 	}
+	// read through watch paths for new items
+	QStringList paths = _watcher.directories();
+	for (int i = 0; i < paths.size(); i++) {
+		this->updateBackgroundList(paths[i]);
+	}
+	// fix list order
 	ui->backgroundListWidget->setDragEnabled(false);
 
 	// set up RoboPlay Challenges list
@@ -383,30 +390,14 @@ roboSimWidget::~roboSimWidget(void) {
 
 void roboSimWidget::addBackground(void) {
 	// get directory from user
-	QString dir = QFileDialog::getExistingDirectory(this, tr("Add Background Directory"),
+	QString dir = QFileDialog::getExistingDirectory(this, tr("Add New Background Directory"),
 					"/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-	// check for existance of xml file
-	QString xml(dir);
-	QFileInfo checkFile(xml.append("/background.xml"));
-	if (checkFile.exists()) {
-		// add to list
-		_background << dir;
-		// parse rsXML::BackgroundReader
-		rsXML::BackgroundReader background(dir.toStdString());
-		// make item
-		QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
-		item->setIcon(QIcon(background.getScreenshot().c_str()));
-		item->setText(background.getName().c_str());
-		item->setData(Qt::UserRole, dir);
-		// add to watched paths
-		_watcher.addPath(dir);
-	}
-	else {
-		QMessageBox msgBox;
-		msgBox.setText(QString("%1 does not contain a valid RoboSim Background XML File.").arg(dir));
-		msgBox.exec();
-	}
+	// update list
+	this->updateBackgroundList(dir);
+
+	// add to watched paths
+	_watcher.addPath(dir);
 }
 
 void roboSimWidget::build_selector(QListWidget *widget, QStringList &names, QStringList &icons) {
@@ -611,16 +602,37 @@ void roboSimWidget::setGridEnabled(bool enabled) {
 }
 
 void roboSimWidget::updateBackgroundList(const QString &str) {
-	for (int i = 0; i < ui->backgroundListWidget->count(); i++) {
-		QListWidgetItem *item = ui->backgroundListWidget->item(i);
-		if ( !item->data(Qt::UserRole).toString().compare(str) ) {
-			rsXML::BackgroundReader background(str.toStdString());
-			item->setIcon(QIcon(background.getScreenshot().c_str()));
-			item->setText(background.getName().c_str());
-			if (i == ui->backgroundListWidget->currentRow()) {
-				ui->osgWidget->setNewBackground(item, item);
+	// remove const
+	QString dir(str);
+
+	// check for existance of xml file
+	QDirIterator it(dir, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags);
+	while (it.hasNext()) {
+		QString xml(it.next());
+		QFileInfo checkFile(xml.append("/background.xml"));
+		if (checkFile.exists()) {
+			// get folder
+			QStringList parts = xml.split("/");
+			QString folder = parts.at(parts.size()-2);
+			// check if in list already
+			bool add = true;
+			QString newdir(dir); newdir.append("/");
+			QPair<QString, QString> newpair = qMakePair(newdir, folder);
+			for (int i = 0; i < _background.size(); i++) {
+				if (newpair == _background[i]) { add = false; }
 			}
-			break;
+			if (add) {
+				// add to list
+				_background << newpair;
+				// parse rsXML::BackgroundReader
+				rsXML::BackgroundReader background(newdir.toStdString(), folder.toStdString());
+				// make item
+				QListWidgetItem *item = new QListWidgetItem(ui->backgroundListWidget);
+				item->setIcon(QIcon(background.getScreenshot().c_str()));
+				item->setText(background.getName().c_str());
+				item->setToolTip(folder);
+				item->setData(Qt::UserRole, newdir);
+			}
 		}
 	}
 }
@@ -710,26 +722,80 @@ void roboSimWidget::usersGuide(void) {
 void roboSimWidget::load_settings(void) {
 	QSettings settings(tr("UC Davis C-STEM Center"), tr("RoboSim"));
 
+	// store locally
+	QStringList dirs, folds;
+
+	// backround start
 	settings.beginGroup("background");
-	int size = settings.beginReadArray("directories");
-	for (int i = 0; i < size; ++i) {
+
+	// directories
+	int dsize = settings.beginReadArray("directories");
+	for (int i = 0; i < dsize; i++) {
 		settings.setArrayIndex(i);
-		_background << settings.value("path").toString();
+		dirs << settings.value("path").toString();
 	}
 	settings.endArray();
+	// folders
+	int fsize = settings.beginReadArray("folders");
+	for (int i = 0; i < fsize; i++) {
+		settings.setArrayIndex(i);
+		folds << settings.value("path").toString();
+	}
+	settings.endArray();
+	// watching
+	int wsize = settings.beginReadArray("watching");
+	for (int i = 0; i < wsize; i++) {
+		settings.setArrayIndex(i);
+		_watcher.addPath(settings.value("path").toString());
+	}
+	settings.endArray();
+
+	// background end
 	settings.endGroup();
+
+	// save to widget
+	if (dirs.size() == folds.size()) {
+		for (int i = 0; i < dirs.size(); i++) {
+			_background << qMakePair(dirs[i], folds[i]);
+		}
+	}
+	else {
+		settings.beginGroup("background");
+		settings.remove("");
+		settings.endGroup();
+	}
 }
 
 void roboSimWidget::save_settings(void) {
 	QSettings settings(tr("UC Davis C-STEM Center"), tr("RoboSim"));
 
+	// backround start
 	settings.beginGroup("background");
+
+	// directories
 	settings.beginWriteArray("directories");
-	for (int i = 0; i < _background.size(); ++i) {
+	for (int i = 0; i < _background.size(); i++) {
 		settings.setArrayIndex(i);
-		settings.setValue("path", _background[i]);
+		settings.setValue("path", _background[i].first);
 	}
 	settings.endArray();
+	// folders
+	settings.beginWriteArray("folders");
+	for (int i = 0; i < _background.size(); i++) {
+		settings.setArrayIndex(i);
+		settings.setValue("path", _background[i].second);
+	}
+	settings.endArray();
+	// watching
+	settings.beginWriteArray("watching");
+	QStringList watching = _watcher.directories();
+	for (int i = 0; i < watching.size(); i++) {
+		settings.setArrayIndex(i);
+		settings.setValue("path", watching);
+	}
+	settings.endArray();
+
+	// background end
 	settings.endGroup();
 }
 

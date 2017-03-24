@@ -1351,7 +1351,7 @@ void QOsgWidget::setCurrentRobotIndex(const QModelIndex &index) {
 
 void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *previous) {
 	// read background xml file
-	rsXML::BackgroundReader background(current->data(Qt::UserRole).toString().toStdString());
+	rsXML::BackgroundReader background(current->data(Qt::UserRole).toString().toStdString(), current->data(Qt::ToolTipRole).toString().toStdString());
 
 	// load background images
 	for (int i = 0; i < 7; i++) {

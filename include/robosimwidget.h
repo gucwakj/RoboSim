@@ -66,7 +66,7 @@ class ROBOSIMWIDGET_EXPORT roboSimWidget : public QWidget {
 		std::vector<double> _us;
 		std::vector<double> _si;
 		xmlParser *_xml;
-		QStringList _background;
+		QList< QPair<QString, QString> > _background;
 		QFileSystemWatcher _watcher;
 		robotModel *_rob_model;
 		objectModel *_obj_model;
