@@ -85,7 +85,11 @@ platformSelector::platformSelector(QWidget *parent) : QWidget(parent) {
 	dlpath.append("/package/chrobosim/dl/robosim.dl");
 	QFileInfo checkDL(dlpath);
 	if (!checkDL.exists()) {
+#ifdef Q_OS_WIN
 		_chhome = "C:/Ch";
+#else
+		_chhome = "/usr/local/ch";
+#endif
 		qDebug() << "Error: ChRoboSim package not installed correctly";
 	}
 
