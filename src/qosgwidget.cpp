@@ -1375,7 +1375,7 @@ void QOsgWidget::setNewBackground(QListWidgetItem *current, QListWidgetItem *pre
 		_grid[4] = 0;
 		_grid[5] = convert(48);
 	}
-	else if (_level == rs::Level::RPC2015 || _level == rs::Level::RPC2016) {
+	else if (_level == rs::Level::RPC2015 || _level == rs::Level::RPC2016 || _level == rs::Level::RPC2017) {
 		_grid[2] = 0;
 		_grid[3] = convert(84);
 		_grid[4] = 0;

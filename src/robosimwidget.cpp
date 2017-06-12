@@ -88,15 +88,16 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	ui->layout_objects->addWidget(o_editor);
 
 	// set up background view
-	int num_def_backgrounds = 6;
+	int num_def_backgrounds = 7;
 	// if defaults aren't all there, delete and restart
 	if (!_background.empty() &&
 			(	_background[0].second.toStdString().compare(0, 8, "outdoors") ||
 				_background[1].second.toStdString().compare(0, 6, "barobo") ||
-				_background[2].second.toStdString().compare(0, 4, "2016") ||
-				_background[3].second.toStdString().compare(0, 4, "2015") ||
-				_background[4].second.toStdString().compare(0, 4, "2014") ||
-				_background[5].second.toStdString().compare(0, 4, "none")
+				_background[2].second.toStdString().compare(0, 4, "2017") ||
+				_background[3].second.toStdString().compare(0, 4, "2016") ||
+				_background[4].second.toStdString().compare(0, 4, "2015") ||
+				_background[5].second.toStdString().compare(0, 4, "2014") ||
+				_background[6].second.toStdString().compare(0, 4, "none")
 			)
 		) {
 		_background.clear();
@@ -105,6 +106,7 @@ roboSimWidget::roboSimWidget(QWidget *parent) : QWidget(parent) {
 	if (_background.empty()) {
 		_background << qMakePair(QString("CHHOME"), QString("outdoors"));
 		_background << qMakePair(QString("CHHOME"), QString("baroboactivitymat"));
+		_background << qMakePair(QString("CHHOME"), QString("2017RoboPlay"));
 		_background << qMakePair(QString("CHHOME"), QString("2016RoboPlay"));
 		_background << qMakePair(QString("CHHOME"), QString("2015RoboPlay"));
 		_background << qMakePair(QString("CHHOME"), QString("2014RoboPlay"));
