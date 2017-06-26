@@ -1,0 +1,23 @@
+How to update robosim to for the new roboplay challenge year:
+
+Changes need to be made in a couple places to get the newest year of the
+RoboPlay challenge included within the program.  First the challenges are in a
+folder in the librs repository under resources/challenges.  These are xml files
+for each challenge named the same as the challenge names used within the
+RoboSim GUI.  The GUI will search for these files by name.  The background
+board is in the librs repo under the resources/background directory.  Code
+changes are relatively simple and done within the following commits for the
+2017 board and challenges:
+
+librs: 3db662ab70b18e83c98128e9fa10ef0c9cd322a8 - add new 2017 background board files
+librs: 30e146b344e9a9602ea1dce39885eda0543f97b3 - add new 2017 challenge files
+RoboSim: 7fbc286717db4342e79d662e5d1151651722a87b - add 2017 RoboPlay into GUI list of backgrounds
+RoboSim: 7756f7af265218fab94deaf3deae539fb1f5fc4c - add new challenges to the GUI challenge tree
+
+All changes are done within these four commits.  There are no extraneous
+changes in these commits which are not necessary for the addition of the files.
+Most of the changes are adding the files and then referencing them in the right
+place within the code.
+
+Happy Editing
+
