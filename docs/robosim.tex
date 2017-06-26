@@ -201,16 +201,27 @@ currently selected, either the US Customary defaults, shown in Figure
 The background behind the robots can be changed to display different views for
 the Scene.  There are four default options for the robots.  Users can write
 their own and add them to the list if desired.  Details on how to write a
-RoboSim Background are detailed in Appendix \ref{appendix:backgroundxml}.  The
-default backgrounds are None, RoboPlay 2014, RoboPlay 2015, RoboPlay 2016,
-Barobo activity mat, and Outdoors.  The 'None' background is a completely black
-scene with the robots moving through the empty space.  The challenge boards from
-the 2014, 2015, and 2016 RoboPlay Challenge Competitions are included to easily
-play on the mats.  The borders are solid obstacles so that the robots are not
-able to run off the sides.  The 'Outdoors' background is the original RoboSim
-Scene consisting of the green grass and blue sky.  Selecting each one
-automatically changes the background in the Scene View.  The 'Add New
-Background' button allows users to import their own background folders.
+RoboSim Background are detailed in Appendix \ref{app:backgrounds}.  The default
+backgrounds are None, RoboPlay 2014, RoboPlay 2015, RoboPlay 2016, RoboPlay
+2017, Barobo activity mat, and Outdoors.  The 'None' background is a completely
+black scene with the robots moving through the empty space.  The challenge
+boards from the 2014, 2015, 2016, and 2017 RoboPlay Challenge Competitions are
+included to easily play on the mats.  The borders are solid obstacles so that
+the robots are not able to run off the sides.  The 'Outdoors' background is the
+original RoboSim Scene consisting of the green grass and blue sky.  Selecting
+each one automatically changes the background in the Scene View.
+
+\paragraph{Adding Custom Backgrounds}
+Users are able to create and add custom backgrounds to RoboSim through the 'Add
+New Background Folder' button in the lower right corner.  By clicking the button
+and selecting a folder, RoboSim will look through each subfolder to see if it is
+a valid RoboSim Background file to add and display in the list in addition to
+the default ones available already.  Each time RoboSim launches it looks through
+this folder to find any new Background files which have been created.
+
+Creating custom backgrounds can be done by users and shared with others.
+Appendix \ref{app:backgrounds} explains how to make the files necessary for
+RoboSim to load the background information.
 
 \subsubsection{Robots}
 All  of the robots in the Scene are configured here.  The Robot List
@@ -288,7 +299,7 @@ Challenge Competitions are included as well as generic blocks and spheres.
 \end{figure}
 
 \subsubsection{RoboPlay Challenges}
-All Challenges from the 2014-2016 RoboPlay Challenge Competitions which can be
+All Challenges from the 2014-2017 RoboPlay Challenge Competitions which can be
 completed within RoboSim are included in a separate tab.  These challenges load
 up the Challenge Background, and all of the appropriate robots and obstacles to
 complete the challenge as outlined in the challenge booklets.
@@ -586,10 +597,11 @@ non-backwards compatible changes are made.
 \begin{verbatim}
 <grid major="12" tics="1" minx="-48" maxx="48" miny="-48" maxy="48"/>
 \end{verbatim}
-The grid boxes from the GUI put their information here.   \verb%major% are the red hashmarks and \verb%tics%
-are the gray tick marks.  \verb%minx% and \verb%maxx% are the minimum and
-maximum distances along the X-axis for the grids, respectively.  \verb%miny% and
-\verb%maxy% are the complements for the Y-axis.
+The grid boxes from the GUI put their information here.   \verb%major% are the
+red hashmarks and \verb%tics% are the gray tick marks.  \verb%minx% and
+\verb%maxx% are the minimum and maximum distances along the X-axis for the
+grids, respectively.  \verb%miny% and \verb%maxy% are the complements for the
+Y-axis.
 
 \subsubsection{Units}
 \begin{verbatim}
@@ -720,8 +732,9 @@ actuate.
 		\hline \hline
 		\verb|<linkboti/>| \\
 		\verb|<linkbotl/>| \\
-		\verb|<linkbott/>| \\
+		\verb|<ev3/>| \\
 		\verb|<mobot/>| \\
+		\verb|<nxt/>| \\
 		\hline \hline
 	\end{tabular}
 	\caption{Robots}
@@ -1109,7 +1122,7 @@ Some example configuration files.
 
 \newpage
 \section{Appendix: Background Writing}
-\label{appendix:backgroundxml}
+\label{app:backgrounds}
 The RoboSim backgrounds which are available within the GUI are examples that can
 be copied and modified to create custom background folders.  A full background
 folder consists of the background XML file as well as the associated images to
@@ -1119,10 +1132,10 @@ As an example the Outdoors background from the GUI is used here to show the
 necessary items for a background.  Here is the list of files and folders within
 the outdoors folder.
 \begin{verbatim}
-sky/
-background.xml
-ground.3ds
-screenshot.png
+outdoors/sky/
+outdoors/background.xml
+outdoors/ground.3ds
+outdoors/screenshot.png
 \end{verbatim}
 
 The sky folder holds all of the images which form the sky around the scene.
@@ -1151,6 +1164,9 @@ The \texttt{background.xml} file is shown below:
     <top>sky/top.png</top>
     <bottom>sky/bottom.png</bottom>
 </background>
+
+<obstacles>
+</obstacles>
 \end{verbatim}
 
 \subsection{Level}
@@ -1170,6 +1186,7 @@ environment.
 		\verb|activitymat| \\
 		\verb|board| \\
 		\verb|outdoors| \\
+		\verb|RPC2017| \\
 		\verb|RPC2016| \\
 		\verb|RPC2015| \\
 		\verb|RPC2014| \\
@@ -1186,7 +1203,8 @@ unique.
 
 \subsection{Screenshot}
 The name of your screenshot file.  The path to the file is relative to the xml
-file location.
+file location.  This image shows up in the background list to show off the cool
+look of the background to others.
 
 \subsection{Background}
 All of the extra images to load for creating the environment are listed here.
@@ -1196,7 +1214,7 @@ have an image.  If no image is provided, it will be left blank.
 \subsection{Obstacles}
 In addition to the required items shown above, an optional section which mimics
 the RoboSim XML File (see Appendix \ref{app:xml}) is the obstacles tag.  Please
-use the information from Section \ref{app:xml:obstacles} to add obstacles to teh
+use the information from Section \ref{app:xml:obstacles} to add obstacles to the
 background.  All obstacles added here are always loaded into the scene and
 cannot be deleted by the RoboSim GUI.  All of the RoboPlay Challenge mats add
 the border as a background obstacle so that it cannot be modified.
